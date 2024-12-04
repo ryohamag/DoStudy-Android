@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.websarva.wings.dostudy_android"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.websarva.wings.dostudy_android"
