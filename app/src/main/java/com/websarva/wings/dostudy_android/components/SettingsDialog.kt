@@ -12,7 +12,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.websarva.wings.dostudy_android.functions.createUserData
 
 @Composable
 fun SettingsDialog(
@@ -20,7 +19,8 @@ fun SettingsDialog(
     username: String,
     onUsernameChange: (String) -> Unit,
     channelId: String,
-    onChannelIdChange: (String) -> Unit
+    onChannelIdChange: (String) -> Unit,
+    createUserData: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -46,8 +46,13 @@ fun SettingsDialog(
         },
         confirmButton = {
             TextButton(
-                onClick = {/*todo*/}
-            ) { }
+                onClick = {
+                    createUserData()
+                    onDismissRequest()
+                }
+            ) {
+                Text("保存")
+            }
         },
         dismissButton = {
             TextButton(

@@ -17,8 +17,8 @@ fun httpRequest(
 ) {
     val jsonString = """
     {
-        "channelid": $channelId,
-        "name": $username
+        "channelid": "$channelId",
+        "name": "$username"
     }
 """ // 送信するJSON文字列
 
