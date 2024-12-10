@@ -21,6 +21,8 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     var isFirstStartup by mutableStateOf(false)
     var username by mutableStateOf("")
     var channelId by mutableStateOf("")
+    var isTimerMode by mutableStateOf(false)
+    var isShowTimerSetMenu by mutableStateOf(false)
 
     init {
         viewModelScope.launch {

@@ -76,13 +76,8 @@ android {
         implementation(libs.androidx.room.runtime)
         implementation(libs.androidx.room.ktx)
         ksp(libs.androidx.room.compiler)
-//        ksp(libs.hilt.android.compiler)
-//
-//        //Hiltの導入
-//        implementation(libs.hilt.android.v244)
-//        ksp(libs.dagger.hilt.compiler)
-//        implementation(libs.androidx.lifecycle.viewmodel)
-//        implementation(libs.androidx.lifecycle.viewmodel.ktx)
-//        implementation(libs.androidx.hilt.navigation.compose)
+
+        //DropdownMenu
+        implementation(libs.material3)
     }
 }

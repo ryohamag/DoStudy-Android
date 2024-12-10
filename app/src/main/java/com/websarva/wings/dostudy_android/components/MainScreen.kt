@@ -9,22 +9,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Switch
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.websarva.wings.dostudy_android.R
 import com.websarva.wings.dostudy_android.functions.httpRequest
 import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
 
@@ -51,7 +49,9 @@ fun MainScreen(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.padding(innerPadding).fillMaxWidth()
+        modifier = Modifier
+            .padding(innerPadding)
+            .fillMaxWidth()
     ) {
         Text(
             text = "00:00:00",
@@ -86,21 +86,33 @@ fun MainScreen(
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Settings,
+                    painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_settings_24)),
                     contentDescription = "設定ボタン"
-                    )
+                )
             }
 
-            var checked by remember { mutableStateOf(false) }
+            if(vm.isShowTimerSetMenu) {
+                TimerSetMenu(
+                    expanded = vm.isShowTimerSetMenu,
+                    onDismissRequest = { vm.isShowTimerSetMenu = false }
+                )
+            }
 
-            Switch(
-                checked = checked,
-                onCheckedChange = { checked = it },
+            IconToggleButton(
+                checked = vm.isTimerMode,
+                onCheckedChange = {
+                    vm.isTimerMode = it
+                    vm.isShowTimerSetMenu = it},
                 modifier = Modifier
-                    .weight(4f)
+                    .weight(2f)
                     .padding(16.dp)
-                    .scale(1.5f)
-            )
+                    .scale(2f)
+            ) {
+                Icon(
+                    painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_timer_24)),
+                    contentDescription = "タイマー設定ボタン"
+                )
+            }
         }
     }
 }
