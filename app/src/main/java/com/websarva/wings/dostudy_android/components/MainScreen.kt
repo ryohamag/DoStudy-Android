@@ -1,27 +1,21 @@
 package com.websarva.wings.dostudy_android.components
 
-import androidx.activity.result.launch
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,42 +23,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.lifecycleScope
-import com.websarva.wings.dostudy_android.Room.UserRoomDataBase
 import com.websarva.wings.dostudy_android.functions.httpRequest
 import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
 
 @Composable
 fun MainScreen(
-    innerPadding : PaddingValues
+    innerPadding : PaddingValues,
+    vm: MainScreenViewModel
 ) {
-    val context = LocalContext.current
-    val vm = remember { MainScreenViewModel() }
-    val db = UserRoomDataBase.getDatabase(context)
-    val userDao = db.userDataDao()
-
-    LaunchedEffect(Unit) {
-        val userData = userDao.getCurrentUser()
-        if (userData == null) {
-            vm.username = ""
-            vm.channelId = ""
-        } else {
-            vm.username = userData.username
-            vm.channelId = userData.channelId
-        }
-    }
-
-    if (vm.isSettingsDialogOpen) {
+    if (vm.isSettingsDialogOpen || vm.isFirstStartup) {
         SettingsDialog(
-            onDismissRequest = { vm.isSettingsDialogOpen = false },
+            onDismissRequest = {
+                vm.isSettingsDialogOpen = false
+                vm.isFirstStartup = false },
             username = vm.username,
             onUsernameChange = { vm.username = it },
             channelId = vm.channelId,
-            onChannelIdChange = { vm.channelId = it }
+            onChannelIdChange = { vm.channelId = it },
+            createUserData = { vm.createUserData() },
+            updateUserData = { vm.updateUserData() },
+            isFirstStartup = vm.isFirstStartup
         )
     }
 

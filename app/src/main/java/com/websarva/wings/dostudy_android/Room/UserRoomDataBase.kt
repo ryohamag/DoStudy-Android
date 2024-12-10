@@ -1,6 +1,8 @@
 package com.websarva.wings.dostudy_android.Room
 
+import android.content.Context
 import androidx.room.Database
+import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(entities = [UserDataTable::class], version = 1, exportSchema = false)
@@ -9,16 +11,17 @@ abstract class UserRoomDataBase: RoomDatabase() {
 
     companion object {
         @Volatile
-        private var INSTANCE: UserRoomDataBase? = null
-        fun getDatabase(context: android.content.Context): UserRoomDataBase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = androidx.room.Room.databaseBuilder(
-                    context.applicationContext,
-                    UserRoomDataBase::class.java,
-                    "user_database"
-                ).build()
-                INSTANCE = instance
-                instance
+        private var Instance: UserRoomDataBase? = null
+
+        fun getUserRoomDataBase(context: Context): UserRoomDataBase {
+            return Instance ?: synchronized(this) {
+                Room.databaseBuilder(
+                    context = context,
+                    klass = UserRoomDataBase::class.java,
+                    name = "user_database"
+                )
+                .build()
+                .also { Instance = it }
             }
         }
     }
