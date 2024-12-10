@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.devtools.ksp")
-//    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -78,6 +77,6 @@ android {
         ksp(libs.androidx.room.compiler)
 
         //DropdownMenu
-        implementation(libs.material3)
+        implementation (libs.material3)
     }
 }

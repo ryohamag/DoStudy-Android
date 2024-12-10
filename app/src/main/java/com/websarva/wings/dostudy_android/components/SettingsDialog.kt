@@ -1,8 +1,10 @@
 package com.websarva.wings.dostudy_android.components
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -10,6 +12,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -41,13 +44,26 @@ fun SettingsDialog(
                 TextField(
                     value = channelId,
                     onValueChange = onChannelIdChange,
-                    label = { Text("チャンネルID") }
+                    label = { Text("チャンネルID") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
             }
         },
         confirmButton = {
             TextButton(
                 onClick = {
+                    if(username.isEmpty()) {
+                        Toast.makeText(context, "ユーザー名を入力してください", Toast.LENGTH_SHORT).show()
+                        return@TextButton
+                    }
+                    if (channelId.isEmpty()) {
+                        Toast.makeText(context, "チャンネルIDを入力してください", Toast.LENGTH_SHORT).show()
+                        return@TextButton
+                    }
+                    if (channelId.length != 18) { // チャンネルIDが18桁かどうかをチェック
+                        Toast.makeText(context, "チャンネルIDは18桁で入力してください", Toast.LENGTH_SHORT).show()
+                        return@TextButton
+                    }
                     if(isFirstStartup) {
                         createUserData()
                     } else {
