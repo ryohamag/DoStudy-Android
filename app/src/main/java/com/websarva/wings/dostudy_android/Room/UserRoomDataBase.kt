@@ -20,8 +20,8 @@ abstract class UserRoomDataBase: RoomDatabase() {
                     klass = UserRoomDataBase::class.java,
                     name = "user_database"
                 )
-                    .build()
-                    .also { Instance = it }
+                .build()
+                .also { Instance = it }
             }
         }
     }

@@ -16,7 +16,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,18 +33,18 @@ fun MainScreen(
     innerPadding : PaddingValues,
     vm: MainScreenViewModel
 ) {
-    LaunchedEffect(Unit) {
-        vm.getCurrentUserData()
-    }
-
-    if (vm.isSettingsDialogOpen || vm.username.isEmpty() || vm.channelId.isEmpty()) {
+    if (vm.isSettingsDialogOpen || vm.isFirstStartup) {
         SettingsDialog(
-            onDismissRequest = { vm.isSettingsDialogOpen = false },
+            onDismissRequest = {
+                vm.isSettingsDialogOpen = false
+                vm.isFirstStartup = false },
             username = vm.username,
             onUsernameChange = { vm.username = it },
             channelId = vm.channelId,
             onChannelIdChange = { vm.channelId = it },
-            createUserData = { vm.createUserData() }
+            createUserData = { vm.createUserData() },
+            updateUserData = { vm.updateUserData() },
+            isFirstStartup = vm.isFirstStartup
         )
     }
 
