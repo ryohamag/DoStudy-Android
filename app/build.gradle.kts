@@ -80,3 +80,6 @@ android {
         implementation (libs.material3)
     }
 }
+dependencies {
+    implementation(libs.androidx.runtime.livedata)
+}

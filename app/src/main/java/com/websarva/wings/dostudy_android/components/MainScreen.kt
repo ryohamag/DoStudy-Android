@@ -1,5 +1,6 @@
 package com.websarva.wings.dostudy_android.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,14 +15,23 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.websarva.wings.dostudy_android.OrientationSensor
 import com.websarva.wings.dostudy_android.R
 import com.websarva.wings.dostudy_android.functions.httpRequest
 import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
@@ -31,6 +41,44 @@ fun MainScreen(
     innerPadding : PaddingValues,
     vm: MainScreenViewModel
 ) {
+    LaunchedEffect(key1 = vm.isStudyStarted) { // isStudyStarted が true になったら実行
+        vm.orientationSensor.start()
+    }
+
+    val orientation by vm.orientationSensor.orientation.observeAsState()
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    if (vm.isStudyStarted && orientation != null) {
+        if (orientation?.get(1)!! > Math.toRadians(45.0)) {
+            vm.orientationSensor.stop()
+            Log.d("MainScreen", "stop")
+        } else if (orientation?.get(1) == null) {
+            Log.d("MainScreen", "null")
+        }
+    } else {
+        Log.d("MainScreen", "null")
+    }
+
+    DisposableEffect(lifecycleOwner) {
+        // EventObserverを設定し、ライフサイクルのイベントを監視・イベントを設定
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_PAUSE ) {
+                Log.d("MainScreen", "Lifecycle.Event.ON_PAUSE")
+            }
+            if (event == Lifecycle.Event.ON_DESTROY) {
+                Log.d("MainScreen", "Lifecycle.Event.ON_DESTROY")
+            }
+        }
+
+        // 作成した監視・イベントの設定をライフサイクルオーナーに紐付ける
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        // ライフサイクルオーナーが変化した時、または、Composeが破棄される時に、紐付けたイベントを解除する
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     if (vm.isSettingsDialogOpen || vm.isFirstStartup) {
         SettingsDialog(
             onDismissRequest = {
@@ -62,7 +110,9 @@ fun MainScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
-            onClick = { httpRequest(username = vm.username, channelId = vm.channelId) },
+            onClick = {
+                httpRequest(username = vm.username, channelId = vm.channelId)
+                vm.isStudyStarted = true},
             modifier = Modifier.padding(16.dp),
             shape = RoundedCornerShape(8.dp)
         ) {

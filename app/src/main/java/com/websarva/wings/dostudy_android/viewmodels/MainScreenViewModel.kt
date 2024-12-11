@@ -4,9 +4,11 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.websarva.wings.dostudy_android.OrientationSensor
 import com.websarva.wings.dostudy_android.Room.UserDataTable
 import com.websarva.wings.dostudy_android.Room.UserRoomDataBase
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +25,8 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     var channelId by mutableStateOf("")
     var isTimerMode by mutableStateOf(false)
     var isShowTimerSetMenu by mutableStateOf(false)
+    var isStudyStarted by mutableStateOf(false)
+    val orientationSensor = OrientationSensor(context)
 
     init {
         viewModelScope.launch {

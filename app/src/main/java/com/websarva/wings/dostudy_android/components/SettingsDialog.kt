@@ -60,8 +60,8 @@ fun SettingsDialog(
                         Toast.makeText(context, "チャンネルIDを入力してください", Toast.LENGTH_SHORT).show()
                         return@TextButton
                     }
-                    if (channelId.length != 18) { // チャンネルIDが18桁かどうかをチェック
-                        Toast.makeText(context, "チャンネルIDは18桁で入力してください", Toast.LENGTH_SHORT).show()
+                    if (channelId.length != 19) { // チャンネルIDが19桁かどうかをチェック
+                        Toast.makeText(context, "チャンネルIDは19桁で入力してください", Toast.LENGTH_SHORT).show()
                         return@TextButton
                     }
                     if(isFirstStartup) {
