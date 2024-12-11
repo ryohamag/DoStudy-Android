@@ -78,6 +78,11 @@ android {
 
         //DropdownMenu
         implementation (libs.material3)
+
+        //Navigation
+        implementation(libs.androidx.navigation.compose)
+
+        implementation(libs.androidx.material.icons.core)
     }
 }
 dependencies {

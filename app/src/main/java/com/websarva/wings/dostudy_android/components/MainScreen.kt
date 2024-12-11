@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.navigation.NavController
 import com.websarva.wings.dostudy_android.OrientationSensor
 import com.websarva.wings.dostudy_android.R
 import com.websarva.wings.dostudy_android.functions.httpRequest
@@ -42,6 +43,7 @@ import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun MainScreen(
+    navController: NavController,
     innerPadding : PaddingValues,
     vm: MainScreenViewModel
 ) {
@@ -55,7 +57,11 @@ fun MainScreen(
             vm.orientationSensor.start()
             while (vm.isStudyStarted) {
                 delay(1000)
-                vm.seconds++
+                if(!vm.isTimerMode || vm.selectedTimer == null) {
+                    vm.seconds++
+                } else {
+                    vm.selectedTimer = vm.selectedTimer!! - 1
+                }
             }
         } else {
             vm.orientationSensor.stop()
@@ -95,9 +101,9 @@ fun MainScreen(
             .padding(innerPadding)
             .fillMaxWidth()
     ) {
-        val hour = vm.seconds / 3600
-        val minute = (vm.seconds % 3600) / 60
-        val second = vm.seconds % 60
+        val hour = if(!vm.isTimerMode) vm.seconds / 3600 else vm.selectedTimer?.div(3600) ?: 0
+        val minute = if(!vm.isTimerMode) (vm.seconds % 3600) / 60 else (vm.selectedTimer?.rem(3600) ?: 0) / 60
+        val second = if(!vm.isTimerMode) vm.seconds % 60 else vm.selectedTimer?.rem(60) ?: 0
 
         Text(
             text = "${hour.toString().padStart(2, '0')}:" +
@@ -143,18 +149,11 @@ fun MainScreen(
                     )
                 }
 
-                if (vm.isShowTimerSetMenu) {
-                    TimerSetMenu(
-                        expanded = vm.isShowTimerSetMenu,
-                        onDismissRequest = { vm.isShowTimerSetMenu = false }
-                    )
-                }
-
                 IconToggleButton(
                     checked = vm.isTimerMode,
                     onCheckedChange = {
                         vm.isTimerMode = it
-                        vm.isShowTimerSetMenu = it
+                        if(vm.isTimerMode) navController.navigate("TimerSetting")
                     },
                     modifier = Modifier
                         .weight(2f)

@@ -29,6 +29,9 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     var isStudyStarted by mutableStateOf(false)
     val orientationSensor = OrientationSensor(context)
     var seconds by mutableIntStateOf(0)
+    private var _timerList by mutableStateOf(listOf(1800, 3600, 7200, 10800))
+    var timerList = _timerList.sorted()
+    var selectedTimer by mutableStateOf<Int?>(null)
 
     init {
         viewModelScope.launch {
