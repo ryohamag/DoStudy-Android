@@ -34,48 +34,41 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.websarva.wings.dostudy_android.OrientationSensor
 import com.websarva.wings.dostudy_android.R
 import com.websarva.wings.dostudy_android.functions.httpRequest
+import com.websarva.wings.dostudy_android.functions.orientSensor
+import com.websarva.wings.dostudy_android.functions.screenObserver
 import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun MainScreen(
     innerPadding : PaddingValues,
     vm: MainScreenViewModel
 ) {
-    LaunchedEffect(key1 = vm.isStudyStarted) { // isStudyStarted が true になったら実行
-        vm.orientationSensor.start()
-    }
-
     val orientation by vm.orientationSensor.orientation.observeAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    if (vm.isStudyStarted && orientation != null) {
-        if (orientation?.get(1)!! > Math.toRadians(45.0)) {
+    Log.d("MainScreen", vm.seconds.toString())
+
+    LaunchedEffect(key1 = vm.isStudyStarted) { // isStudyStarted が true になったら実行
+        if (vm.isStudyStarted) {
+            vm.orientationSensor.start()
+            while (vm.isStudyStarted) {
+                delay(1000)
+                vm.seconds++
+            }
+        } else {
             vm.orientationSensor.stop()
-            Log.d("MainScreen", "stop")
-        } else if (orientation?.get(1) == null) {
-            Log.d("MainScreen", "null")
         }
-    } else {
-        Log.d("MainScreen", "null")
     }
 
-    DisposableEffect(lifecycleOwner) {
-        // EventObserverを設定し、ライフサイクルのイベントを監視・イベントを設定
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_PAUSE ) {
-                Log.d("MainScreen", "Lifecycle.Event.ON_PAUSE")
+    if (vm.isStudyStarted) {
+        orientSensor(orientation, vm)
+        DisposableEffect(lifecycleOwner) {
+            screenObserver(lifecycleOwner, vm)
+            onDispose {
+                vm.orientationSensor.stop()
             }
-            if (event == Lifecycle.Event.ON_DESTROY) {
-                Log.d("MainScreen", "Lifecycle.Event.ON_DESTROY")
-            }
-        }
-
-        // 作成した監視・イベントの設定をライフサイクルオーナーに紐付ける
-        lifecycleOwner.lifecycle.addObserver(observer)
-
-        // ライフサイクルオーナーが変化した時、または、Composeが破棄される時に、紐付けたイベントを解除する
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 
@@ -83,7 +76,8 @@ fun MainScreen(
         SettingsDialog(
             onDismissRequest = {
                 vm.isSettingsDialogOpen = false
-                vm.isFirstStartup = false },
+                vm.isFirstStartup = false
+            },
             username = vm.username,
             onUsernameChange = { vm.username = it },
             channelId = vm.channelId,
@@ -101,8 +95,14 @@ fun MainScreen(
             .padding(innerPadding)
             .fillMaxWidth()
     ) {
+        val hour = vm.seconds / 3600
+        val minute = (vm.seconds % 3600) / 60
+        val second = vm.seconds % 60
+
         Text(
-            text = "00:00:00",
+            text = "${hour.toString().padStart(2, '0')}:" +
+                    "${minute.toString().padStart(2, '0')}:" +
+                    second.toString().padStart(2, '0'),
             modifier = Modifier.padding(64.dp),
             fontSize = 64.sp
         )
@@ -112,56 +112,60 @@ fun MainScreen(
         Button(
             onClick = {
                 httpRequest(username = vm.username, channelId = vm.channelId)
-                vm.isStudyStarted = true},
+                vm.isStudyStarted = !vm.isStudyStarted
+            },
             modifier = Modifier.padding(16.dp),
             shape = RoundedCornerShape(8.dp)
         ) {
             Text(
-                text = "start",
+                text = if (vm.isStudyStarted) "stop" else "start",
                 modifier = Modifier.padding(64.dp),
                 fontSize = 64.sp
-                )
+            )
         }
 
         Spacer(modifier = Modifier.height(5.dp))
 
-        Row(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Button(
-                onClick = { vm.isSettingsDialogOpen = true },
-                modifier = Modifier
-                    .weight(5f)
-                    .padding(16.dp),
-                shape = RoundedCornerShape(8.dp)
+        if (!vm.isStudyStarted) {
+            Row(
+                modifier = Modifier.padding(16.dp)
             ) {
-                Icon(
-                    painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_settings_24)),
-                    contentDescription = "設定ボタン"
-                )
-            }
+                Button(
+                    onClick = { vm.isSettingsDialogOpen = true },
+                    modifier = Modifier
+                        .weight(5f)
+                        .padding(16.dp),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Icon(
+                        painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_settings_24)),
+                        contentDescription = "設定ボタン"
+                    )
+                }
 
-            if(vm.isShowTimerSetMenu) {
-                TimerSetMenu(
-                    expanded = vm.isShowTimerSetMenu,
-                    onDismissRequest = { vm.isShowTimerSetMenu = false }
-                )
-            }
+                if (vm.isShowTimerSetMenu) {
+                    TimerSetMenu(
+                        expanded = vm.isShowTimerSetMenu,
+                        onDismissRequest = { vm.isShowTimerSetMenu = false }
+                    )
+                }
 
-            IconToggleButton(
-                checked = vm.isTimerMode,
-                onCheckedChange = {
-                    vm.isTimerMode = it
-                    vm.isShowTimerSetMenu = it},
-                modifier = Modifier
-                    .weight(2f)
-                    .padding(16.dp)
-                    .scale(2f)
-            ) {
-                Icon(
-                    painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_timer_24)),
-                    contentDescription = "タイマー設定ボタン"
-                )
+                IconToggleButton(
+                    checked = vm.isTimerMode,
+                    onCheckedChange = {
+                        vm.isTimerMode = it
+                        vm.isShowTimerSetMenu = it
+                    },
+                    modifier = Modifier
+                        .weight(2f)
+                        .padding(16.dp)
+                        .scale(2f)
+                ) {
+                    Icon(
+                        painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_timer_24)),
+                        contentDescription = "タイマー設定ボタン"
+                    )
+                }
             }
         }
     }

@@ -3,6 +3,7 @@ package com.websarva.wings.dostudy_android.viewmodels
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -27,6 +28,7 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     var isShowTimerSetMenu by mutableStateOf(false)
     var isStudyStarted by mutableStateOf(false)
     val orientationSensor = OrientationSensor(context)
+    var seconds by mutableIntStateOf(0)
 
     init {
         viewModelScope.launch {

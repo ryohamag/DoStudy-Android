@@ -1,6 +1,7 @@
 package com.websarva.wings.dostudy_android.functions
 
 import android.util.Log
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -12,15 +13,20 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.websarva.wings.dostudy_android.OrientationSensor
+import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
 
 @Composable
-fun orientSensor() {
-    val context = LocalContext.current
-    val orientationSensor = remember { OrientationSensor(context) }
-    LaunchedEffect(orientationSensor) { // LaunchedEffect で start() を呼び出す
-        orientationSensor.start()
+fun orientSensor(
+    orientation: FloatArray?,
+    vm: MainScreenViewModel
+) {
+    if (orientation != null) {
+        if (orientation[1] > Math.toRadians(45.0)) {
+            vm.orientationSensor.stop()
+            vm.isStudyStarted = false
+            Log.d("MainScreen", "stop")
+        }
+    } else {
+        Log.d("MainScreen", "null")
     }
-
-    val orientation by orientationSensor.orientation.observeAsState()
-
 }
