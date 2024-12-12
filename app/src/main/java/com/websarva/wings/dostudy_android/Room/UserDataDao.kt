@@ -1,6 +1,7 @@
 package com.websarva.wings.dostudy_android.Room
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
@@ -13,6 +14,9 @@ interface UserDataDao {
     @Update
     suspend fun update(userDataTable: UserDataTable)
 
-    @Query("SELECT * FROM userdatatable LIMIT 1") // 最初の1件を取得
+    @Delete
+    suspend fun delete(userDataTable: UserDataTable)
+
+    @Query("SELECT * FROM userdatatable WHERE id = 0 LIMIT 1") // idが0のデータを取得
     suspend fun getCurrentUser(): UserDataTable?
 }
