@@ -87,4 +87,10 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     fun addTimer(seconds: Int) {
         _timerList.value += seconds // 新しい時間を追加
     }
+
+    fun deleteTimer(timerToDelete: Int) {
+        addedTimerList = addedTimerList.filter { it != timerToDelete }
+        _timerList.value = _timerList.value.filter { it != timerToDelete }
+        updateUserData()
+    }
 }
