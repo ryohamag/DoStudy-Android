@@ -7,12 +7,16 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.websarva.wings.dostudy_android.OrientationSensor
 import com.websarva.wings.dostudy_android.Room.UserDataTable
 import com.websarva.wings.dostudy_android.Room.UserRoomDataBase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -29,9 +33,11 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     var isStudyStarted by mutableStateOf(false)
     val orientationSensor = OrientationSensor(context)
     var seconds by mutableIntStateOf(0)
-    private var _timerList by mutableStateOf(listOf(1800, 3600, 7200, 10800))
-    var timerList = _timerList.sorted()
+    private var _timerList = MutableStateFlow(listOf(1800, 3600, 7200, 10800))
+    var timerList: StateFlow<List<Int>> = _timerList.asStateFlow()
     var selectedTimer by mutableStateOf<Int?>(null)
+    var inputTimer by mutableStateOf(TextFieldValue("00h00m00s"))
+    var isShowTimerAddingDialog by mutableStateOf(false)
 
     init {
         viewModelScope.launch {
@@ -73,5 +79,9 @@ class MainScreenViewModel(context: Context) : ViewModel() {
                 Log.e("MainScreenViewModel", "Error updating data", e)
             }
         }
+    }
+
+    fun addTimer(seconds: Int) {
+        _timerList.value += seconds // 新しい時間を追加
     }
 }

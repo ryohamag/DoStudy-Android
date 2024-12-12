@@ -106,11 +106,11 @@ fun MainScreen(
         val second = if(!vm.isTimerMode) vm.seconds % 60 else vm.selectedTimer?.rem(60) ?: 0
 
         Text(
-            text = "${hour.toString().padStart(2, '0')}:" +
-                    "${minute.toString().padStart(2, '0')}:" +
-                    second.toString().padStart(2, '0'),
+            text = "${hour.toString().padStart(2, '0')}h" +
+                    "${minute.toString().padStart(2, '0')}m" +
+                    "${second.toString().padStart(2, '0')}s",
             modifier = Modifier.padding(64.dp),
-            fontSize = 64.sp
+            fontSize = 52.sp
         )
 
         Spacer(modifier = Modifier.height(20.dp))

@@ -1,42 +1,54 @@
 package com.websarva.wings.dostudy_android.components
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun TimerSetMenu(
-    innerPadding: PaddingValues,
-    timerList: List<Int>,
+    timerList: StateFlow<List<Int>>,
     vm: MainScreenViewModel
 ) {
+    if(vm.isShowTimerAddingDialog) {
+        TimerAddingDialog(
+            onDismissRequest = { vm.isShowTimerAddingDialog = false },
+            vm = vm
+        )
+    }
+
+    val currentTimerList by vm.timerList.collectAsState() // collectAsState で監視
+    val sortedList = currentTimerList.sorted()
+
+
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /*TODO*/ },
+                onClick = { vm.isShowTimerAddingDialog = true },
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
             }
         }
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
         ) {
-            timerList.forEach() {
-                TimerCard(it, vm)
+            items(sortedList) { timer ->
+                TimerCard(
+                    seconds = timer,
+                    vm = vm
+                )
             }
         }
     }

@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
                             MainScreen(navController, innerPadding, vm)
                         }
                         composable("TimerSetting") {
-                            TimerSetMenu(innerPadding, vm.timerList, vm)
+                            TimerSetMenu(vm.timerList, vm)
                         }
                     }
                 }
