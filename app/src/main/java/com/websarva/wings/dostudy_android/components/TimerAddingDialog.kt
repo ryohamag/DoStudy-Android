@@ -40,6 +40,8 @@ fun TimerAddingDialog(
                         val (hours, minutes, seconds) = vm.inputTimer.text.split("h", "m", "s")
                             .map { it.ifEmpty { "0" }.toInt() } // 空文字列の場合は 0 に変換
                         vm.addTimer(hours * 3600 + minutes * 60 + seconds)
+                        vm.addedTimerList += (hours * 3600 + minutes * 60 + seconds)
+                        vm.updateUserData()
                         vm.inputTimer = TextFieldValue("00h00m00s")
                         vm.isShowTimerAddingDialog = false
                     }

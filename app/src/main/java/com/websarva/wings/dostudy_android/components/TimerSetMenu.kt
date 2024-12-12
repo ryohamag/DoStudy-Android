@@ -1,5 +1,6 @@
 package com.websarva.wings.dostudy_android.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,7 +18,6 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun TimerSetMenu(
-    timerList: StateFlow<List<Int>>,
     vm: MainScreenViewModel
 ) {
     if(vm.isShowTimerAddingDialog) {
@@ -27,8 +27,11 @@ fun TimerSetMenu(
         )
     }
 
+    Log.d("TimerSetMenu", vm.addedTimerList.toString())
+
     val currentTimerList by vm.timerList.collectAsState() // collectAsState で監視
-    val sortedList = currentTimerList.sorted()
+    val userTimerList = (currentTimerList + vm.addedTimerList).distinct()
+    val sortedList = userTimerList.sorted()
 
 
     Scaffold(

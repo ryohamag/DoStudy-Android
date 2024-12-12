@@ -13,6 +13,6 @@ interface UserDataDao {
     @Update
     suspend fun update(userDataTable: UserDataTable)
 
-    @Query("SELECT * FROM userdatatable LIMIT 1") // 最初の1件を取得
+    @Query("SELECT * FROM userdatatable WHERE id = 0 LIMIT 1") // idが0のデータを取得
     suspend fun getCurrentUser(): UserDataTable?
 }

@@ -35,6 +35,7 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     var seconds by mutableIntStateOf(0)
     private var _timerList = MutableStateFlow(listOf(1800, 3600, 7200, 10800))
     var timerList: StateFlow<List<Int>> = _timerList.asStateFlow()
+    var addedTimerList by mutableStateOf<List<Int>>(listOf())
     var selectedTimer by mutableStateOf<Int?>(null)
     var inputTimer by mutableStateOf(TextFieldValue("00h00m00s"))
     var isShowTimerAddingDialog by mutableStateOf(false)
@@ -52,14 +53,16 @@ class MainScreenViewModel(context: Context) : ViewModel() {
         Log.d("MainScreenViewModel", "userData: $userData")
         if(userData == null) {
             isFirstStartup = true
+        } else {
+            username = userData.username
+            channelId = userData.channelId
+            addedTimerList = userData.addedTimerList
         }
-        username = userData?.username ?: ""
-        channelId = userData?.channelId ?: ""
     }
 
     fun createUserData() {
         viewModelScope.launch {
-            val newUserData = UserDataTable(username = username, channelId = channelId)
+            val newUserData = UserDataTable(username = username, channelId = channelId, addedTimerList = addedTimerList)
             try {
                 userDataDao.insert(newUserData)
                 Log.d("MainScreenViewModel", "Data inserted successfully: $newUserData")
@@ -71,7 +74,7 @@ class MainScreenViewModel(context: Context) : ViewModel() {
 
     fun updateUserData() {
         viewModelScope.launch {
-            val updatedUserData = UserDataTable(username = username, channelId = channelId)
+            val updatedUserData = UserDataTable(username = username, channelId = channelId, addedTimerList = addedTimerList)
             try {
                 userDataDao.update(updatedUserData)
                 Log.d("MainScreenViewModel", "Data updated successfully: $updatedUserData")
