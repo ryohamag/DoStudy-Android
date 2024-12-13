@@ -2,6 +2,7 @@ package com.websarva.wings.dostudy_android.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -63,19 +64,22 @@ fun TimerCard(
                     .align(Alignment.CenterVertically)
             )
 
-            IconButton(
-                onClick = {
-                    vm.addedTimerList = vm.addedTimerList.filter { it != seconds }
-                    vm.updateUserData()
-                },
-                modifier = Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterVertically)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete"
-                )
+            if(seconds == 1800 || seconds == 3600 || seconds == 7200 || seconds == 10800) {
+                Spacer(modifier = Modifier.weight(1f))
+            } else {
+                IconButton(
+                    onClick = {
+                        vm.deleteTimer(seconds)
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .align(Alignment.CenterVertically)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete"
+                    )
+                }
             }
         }
     }
