@@ -147,7 +147,7 @@ fun MainScreen(
                 IconToggleButton(
                     checked = vm.selectedTimer != null,
                     onCheckedChange = {
-                        vm.isTimerMode = it
+                        vm.isTimerMode = true
                         if(vm.isTimerMode) navController.navigate("TimerSetting")
                     },
                     modifier = Modifier
