@@ -1,6 +1,5 @@
 package com.websarva.wings.dostudy_android.Room
 
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
