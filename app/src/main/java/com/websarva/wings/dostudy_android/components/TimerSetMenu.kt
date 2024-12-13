@@ -26,6 +26,10 @@ fun TimerSetMenu(
         )
     }
 
+    if(vm.selectedTimer == null) {
+        vm.isTimerMode = false
+    }
+
     Log.d("TimerSetMenu", vm.addedTimerList.toString())
 
     val currentTimerList by vm.timerList.collectAsState() // collectAsState で監視
