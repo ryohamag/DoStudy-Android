@@ -10,11 +10,13 @@ fun screenObserver(lifecycleOwner: LifecycleOwner, vm: MainScreenViewModel) {
     // EventObserverを設定し、ライフサイクルのイベントを監視・イベントを設定
     val observer = LifecycleEventObserver { _, event ->
         if (event == Lifecycle.Event.ON_PAUSE ) {
-            vm.isStudyStarted = false
+            vm.isShowFailedDialog = true
+            vm.reset()
             Log.d("MainScreen", "Lifecycle.Event.ON_PAUSE")
         }
         if (event == Lifecycle.Event.ON_DESTROY) {
-            vm.isStudyStarted = false
+            vm.isShowFailedDialog = true
+            vm.reset()
             Log.d("MainScreen", "Lifecycle.Event.ON_DESTROY")
         }
     }
