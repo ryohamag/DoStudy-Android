@@ -28,7 +28,6 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     var username by mutableStateOf("")
     var channelId by mutableStateOf("")
     var isTimerMode by mutableStateOf(false)
-    var isShowTimerSetMenu by mutableStateOf(false)
     var isStudyStarted by mutableStateOf(false)
     val orientationSensor = OrientationSensor(context)
     var seconds by mutableIntStateOf(0)
@@ -38,6 +37,8 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     var selectedTimer by mutableStateOf<Int?>(null)
     var inputTimer by mutableStateOf(TextFieldValue("00h00m00s"))
     var isShowTimerAddingDialog by mutableStateOf(false)
+    var isShowFailedDialog by mutableStateOf(false)
+    var isShowSuccessDialog by mutableStateOf(false)
 
     init {
         viewModelScope.launch {
@@ -91,5 +92,12 @@ class MainScreenViewModel(context: Context) : ViewModel() {
         addedTimerList = addedTimerList.filter { it != timerToDelete }
         _timerList.value = _timerList.value.filter { it != timerToDelete }
         updateUserData()
+    }
+
+    fun reset() {
+        seconds = 0
+        isTimerMode = false
+        isStudyStarted = false
+        selectedTimer = null
     }
 }

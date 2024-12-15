@@ -56,6 +56,11 @@ fun MainScreen(
                     vm.seconds++
                 } else {
                     vm.selectedTimer = vm.selectedTimer!! - 1
+                    if(vm.selectedTimer == 0) {
+                        vm.reset()
+                        vm.isShowSuccessDialog = true
+                        break
+                    }
                 }
             }
         } else {
@@ -63,14 +68,32 @@ fun MainScreen(
         }
     }
 
+    LaunchedEffect(key1 = vm.isStudyStarted) {
+        while (vm.isStudyStarted) {
+            delay(5000)
+            orientSensor(orientation, vm)
+        }
+    }
+
     if (vm.isStudyStarted) {
-        orientSensor(orientation, vm)
         DisposableEffect(lifecycleOwner) {
             screenObserver(lifecycleOwner, vm)
             onDispose {
                 vm.orientationSensor.stop()
             }
         }
+    }
+
+    if(vm.isShowFailedDialog) {
+        FailedDialog(
+            onDismissRequest = { vm.isShowFailedDialog = false }
+        )
+    }
+
+    if(vm.isShowSuccessDialog) {
+        SuccessDialog(
+            onDismissRequest = { vm.isShowSuccessDialog = false }
+        )
     }
 
     if (vm.isSettingsDialogOpen || vm.isFirstStartup) {
