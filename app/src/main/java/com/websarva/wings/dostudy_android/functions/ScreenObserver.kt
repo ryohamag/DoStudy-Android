@@ -11,6 +11,7 @@ fun screenObserver(lifecycleOwner: LifecycleOwner, vm: MainScreenViewModel) {
     val observer = LifecycleEventObserver { _, event ->
         if (event == Lifecycle.Event.ON_PAUSE ) {
             vm.isShowFailedDialog = true
+            httpRequest(channelId = vm.channelId, username = vm.username, vm = vm)
             vm.reset()
             Log.d("MainScreen", "Lifecycle.Event.ON_PAUSE")
         }

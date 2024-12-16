@@ -82,7 +82,12 @@ android {
         //Navigation
         implementation(libs.androidx.navigation.compose)
 
+        //Icons
         implementation(libs.androidx.material.icons.core)
+
+        //Retorfit
+        implementation(libs.retrofit)
+        implementation(libs.converter.gson)
     }
 }
 dependencies {

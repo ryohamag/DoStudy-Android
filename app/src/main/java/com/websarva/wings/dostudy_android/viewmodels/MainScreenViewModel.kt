@@ -40,6 +40,7 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     var isShowTimerAddingDialog by mutableStateOf(false)
     var isShowFailedDialog by mutableStateOf(false)
     var isShowSuccessDialog by mutableStateOf(false)
+    var responseMessage by mutableStateOf("")
 
     init {
         viewModelScope.launch {

@@ -51,8 +51,6 @@ fun MainScreen(
     val orientation by vm.orientationSensor.orientation.observeAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    Log.d("MainScreen", vm.seconds.toString())
-
     LaunchedEffect(key1 = vm.isStudyStarted) { // isStudyStarted が true になったら実行
         if (vm.isStudyStarted) {
             vm.orientationSensor.start()
@@ -92,7 +90,10 @@ fun MainScreen(
 
     if(vm.isShowFailedDialog) {
         FailedDialog(
-            onDismissRequest = { vm.isShowFailedDialog = false }
+            onDismissRequest = {
+                vm.isShowFailedDialog = false
+                vm.responseMessage = "" },
+            responseMessage = vm.responseMessage
         )
     }
 
@@ -154,7 +155,6 @@ fun MainScreen(
 
             Button(
                 onClick = {
-                    httpRequest(username = vm.username, channelId = vm.channelId)
                     vm.isStudyStarted = !vm.isStudyStarted
                 },
                 modifier = Modifier.padding(16.dp),

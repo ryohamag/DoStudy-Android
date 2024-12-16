@@ -10,13 +10,14 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun FailedDialog(
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    responseMessage: String
 ) {
     AlertDialog(
         icon = { Icon(Icons.Default.Warning, "警告") },
         onDismissRequest = {},
         title = { Text("何やってるんですか！") },
-        text = { Text("あなたの愚行のせいで名前がDiscordに晒されました。あーあ。") },
+        text = { if(responseMessage != "") Text(responseMessage) else Text("Loading...") },
         confirmButton = {
             TextButton(
                 onClick = onDismissRequest
