@@ -46,26 +46,28 @@ import com.websarva.wings.dostudy_android.functions.orientSensor
 import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
 import kotlinx.coroutines.delay
 
+//メイン画面
 @Composable
 fun MainScreen(
     navController: NavController,
     innerPadding : PaddingValues,
-    context: Context,
     vm: MainScreenViewModel
 ) {
+    //スマホの角度を監視
     val orientation by vm.orientationSensor.orientation.observeAsState()
 
-    LaunchedEffect(key1 = vm.isStudyStarted) { // isStudyStarted が true になったら実行
+    //isStudyStarted が true になったら実行
+    LaunchedEffect(key1 = vm.isStudyStarted) {
         if (vm.isStudyStarted) {
             vm.orientationSensor.start()
             while (vm.isStudyStarted) {
-                delay(1000)
+                delay(1000) //1秒ごとにカウント
                 if(!vm.isTimerMode || vm.selectedTimer == null) {
-                    vm.seconds++
+                    vm.seconds++ //カウントアップモード
                 } else {
-                    vm.selectedTimer = vm.selectedTimer!! - 1
+                    vm.selectedTimer = vm.selectedTimer!! - 1 //カウントダウン(タイマー)モード
                     vm.seconds++
-                    if(vm.selectedTimer == 0) {
+                    if(vm.selectedTimer == 0) { //カウントが0になったら成功ダイアログを表示
                         vm.isShowSuccessDialog = true
                         break
                     }
@@ -79,11 +81,12 @@ fun MainScreen(
 
     LaunchedEffect(key1 = vm.isStudyStarted) {
         while (vm.isStudyStarted) {
-            delay(5000)
+            delay(5000) //5秒ごとに角度を計測
             orientSensor(orientation, vm)
         }
     }
 
+    //失敗時のダイアログを表示
     if(vm.isShowFailedDialog) {
         FailedDialog(
             onDismissRequest = {
@@ -93,8 +96,8 @@ fun MainScreen(
         )
     }
 
+    //成功時のダイアログを表示
     if(vm.isShowSuccessDialog) {
-        Log.d("seconds", vm.seconds.toString())
         SuccessDialog(
             onDismissRequest = {
                 vm.isShowSuccessDialog = false
@@ -103,6 +106,7 @@ fun MainScreen(
         )
     }
 
+    //成功時のhttpリクエストを送信
     LaunchedEffect(key1 = vm.isShowSuccessDialog) {
         if (vm.isShowSuccessDialog) {
             httpRequest(channelId = vm.channelId, username = vm.username, status = true, vm.seconds, vm = vm)
@@ -110,7 +114,8 @@ fun MainScreen(
         }
     }
 
-    if (vm.isSettingsDialogOpen || vm.isFirstStartup) {
+    //ユーザ設定ダイアログを表示
+    if (vm.isSettingsDialogOpen || vm.isFirstStartup) { //設定ボタンor初回起動時
         SettingsDialog(
             onDismissRequest = {
                 vm.isSettingsDialogOpen = false
@@ -130,7 +135,7 @@ fun MainScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                brush = Brush.linearGradient(
+                brush = Brush.linearGradient( //背景のグラデーション
                     colors = listOf(
                         Color.White,
                         Color.Cyan,
@@ -145,10 +150,12 @@ fun MainScreen(
                 .padding(innerPadding)
                 .fillMaxWidth()
         ) {
+            //表示用のタイマー
             val hour = if(!vm.isTimerMode) vm.seconds / 3600 else vm.selectedTimer?.div(3600) ?: 0
             val minute = if(!vm.isTimerMode) (vm.seconds % 3600) / 60 else (vm.selectedTimer?.rem(3600) ?: 0) / 60
             val second = if(!vm.isTimerMode) vm.seconds % 60 else vm.selectedTimer?.rem(60) ?: 0
 
+            //タイマー
             Text(
                 text = "${hour.toString().padStart(2, '0')}h" +
                         "${minute.toString().padStart(2, '0')}m" +
@@ -159,13 +166,12 @@ fun MainScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            //スタート/ストップボタン
             Button(
-                onClick = {
-                    vm.isStudyStarted = !vm.isStudyStarted
-                },
+                onClick = { vm.isStudyStarted = !vm.isStudyStarted },
                 modifier = Modifier.padding(16.dp),
                 shape = RoundedCornerShape(8.dp),
-                colors = ButtonColors(
+                colors = ButtonColors( //ボタンの色の設定
                     contentColor = Color.Blue,
                     containerColor = Color.White,
                     disabledContentColor = Color.Gray,
@@ -181,10 +187,12 @@ fun MainScreen(
 
             Spacer(modifier = Modifier.height(5.dp))
 
-            if (!vm.isStudyStarted) {
+            //ユーザ/タイマー設定ボタン
+            if (!vm.isStudyStarted) { //勉強中は非表示
                 Row(
                     modifier = Modifier.padding(16.dp)
                 ) {
+                    //ユーザ設定ボタン
                     Button(
                         onClick = { vm.isSettingsDialogOpen = true },
                         modifier = Modifier
@@ -198,6 +206,7 @@ fun MainScreen(
                         )
                     }
 
+                    //タイマー設定ボタン
                     IconToggleButton(
                         checked = vm.selectedTimer != null,
                         onCheckedChange = {

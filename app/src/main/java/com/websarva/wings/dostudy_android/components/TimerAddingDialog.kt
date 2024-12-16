@@ -32,35 +32,34 @@ import androidx.compose.ui.unit.sp
 import com.websarva.wings.dostudy_android.R
 import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
 
+//タイマー追加ダイアログ
 @Composable
 fun TimerAddingDialog(
     onDismissRequest: () -> Unit,
     vm: MainScreenViewModel
 ) {
-    // タイマー入力状態を管理する
     var timerState by remember { mutableStateOf("000000") } // "hhmmss"形式
 
-    // 数字ボタンを押した時の処理
+    //数字ボタンを押した時の処理
     fun updateTimer(input: String) {
         // 先頭が"0"でない場合は追加しない
         if (timerState.first() == '0') {
-            if(input == "00") {
+            if(input == "00") { //00が押されたときの分岐
                 if (timerState.getOrNull(1) != '0') {
-                    // 先頭から2番目が"0"の場合の処理
-                    timerState = (timerState + "0").takeLast(6) // 6桁の左詰めで更新
+                    //先頭から2番目も"0"だった場合の処理
+                    timerState = (timerState + "0").takeLast(6) //0を1つだけ追加
                     return
                 } else {
                     // 先頭から2番目が"0"ではない場合の処理
-                    // ここに別の処理を追加できます
-                    timerState = (timerState + input).takeLast(6) // 6桁の左詰めで更新
+                    timerState = (timerState + input).takeLast(6)
                     return
                 }
             }
-            timerState = (timerState + input).takeLast(6) // 6桁の左詰めで更新
+            timerState = (timerState + input).takeLast(6) //6桁の左詰めで更新
         }
     }
 
-    // バックスペースボタンの処理
+    //バックスペースボタンの処理
     fun removeLastDigit() {
         timerState = timerState.dropLast(1).padStart(6, '0') // 最後の桁を削除し、0で埋める
     }
@@ -73,7 +72,7 @@ fun TimerAddingDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-                // タイマー表示
+                //タイマー表示
                 Text(
                     text = "${timerState.substring(0, 2)}h " +
                             "${timerState.substring(2, 4)}m " +
@@ -82,14 +81,14 @@ fun TimerAddingDialog(
                     fontSize = 42.sp
                 )
 
-                // 数字入力ボタン
+                //数字入力ボタン
                 listOf(
                     listOf("1", "2", "3"),
                     listOf("4", "5", "6"),
                     listOf("7", "8", "9"),
                     listOf("00", "0", "icon")
                 ).forEach { row ->
-                    Row(
+                    Row( //数字ボタンを並べる
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -99,7 +98,7 @@ fun TimerAddingDialog(
                                     onClick = { removeLastDigit() },
                                     modifier = Modifier.size(70.dp),
                                 ) {
-                                    Icon(
+                                    Icon( //バックスペースボタン
                                         painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_backspace_24)),
                                         contentDescription = "backspace"
                                     )
@@ -133,6 +132,7 @@ fun TimerAddingDialog(
     )
 }
 
+//テンキー
 @Composable
 fun NumpadButton(
     text: String,
@@ -140,12 +140,12 @@ fun NumpadButton(
     onClick: () -> Unit
 ) {
     OutlinedButton(
-        onClick = {onClick()},
-        shape = CircleShape,
+        onClick = { onClick() },
+        shape = CircleShape, //丸型に
         modifier = Modifier
             .padding(2.dp)
             .size(70.dp),
-        colors = ButtonDefaults.outlinedButtonColors(
+        colors = ButtonDefaults.outlinedButtonColors( //ボタンの色
             containerColor = Color.Transparent,
             contentColor = Color.Black)
     ) {

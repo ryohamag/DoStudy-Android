@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
 
+//タイマー一覧用のカード
 @Composable
 fun TimerCard(
     seconds: Int,
@@ -31,8 +32,8 @@ fun TimerCard(
             .padding(8.dp)
             .fillMaxWidth()
     ) {
-
         val isChecked = vm.selectedTimer == seconds
+
         Row(
             modifier = Modifier.padding(16.dp),
             horizontalArrangement = Arrangement.Center
@@ -40,6 +41,7 @@ fun TimerCard(
             val hour = seconds / 3600
             val minute = (seconds % 3600) / 60
             val second = seconds % 60
+
             Text(
                 text = "${hour.toString().padStart(2, '0')}:" +
                         "${minute.toString().padStart(2, '0')}:" +
@@ -50,6 +52,7 @@ fun TimerCard(
                 fontSize = 36.sp
             )
 
+            //オンオフのトグル
             Switch(
                 checked = isChecked,
                 onCheckedChange = {
@@ -65,6 +68,7 @@ fun TimerCard(
                     .align(Alignment.CenterVertically)
             )
 
+            //デフォルトのタイマーはゴミ箱ボタンを表示しない
             if(seconds == 1800 || seconds == 3600 || seconds == 7200 || seconds == 10800) {
                 Spacer(modifier = Modifier.weight(1f))
             } else {

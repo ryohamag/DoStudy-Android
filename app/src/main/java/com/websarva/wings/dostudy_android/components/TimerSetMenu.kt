@@ -20,10 +20,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
 
+//タイマーをセットするメニュー
 @Composable
 fun TimerSetMenu(
     vm: MainScreenViewModel
 ) {
+    //タイマー追加ダイアログ
     if(vm.isShowTimerAddingDialog) {
         TimerAddingDialog(
             onDismissRequest = { vm.isShowTimerAddingDialog = false },
@@ -31,18 +33,18 @@ fun TimerSetMenu(
         )
     }
 
+    //何も選択されていなければタイマーモードをオフにしておく
     if(vm.selectedTimer == null) {
         vm.isTimerMode = false
     }
 
-    Log.d("TimerSetMenu", vm.addedTimerList.toString())
-
+    //現在の設定できるタイマーのリストを取得
     val currentTimerList by vm.timerList.collectAsState() // collectAsState で監視
     val userTimerList = (currentTimerList + vm.addedTimerList).distinct()
     val sortedList = userTimerList.sorted()
 
     Scaffold(
-        floatingActionButton = {
+        floatingActionButton = { //追加するボタン
             FloatingActionButton(
                 onClick = { vm.isShowTimerAddingDialog = true },
             ) {
@@ -54,7 +56,7 @@ fun TimerSetMenu(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    brush = Brush.linearGradient(
+                    brush = Brush.linearGradient( //グラデーション
                         colors = listOf(
                             Color.White,
                             Color.Cyan,
@@ -63,6 +65,7 @@ fun TimerSetMenu(
                     )
                 )
         ) {
+            //タイマーのリストに対して1つ1つ要素をカードで表示
             LazyColumn(
                 modifier = Modifier
                     .padding(innerPadding)

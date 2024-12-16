@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 
+//成功時のダイアログ
 @Composable
 fun SuccessDialog(
     onDismissRequest: () -> Unit,
