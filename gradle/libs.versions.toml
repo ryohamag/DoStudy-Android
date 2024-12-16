@@ -1,4 +1,5 @@
 [versions]
+accompanistPermissions = "0.16.1"
 agp = "8.7.2"
 animation = "1.7.5"
 annotations = "23.0.0"
@@ -32,6 +33,7 @@ wheelpickerCompose = "1.0.0"
 wheelpickercomposeVersion = "1.1.11"
 
 [libraries]
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }

@@ -1,5 +1,8 @@
 package com.websarva.wings.dostudy_android.components
 
+import android.app.Activity
+import android.content.Context
+import android.content.pm.PackageManager
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -33,12 +36,13 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.websarva.wings.dostudy_android.R
 import com.websarva.wings.dostudy_android.functions.httpRequest
 import com.websarva.wings.dostudy_android.functions.orientSensor
-import com.websarva.wings.dostudy_android.functions.screenObserver
 import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
 import kotlinx.coroutines.delay
 
@@ -46,10 +50,10 @@ import kotlinx.coroutines.delay
 fun MainScreen(
     navController: NavController,
     innerPadding : PaddingValues,
+    context: Context,
     vm: MainScreenViewModel
 ) {
     val orientation by vm.orientationSensor.orientation.observeAsState()
-    val lifecycleOwner = LocalLifecycleOwner.current
 
     LaunchedEffect(key1 = vm.isStudyStarted) { // isStudyStarted が true になったら実行
         if (vm.isStudyStarted) {
@@ -68,6 +72,7 @@ fun MainScreen(
                 }
             }
         } else {
+            vm.seconds = 0
             vm.orientationSensor.stop()
         }
     }
@@ -76,15 +81,6 @@ fun MainScreen(
         while (vm.isStudyStarted) {
             delay(5000)
             orientSensor(orientation, vm)
-        }
-    }
-
-    if (vm.isStudyStarted) {
-        DisposableEffect(lifecycleOwner) {
-            screenObserver(lifecycleOwner, vm)
-            onDispose {
-                vm.orientationSensor.stop()
-            }
         }
     }
 
@@ -127,7 +123,6 @@ fun MainScreen(
                     colors = listOf(
                         Color.White,
                         Color.Cyan,
-                        Color.Blue
                     )
                 )
             )
@@ -160,7 +155,7 @@ fun MainScreen(
                 modifier = Modifier.padding(16.dp),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonColors(
-                    contentColor = Color.Cyan,
+                    contentColor = Color.Blue,
                     containerColor = Color.White,
                     disabledContentColor = Color.Gray,
                     disabledContainerColor = Color.Gray

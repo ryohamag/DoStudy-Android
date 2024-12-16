@@ -85,9 +85,12 @@ android {
         //Icons
         implementation(libs.androidx.material.icons.core)
 
-        //Retorfit
+        //Retrofit
         implementation(libs.retrofit)
         implementation(libs.converter.gson)
+
+        //PermissionRequest
+        implementation (libs.accompanist.permissions)
     }
 }
 dependencies {

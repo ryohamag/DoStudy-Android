@@ -97,8 +97,8 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     }
 
     fun reset() {
-        seconds = 0
         isTimerMode = false
+        seconds = 0
         isStudyStarted = false
         selectedTimer = null
     }
