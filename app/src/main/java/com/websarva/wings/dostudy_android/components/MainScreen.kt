@@ -58,7 +58,6 @@ fun MainScreen(
 ) {
     val orientation by vm.orientationSensor.orientation.observeAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
-    val context = LocalContext.current // context を取得
 
     // メディアプレイヤーを用意
     val mediaPlayer = remember { MediaPlayer.create(context, R.raw.effect_sound) }
