@@ -1,5 +1,6 @@
 package com.websarva.wings.dostudy_android.components
 
+import android.media.MediaPlayer
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,11 +20,13 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,6 +47,17 @@ fun MainScreen(
 ) {
     val orientation by vm.orientationSensor.orientation.observeAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
+    val context = LocalContext.current // context を取得
+
+    // メディアプレイヤーを用意
+    val mediaPlayer = remember { MediaPlayer.create(context, R.raw.effect_sound) }
+    // 音声再生関数
+    val playSound: () -> Unit = {
+        if (mediaPlayer.isPlaying) {
+            mediaPlayer.seekTo(0) // 再生中なら最初に戻す
+        }
+        mediaPlayer.start() // 音を再生
+    }
 
     Log.d("MainScreen", vm.seconds.toString())
 
@@ -94,6 +108,7 @@ fun MainScreen(
         SuccessDialog(
             onDismissRequest = { vm.isShowSuccessDialog = false }
         )
+        playSound()
     }
 
     if (vm.isSettingsDialogOpen || vm.isFirstStartup) {
@@ -184,6 +199,12 @@ fun MainScreen(
                     )
                 }
             }
+        }
+    }
+    // 画面が破棄されたときに音楽プレイヤーをリリース
+    DisposableEffect(lifecycleOwner) {
+        onDispose {
+            mediaPlayer.release() // リソースの解放
         }
     }
 }
