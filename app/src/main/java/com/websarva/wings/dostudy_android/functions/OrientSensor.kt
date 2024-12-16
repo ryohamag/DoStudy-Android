@@ -13,7 +13,7 @@ fun orientSensor(
         Log.d("MainScreen", "orientation[1]: ${abs(Math.toDegrees(orientation[1].toDouble()))}")
         if (abs(Math.toDegrees(orientation[1].toDouble())) > 30.0) {
             vm.isShowFailedDialog = true
-            httpRequest(channelId = vm.channelId, username = vm.username, vm = vm)
+            httpRequest(channelId = vm.channelId, username = vm.username, status = false, vm.seconds, vm = vm)
             vm.reset()
             Log.d("MainScreen", vm.seconds.toString())
         }

@@ -28,9 +28,11 @@ data class ApiResponse(
 fun httpRequest(
     channelId: String,
     username: String,
+    status: Boolean,
+    seconds: Int,
     vm: MainScreenViewModel
 ) {
-    val userData = UserData(channelId, username, false, 0)
+    val userData = UserData(channelId, username, status, seconds)
     val jsonString = Gson().toJson(userData) // Gson ライブラリを使用して JSON に変換
 
     val requestBody = jsonString.toRequestBody("application/json".toMediaTypeOrNull())

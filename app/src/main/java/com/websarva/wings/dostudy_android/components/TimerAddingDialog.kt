@@ -119,6 +119,7 @@ fun TimerAddingDialog(
         confirmButton = {
             TextButton(onClick = {
                 vm.addTimer(timerState)
+                vm.updateUserData()
                 onDismissRequest()
             }) {
                 Text("追加")

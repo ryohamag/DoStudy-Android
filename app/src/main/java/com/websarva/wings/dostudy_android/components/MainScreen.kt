@@ -64,8 +64,8 @@ fun MainScreen(
                     vm.seconds++
                 } else {
                     vm.selectedTimer = vm.selectedTimer!! - 1
+                    vm.seconds++
                     if(vm.selectedTimer == 0) {
-                        vm.reset()
                         vm.isShowSuccessDialog = true
                         break
                     }
@@ -94,9 +94,20 @@ fun MainScreen(
     }
 
     if(vm.isShowSuccessDialog) {
+        Log.d("seconds", vm.seconds.toString())
         SuccessDialog(
-            onDismissRequest = { vm.isShowSuccessDialog = false }
+            onDismissRequest = {
+                vm.isShowSuccessDialog = false
+                vm.responseMessage = "" },
+            responseMessage = vm.responseMessage
         )
+    }
+
+    LaunchedEffect(key1 = vm.isShowSuccessDialog) {
+        if (vm.isShowSuccessDialog) {
+            httpRequest(channelId = vm.channelId, username = vm.username, status = true, vm.seconds, vm = vm)
+            vm.reset()
+        }
     }
 
     if (vm.isSettingsDialogOpen || vm.isFirstStartup) {

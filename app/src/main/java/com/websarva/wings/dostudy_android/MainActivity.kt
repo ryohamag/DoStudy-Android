@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
     private fun handleReturnFromBackground(vm: MainScreenViewModel) {
         if(vm.isStudyStarted) {
             vm.isShowFailedDialog = true
-            httpRequest(channelId = vm.channelId, username = vm.username, vm = vm)
+            httpRequest(channelId = vm.channelId, username = vm.username, status = false, vm.seconds, vm = vm)
             vm.reset()
         }
         Log.d("AppState", "他アプリ復帰時の処理を実行")
