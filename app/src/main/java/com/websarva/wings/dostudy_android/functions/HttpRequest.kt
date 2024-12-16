@@ -1,6 +1,9 @@
 package com.websarva.wings.dostudy_android.functions
 
 import android.util.Log
+import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
+import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -10,17 +13,25 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.IOException
 
+data class UserData(
+    val channelid: String,
+    val name: String,
+    val close: Boolean,
+    val realtimer_seconds: Int
+)
+
+data class ApiResponse(
+    @SerializedName("statusCode") val statusCode: Int,
+    @SerializedName("message") val message: String
+)
 
 fun httpRequest(
     channelId: String,
-    username: String
+    username: String,
+    vm: MainScreenViewModel
 ) {
-    val jsonString = """
-    {
-        "channelid": "$channelId",
-        "name": "$username"
-    }
-""" // 送信するJSON文字列
+    val userData = UserData(channelId, username, false, 0)
+    val jsonString = Gson().toJson(userData) // Gson ライブラリを使用して JSON に変換
 
     val requestBody = jsonString.toRequestBody("application/json".toMediaTypeOrNull())
 
@@ -36,7 +47,19 @@ fun httpRequest(
         }
 
         override fun onResponse(call: Call, response: Response) {
-            Log.d("HTTP Response", "Response: ${response.body?.string()}")
+            val responseBody = response.body?.string()
+            val message = extractMessageFromJson(responseBody ?: "")
+            vm.responseMessage = message ?: "勉強してください！"
         }
     })
+}
+
+fun extractMessageFromJson(jsonString: String): String? {
+    return try {
+        val apiResponse = Gson().fromJson(jsonString, ApiResponse::class.java)
+        apiResponse.message
+    } catch (e: Exception) {
+        Log.e("JSON Parsing Error", "Error parsing JSON: ${e.message}", e)
+        null // エラーが発生した場合は null を返す
+    }
 }

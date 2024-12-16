@@ -3,17 +3,19 @@ package com.websarva.wings.dostudy_android.functions
 import android.util.Log
 import androidx.compose.runtime.Composable
 import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
+import kotlin.math.abs
 
 fun orientSensor(
     orientation: FloatArray?,
     vm: MainScreenViewModel
 ) {
     if (orientation != null) {
-        if (orientation[1] > Math.toRadians(45.0)) {
-            vm.orientationSensor.stop()
-            vm.reset()
+        Log.d("MainScreen", "orientation[1]: ${abs(Math.toDegrees(orientation[1].toDouble()))}")
+        if (abs(Math.toDegrees(orientation[1].toDouble())) > 30.0) {
             vm.isShowFailedDialog = true
-            Log.d("MainScreen", "stop")
+            httpRequest(channelId = vm.channelId, username = vm.username, vm = vm)
+            vm.reset()
+            Log.d("MainScreen", vm.seconds.toString())
         }
     } else {
         Log.d("MainScreen", "null")
