@@ -1,9 +1,11 @@
 [versions]
+accompanistPermissions = "0.16.1"
 agp = "8.7.2"
 animation = "1.7.5"
 annotations = "23.0.0"
 cascadeCompose = "2.0.0-rc01"
 cascadeVersion = "2.3.0"
+converterGson = "2.9.0"
 hiltAndroid = "2.51.1"
 hiltAndroidCompiler = "2.44"
 hiltAndroidVersion = "2.51.1"
@@ -21,12 +23,17 @@ composeBom = "2024.11.00"
 material3 = "1.4.0-alpha04"
 materialIconsCore = "1.7.5"
 navigationCompose = "2.8.4"
+numberpicker = "latestVersion"
 okhttp = "4.12.0"
+retrofit = "2.9.0"
 roomRuntime = "2.6.1"
 tracingPerfettoHandshake = "1.0.0"
 runtimeLivedata = "1.7.5"
+wheelpickerCompose = "1.0.0"
+wheelpickercomposeVersion = "1.1.11"
 
 [libraries]
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
@@ -39,6 +46,7 @@ androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRunt
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 annotations = { module = "org.jetbrains:annotations", version.ref = "annotations" }
 cascade-compose = { module = "me.saket.cascade:cascade-compose", version.ref = "cascadeCompose" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltCompilerVersion" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
@@ -59,9 +67,13 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
 material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 me-cascade = { module = "me.saket.cascade:cascade", version.ref = "cascadeVersion" }
+numberpicker = { module = "com.chargemap.compose:numberpicker", version.ref = "numberpicker" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 androidx-tracing-perfetto-handshake = { group = "androidx.tracing", name = "tracing-perfetto-handshake", version.ref = "tracingPerfettoHandshake" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+wheelpicker-compose = { module = "com.github.guilhe:wheelpicker-compose", version.ref = "wheelpickerCompose" }
+wheelpickercompose = { module = "com.github.commandiron:WheelPickerCompose", version.ref = "wheelpickercomposeVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

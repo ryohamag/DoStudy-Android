@@ -35,10 +35,12 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     var timerList: StateFlow<List<Int>> = _timerList.asStateFlow()
     var addedTimerList by mutableStateOf<List<Int>>(listOf())
     var selectedTimer by mutableStateOf<Int?>(null)
-    var inputTimer by mutableStateOf(TextFieldValue("00h00m00s"))
+//    var inputTimer by mutableStateOf(TextFieldValue("00h00m00s"))
+    var inputTimer by mutableIntStateOf(0)
     var isShowTimerAddingDialog by mutableStateOf(false)
     var isShowFailedDialog by mutableStateOf(false)
     var isShowSuccessDialog by mutableStateOf(false)
+    var responseMessage by mutableStateOf("")
 
     init {
         viewModelScope.launch {
@@ -95,8 +97,8 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     }
 
     fun reset() {
-        seconds = 0
         isTimerMode = false
+        seconds = 0
         isStudyStarted = false
         selectedTimer = null
     }
