@@ -1,6 +1,7 @@
 package com.websarva.wings.dostudy_android.viewmodels
 
 import android.content.Context
+import android.security.identity.ResultData
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -10,6 +11,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.websarva.wings.dostudy_android.OrientationSensor
+import com.websarva.wings.dostudy_android.Room.ResultDataTable
+import com.websarva.wings.dostudy_android.Room.ResultRoomDataBase
 import com.websarva.wings.dostudy_android.Room.UserDataTable
 import com.websarva.wings.dostudy_android.Room.UserRoomDataBase
 import kotlinx.coroutines.Dispatchers
@@ -18,10 +21,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
 
 class MainScreenViewModel(context: Context) : ViewModel() {
     private val db = UserRoomDataBase.getUserRoomDataBase(context)
     private val userDataDao = db.userDataDao()
+
+    private val resultDb = ResultRoomDataBase.getResultRoomDataBase(context)
+    private val resultDataDao = resultDb.resultDataDao()
 
     var isSettingsDialogOpen by mutableStateOf(false)
     var isFirstStartup by mutableStateOf(false)
@@ -35,16 +42,19 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     var timerList: StateFlow<List<Int>> = _timerList.asStateFlow()
     var addedTimerList by mutableStateOf<List<Int>>(listOf())
     var selectedTimer by mutableStateOf<Int?>(null)
+    var setTimer by mutableStateOf<Int?>(null)
 //    var inputTimer by mutableStateOf(TextFieldValue("00h00m00s"))
     var inputTimer by mutableIntStateOf(0)
     var isShowTimerAddingDialog by mutableStateOf(false)
     var isShowFailedDialog by mutableStateOf(false)
     var isShowSuccessDialog by mutableStateOf(false)
     var responseMessage by mutableStateOf("")
+    var resultDataList by mutableStateOf<List<ResultDataTable>>(listOf())
 
     init {
         viewModelScope.launch {
             getCurrentUserData()
+            getAllResultData()
         }
     }
 
@@ -83,6 +93,29 @@ class MainScreenViewModel(context: Context) : ViewModel() {
             } catch (e: Exception) {
                 Log.e("MainScreenViewModel", "Error updating data", e)
             }
+        }
+    }
+
+    fun addResultData(status: Boolean) {
+        val currentDate: LocalDate = LocalDate.now()
+        viewModelScope.launch {
+            val resultData = ResultDataTable(date = currentDate.toString(), setTimer = setTimer, studyTime = seconds, status = status)
+            try {
+                resultDataDao.insert(resultData)
+                resultDataList += resultData
+                Log.d("MainScreenViewModel", "Result data inserted successfully: $resultData")
+            } catch (e: Exception) {
+                Log.e("MainScreenViewModel", "Error inserting result data", e)
+            }
+        }
+    }
+
+    private fun getAllResultData() {
+        viewModelScope.launch {
+            resultDataList = withContext(Dispatchers.IO) {
+                resultDataDao.getAllResultData()
+            }
+            Log.d("MainScreenViewModel", "Result data list: $resultDataList")
         }
     }
 

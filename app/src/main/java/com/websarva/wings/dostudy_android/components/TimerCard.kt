@@ -58,9 +58,11 @@ fun TimerCard(
                 onCheckedChange = {
                     if (it) {
                         vm.selectedTimer = seconds // トグルがオンになったら selectedTimerId を更新
+                        vm.setTimer = seconds
                         vm.isTimerMode = true
                     } else {
                         vm.selectedTimer = null // トグルがオフになったら selectedTimerId を null に設定
+                        vm.setTimer = null
                     }
                 },
                 modifier = Modifier
