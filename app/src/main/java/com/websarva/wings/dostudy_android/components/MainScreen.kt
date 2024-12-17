@@ -92,6 +92,7 @@ fun MainScreen(
                 }
             }
         } else {
+            delay(1000)
             vm.seconds = 0
             vm.orientationSensor.stop()
         }
@@ -190,7 +191,12 @@ fun MainScreen(
 
             //スタート/ストップボタン
             Button(
-                onClick = { vm.isStudyStarted = !vm.isStudyStarted },
+                onClick = {
+                    if(vm.isStudyStarted && !vm.isTimerMode) {
+                        vm.isShowSuccessDialog = true
+                    }
+                    vm.isStudyStarted = !vm.isStudyStarted
+                          },
                 modifier = Modifier.padding(16.dp),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonColors( //ボタンの色の設定
