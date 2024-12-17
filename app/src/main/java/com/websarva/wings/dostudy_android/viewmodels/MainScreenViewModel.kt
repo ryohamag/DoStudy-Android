@@ -54,6 +54,7 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     init {
         viewModelScope.launch {
             getCurrentUserData()
+            getAllResultData()
         }
     }
 
@@ -101,6 +102,7 @@ class MainScreenViewModel(context: Context) : ViewModel() {
             val resultData = ResultDataTable(date = currentDate.toString(), setTimer = setTimer, studyTime = seconds, status = status)
             try {
                 resultDataDao.insert(resultData)
+                resultDataList += resultData
                 Log.d("MainScreenViewModel", "Result data inserted successfully: $resultData")
             } catch (e: Exception) {
                 Log.e("MainScreenViewModel", "Error inserting result data", e)
@@ -108,7 +110,7 @@ class MainScreenViewModel(context: Context) : ViewModel() {
         }
     }
 
-    fun getAllResultData() {
+    private fun getAllResultData() {
         viewModelScope.launch {
             resultDataList = withContext(Dispatchers.IO) {
                 resultDataDao.getAllResultData()

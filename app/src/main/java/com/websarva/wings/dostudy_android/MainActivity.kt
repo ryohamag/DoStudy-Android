@@ -6,10 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -17,26 +15,8 @@ import com.websarva.wings.dostudy_android.components.MainScreen
 import com.websarva.wings.dostudy_android.components.TimerSetMenu
 import com.websarva.wings.dostudy_android.ui.theme.DoStudyAndroidTheme
 import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
-import android.Manifest
-import android.app.KeyguardManager
 import android.content.Context
-import android.content.Context.POWER_SERVICE
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.os.Build
 import android.os.PowerManager
-import android.provider.Settings
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.remember
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.content.ContextCompat.startActivity
-import androidx.core.content.getSystemService
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import com.websarva.wings.dostudy_android.functions.httpRequest
 
 class MainActivity : ComponentActivity() {
