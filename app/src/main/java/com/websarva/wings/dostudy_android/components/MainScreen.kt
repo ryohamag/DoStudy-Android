@@ -1,8 +1,7 @@
 package com.websarva.wings.dostudy_android.components
 
-import android.app.Activity
+import android.media.MediaPlayer
 import android.content.Context
-import android.content.pm.PackageManager
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +25,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -36,12 +36,9 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.websarva.wings.dostudy_android.R
-import com.websarva.wings.dostudy_android.functions.httpRequest
 import com.websarva.wings.dostudy_android.functions.orientSensor
 import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
 import kotlinx.coroutines.delay
@@ -55,6 +52,19 @@ fun MainScreen(
 ) {
     //スマホの角度を監視
     val orientation by vm.orientationSensor.orientation.observeAsState()
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    // メディアプレイヤーを用意
+    val mediaPlayer = remember { MediaPlayer.create(context, R.raw.effect_sound) }
+    // 音声再生関数
+    val playSound: () -> Unit = {
+        if (mediaPlayer.isPlaying) {
+            mediaPlayer.seekTo(0) // 再生中なら最初に戻す
+        }
+        mediaPlayer.start() // 音を再生
+    }
+
+    Log.d("MainScreen", vm.seconds.toString())
 
     //isStudyStarted が true になったら実行
     LaunchedEffect(key1 = vm.isStudyStarted) {
@@ -104,6 +114,7 @@ fun MainScreen(
                 vm.responseMessage = "" },
             responseMessage = vm.responseMessage
         )
+        playSound()
     }
 
     //成功時のhttpリクエストを送信
@@ -225,6 +236,12 @@ fun MainScreen(
                     }
                 }
             }
+        }
+    }
+    // 画面が破棄されたときに音楽プレイヤーをリリース
+    DisposableEffect(lifecycleOwner) {
+        onDispose {
+            mediaPlayer.release() // リソースの解放
         }
     }
 }
