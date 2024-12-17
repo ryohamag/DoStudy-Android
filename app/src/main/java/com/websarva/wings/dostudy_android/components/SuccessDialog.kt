@@ -8,15 +8,17 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 
+//成功時のダイアログ
 @Composable
 fun SuccessDialog(
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    responseMessage: String
 ) {
     AlertDialog(
         icon = { Icon(Icons.Default.Done, "完了") },
         onDismissRequest = {},
         title = { Text("お疲れ様でした！") },
-        text = { Text("タイマーが完了しました！") },
+        text = { if(responseMessage != "") Text(responseMessage) else Text("Loading...") },
         confirmButton = {
             TextButton(
                 onClick = onDismissRequest

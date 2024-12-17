@@ -90,7 +90,7 @@ class MainScreenViewModel(context: Context) : ViewModel() {
         val seconds = time.chunked(2).map { it.toInt() }.let { (hours, minutes, seconds) ->
             hours * 3600 + minutes * 60 + seconds
         }
-        _timerList.value += seconds // 新しい時間を追加
+        addedTimerList += seconds // 新しい時間を追加
     }
 
     fun deleteTimer(timerToDelete: Int) {

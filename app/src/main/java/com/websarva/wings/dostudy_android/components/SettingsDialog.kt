@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
+//ユーザ設定ダイアログ
 @Composable
 fun SettingsDialog(
     onDismissRequest: () -> Unit,
@@ -45,13 +46,13 @@ fun SettingsDialog(
                     value = channelId,
                     onValueChange = onChannelIdChange,
                     label = { Text("チャンネルID") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number) //入力は数字のみ
                 )
             }
         },
         confirmButton = {
             TextButton(
-                onClick = {
+                onClick = { //入力が正しいか確認
                     if(username.isEmpty()) {
                         Toast.makeText(context, "ユーザー名を入力してください", Toast.LENGTH_SHORT).show()
                         return@TextButton
@@ -65,9 +66,9 @@ fun SettingsDialog(
                         return@TextButton
                     }
                     if(isFirstStartup) {
-                        createUserData()
+                        createUserData() //初回起動時ならcreate
                     } else {
-                        updateUserData()
+                        updateUserData() //それ以外ならupdate
                     }
                     onDismissRequest()
                 }

@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 
+//失敗時のダイアログ
 @Composable
 fun FailedDialog(
     onDismissRequest: () -> Unit,
@@ -15,9 +16,9 @@ fun FailedDialog(
 ) {
     AlertDialog(
         icon = { Icon(Icons.Default.Warning, "警告") },
-        onDismissRequest = {},
-        title = { Text("何やってるんですか！") },
-        text = { if(responseMessage != "") Text(responseMessage) else Text("Loading...") },
+        onDismissRequest = {}, //必ず「ごめんなさい」を押させる
+        title = { Text("何やってるんですか！") }, //勉強してください！
+        text = { if(responseMessage != "") Text(responseMessage) else Text("Loading...") }, //
         confirmButton = {
             TextButton(
                 onClick = onDismissRequest
