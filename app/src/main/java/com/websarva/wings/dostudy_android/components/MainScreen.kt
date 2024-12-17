@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -163,7 +164,6 @@ fun MainScreen(
                         Color(0xff0080ff),
                     )
                 )
-//                color = MaterialTheme.colorScheme.primaryContainer
             )
     ) {
         Column(
@@ -221,23 +221,16 @@ fun MainScreen(
                 Row(
                     modifier = Modifier.padding(16.dp)
                 ) {
-                    //ユーザ設定ボタン
-                    Button(
+                    IconButton(
                         onClick = { vm.isSettingsDialogOpen = true },
                         modifier = Modifier
-                            .weight(5f)
-                            .padding(16.dp),
-                        shape = RoundedCornerShape(8.dp),
-                        colors = ButtonColors(
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            disabledContentColor = Color.Gray,
-                            disabledContainerColor = Color.Gray
-                        ),
+                            .padding(32.dp)
+                            .scale(3f)
                     ) {
                         Icon(
                             painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_settings_24)),
-                            contentDescription = "設定ボタン"
+                            contentDescription = "設定ボタン",
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
 
@@ -249,9 +242,8 @@ fun MainScreen(
                             if(vm.isTimerMode) navController.navigate("TimerSetting")
                         },
                         modifier = Modifier
-                            .weight(2f)
-                            .padding(16.dp)
-                            .scale(2f)
+                            .padding(32.dp)
+                            .scale(3f)
                     ) {
                         Icon(
                             painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_timer_24)),
