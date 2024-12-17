@@ -2,6 +2,7 @@ package com.websarva.wings.dostudy_android.components
 
 import android.media.MediaPlayer
 import android.content.Context
+import android.content.res.Resources.Theme
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -19,7 +20,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -35,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -89,6 +93,7 @@ fun MainScreen(
                 }
             }
         } else {
+            delay(1000)
             vm.seconds = 0
             vm.orientationSensor.stop()
         }
@@ -152,10 +157,11 @@ fun MainScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                brush = Brush.linearGradient( //背景のグラデーション
+                brush = Brush.verticalGradient( //背景のグラデーション
                     colors = listOf(
-                        Color.White,
-                        Color.Cyan,
+                        Color(0xffcce6ff),
+                        Color(0xff66b3ff),
+                        Color(0xff0080ff),
                     )
                 )
             )
@@ -185,22 +191,27 @@ fun MainScreen(
 
             //スタート/ストップボタン
             Button(
-                onClick = { vm.isStudyStarted = !vm.isStudyStarted },
+                onClick = {
+                    if(vm.isStudyStarted && !vm.isTimerMode) {
+                        vm.isShowSuccessDialog = true
+                    }
+                    vm.isStudyStarted = !vm.isStudyStarted
+                          },
                 modifier = Modifier.padding(16.dp),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonColors( //ボタンの色の設定
-                    contentColor = Color(0xff006973),
-                    containerColor = Color(0xffffffff),
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
                     disabledContentColor = Color.Gray,
                     disabledContainerColor = Color.Gray
                 ),
-                border = BorderStroke(2.dp, Color.Gray)
             ) {
                 Text(
                     text = if (vm.isStudyStarted) "stop" else "start",
                     modifier = Modifier.padding(64.dp),
-                    fontSize = 64.sp
-                )
+                    fontSize = 64.sp,
+                    )
+
             }
 
             Spacer(modifier = Modifier.height(5.dp))
@@ -210,24 +221,16 @@ fun MainScreen(
                 Row(
                     modifier = Modifier.padding(16.dp)
                 ) {
-                    //ユーザ設定ボタン
-                    Button(
+                    IconButton(
                         onClick = { vm.isSettingsDialogOpen = true },
                         modifier = Modifier
-                            .weight(5f)
-                            .padding(16.dp),
-                        shape = RoundedCornerShape(8.dp),
-                        colors = ButtonColors(
-                            contentColor = Color.Unspecified,
-                            containerColor = Color(0xffffffff),
-                            disabledContentColor = Color.Gray,
-                            disabledContainerColor = Color.Gray
-                        ),
-                        border = BorderStroke(2.dp, Color.Gray)
+                            .padding(32.dp)
+                            .scale(3f)
                     ) {
                         Icon(
                             painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_settings_24)),
-                            contentDescription = "設定ボタン"
+                            contentDescription = "設定ボタン",
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
 
@@ -239,9 +242,8 @@ fun MainScreen(
                             if(vm.isTimerMode) navController.navigate("TimerSetting")
                         },
                         modifier = Modifier
-                            .weight(2f)
-                            .padding(16.dp)
-                            .scale(2f)
+                            .padding(32.dp)
+                            .scale(3f)
                     ) {
                         Icon(
                             painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_timer_24)),
