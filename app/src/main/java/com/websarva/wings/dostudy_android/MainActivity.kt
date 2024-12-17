@@ -63,27 +63,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private var isComingFromSleep = false
-    private var lastBackgroundTime: Long = 0
-
-    override fun onResume() {
-        super.onResume()
-        // KeyguardManagerを使ってスリープ復帰を判定
-        val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-        isComingFromSleep = keyguardManager.isKeyguardLocked
-
-        if (isComingFromSleep) {
-            Log.d("AppState", "onResume: スリープから復帰しました")
-            handleWakeFromSleep()
-        } else if (System.currentTimeMillis() - lastBackgroundTime > 0) {
-            Log.d("AppState", "onResume: 他アプリやホーム画面から戻ってきました")
+    override fun onPause() {
+        super.onPause()
+        val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        if (powerManager.isInteractive) {
+            // 通常の onPause（アプリが非表示になった等）
             handleReturnFromBackground(vm)
         }
-    }
-
-    private fun handleWakeFromSleep() {
-        // スリープ復帰時の処理
-        Log.d("AppState", "スリープ復帰時の処理を実行")
     }
 
     private fun handleReturnFromBackground(vm: MainScreenViewModel) {
@@ -93,6 +79,5 @@ class MainActivity : ComponentActivity() {
             httpRequest(channelId = vm.channelId, username = vm.username, status = false, vm.seconds, vm = vm)
             vm.reset()
         }
-        Log.d("AppState", "他アプリ復帰時の処理を実行")
     }
 }
