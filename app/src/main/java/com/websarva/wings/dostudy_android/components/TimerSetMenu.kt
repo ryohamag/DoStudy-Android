@@ -56,13 +56,7 @@ fun TimerSetMenu(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    brush = Brush.linearGradient( //グラデーション
-                        colors = listOf(
-                            Color.White,
-                            Color.Cyan,
-                            Color.Blue
-                        )
-                    )
+                    color = Color(0xff66b3ff)
                 )
         ) {
             //タイマーのリストに対して1つ1つ要素をカードで表示
