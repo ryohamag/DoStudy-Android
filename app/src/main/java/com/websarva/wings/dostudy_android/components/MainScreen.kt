@@ -3,6 +3,7 @@ package com.websarva.wings.dostudy_android.components
 import android.media.MediaPlayer
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -66,6 +67,8 @@ fun MainScreen(
         mediaPlayer.start() // 音を再生
     }
 
+    Log.d("resultDataList", vm.resultDataList.toString())
+
     Log.d("MainScreen", vm.seconds.toString())
 
     //isStudyStarted が true になったら実行
@@ -122,6 +125,7 @@ fun MainScreen(
     //成功時のhttpリクエストを送信
     LaunchedEffect(key1 = vm.isShowSuccessDialog) {
         if (vm.isShowSuccessDialog) {
+            vm.addResultData(true)
             httpRequest(channelId = vm.channelId, username = vm.username, status = true, vm.seconds, vm = vm)
             vm.reset()
         }
@@ -185,11 +189,12 @@ fun MainScreen(
                 modifier = Modifier.padding(16.dp),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonColors( //ボタンの色の設定
-                    contentColor = Color.Blue,
-                    containerColor = Color.White,
+                    contentColor = Color(0xff006973),
+                    containerColor = Color(0xffffffff),
                     disabledContentColor = Color.Gray,
                     disabledContainerColor = Color.Gray
-                )
+                ),
+                border = BorderStroke(2.dp, Color.Gray)
             ) {
                 Text(
                     text = if (vm.isStudyStarted) "stop" else "start",
@@ -211,7 +216,14 @@ fun MainScreen(
                         modifier = Modifier
                             .weight(5f)
                             .padding(16.dp),
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonColors(
+                            contentColor = Color.Unspecified,
+                            containerColor = Color(0xffffffff),
+                            disabledContentColor = Color.Gray,
+                            disabledContainerColor = Color.Gray
+                        ),
+                        border = BorderStroke(2.dp, Color.Gray)
                     ) {
                         Icon(
                             painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_settings_24)),

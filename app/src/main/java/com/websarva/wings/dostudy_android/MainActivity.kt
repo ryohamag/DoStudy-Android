@@ -88,6 +88,7 @@ class MainActivity : ComponentActivity() {
 
     private fun handleReturnFromBackground(vm: MainScreenViewModel) {
         if(vm.isStudyStarted) {
+            vm.addResultData(false)
             vm.isShowFailedDialog = true
             httpRequest(channelId = vm.channelId, username = vm.username, status = false, vm.seconds, vm = vm)
             vm.reset()
