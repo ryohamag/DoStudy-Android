@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.websarva.wings.dostudy_android.components
 
 import android.widget.Toast
@@ -14,6 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.text.ClickableText
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+
 
 //ユーザ設定ダイアログ
 @Composable
@@ -47,6 +56,37 @@ fun SettingsDialog(
                     onValueChange = onChannelIdChange,
                     label = { Text("チャンネルID") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number) //入力は数字のみ
+                )
+
+                Spacer(Modifier.height(20.dp))
+
+                // クリック可能なリンクテキストを追加
+                val annotatedText = buildAnnotatedString {
+                    append("チャンネルIDの調べ方はこちら")
+                    addStyle(
+                        style = SpanStyle(
+                            color = Color.Blue, // リンクとして青色にする
+                        ),
+                        start = 0,
+                        end = this.length
+                    )
+                    addStringAnnotation(
+                        tag = "URL",
+                        annotation = "https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID#h_01HRSTXPS5FMK2A5SMVSX4JW4E", // リンク先URL
+                        start = 0,
+                        end = this.length
+                    )
+                }
+                ClickableText(
+                    text = annotatedText,
+                    onClick = { offset ->
+                        annotatedText.getStringAnnotations(tag = "URL", start = offset, end = offset)
+                            .firstOrNull()?.let { annotation ->
+                                // リンクをクリックした場合の処理
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(annotation.item))
+                                context.startActivity(intent)
+                            }
+                    }
                 )
             }
         },
