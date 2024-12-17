@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.websarva.wings.dostudy_android.R
+import com.websarva.wings.dostudy_android.functions.httpRequest
 import com.websarva.wings.dostudy_android.functions.orientSensor
 import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
 import kotlinx.coroutines.delay
@@ -48,6 +49,7 @@ import kotlinx.coroutines.delay
 fun MainScreen(
     navController: NavController,
     innerPadding : PaddingValues,
+    context: Context,
     vm: MainScreenViewModel
 ) {
     //スマホの角度を監視

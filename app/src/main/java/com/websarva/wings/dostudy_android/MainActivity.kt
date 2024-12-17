@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = "Main") {
                         composable("Main") {
-                            MainScreen(navController, innerPadding, vm)
+                            MainScreen(navController, innerPadding, context, vm)
                         }
                         composable("TimerSetting") {
                             TimerSetMenu(vm)
