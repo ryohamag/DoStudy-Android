@@ -251,6 +251,12 @@ fun MainScreen(
                         )
                     }
                 }
+
+                Button(
+                    onClick = { navController.navigate("Result") },
+                ) {
+                    Text("Result")
+                }
             }
         }
     }
