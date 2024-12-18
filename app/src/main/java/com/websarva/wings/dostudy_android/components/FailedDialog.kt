@@ -7,6 +7,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import kotlinx.coroutines.delay
 
 //失敗時のダイアログ
 @Composable
@@ -18,7 +22,7 @@ fun FailedDialog(
         icon = { Icon(Icons.Default.Warning, "警告") },
         onDismissRequest = {}, //必ず「ごめんなさい」を押させる
         title = { Text("何やってるんですか！") }, //勉強してください！
-        text = { if(responseMessage != "") Text(responseMessage) else Text("Loading...") }, //
+        text = { if(responseMessage != "") Text(responseMessage) else LoadingText() }, //
         confirmButton = {
             TextButton(
                 onClick = onDismissRequest

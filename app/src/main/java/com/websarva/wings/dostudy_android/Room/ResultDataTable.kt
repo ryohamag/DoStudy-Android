@@ -9,7 +9,7 @@ data class ResultDataTable(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     var date: String,
-    var setTimer: Int?,
-    var studyTime: Int,
+    var setTimer: String?,
+    var studyTime: String,
     var status: Boolean
 )

@@ -17,6 +17,7 @@ import com.websarva.wings.dostudy_android.ui.theme.DoStudyAndroidTheme
 import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
 import android.content.Context
 import android.os.PowerManager
+import com.websarva.wings.dostudy_android.components.ResultScreen
 import com.websarva.wings.dostudy_android.functions.httpRequest
 
 class MainActivity : ComponentActivity() {
@@ -36,6 +37,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("TimerSetting") {
                             TimerSetMenu(vm)
+                        }
+                        composable("Result") {
+                            ResultScreen(innerPadding, vm)
                         }
                     }
                 }

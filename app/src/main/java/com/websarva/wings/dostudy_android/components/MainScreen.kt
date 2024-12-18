@@ -2,9 +2,7 @@ package com.websarva.wings.dostudy_android.components
 
 import android.media.MediaPlayer
 import android.content.Context
-import android.content.res.Resources.Theme
 import android.util.Log
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -250,6 +248,12 @@ fun MainScreen(
                             contentDescription = "タイマー設定ボタン"
                         )
                     }
+                }
+
+                Button(
+                    onClick = { navController.navigate("Result") },
+                ) {
+                    Text("Result")
                 }
             }
         }

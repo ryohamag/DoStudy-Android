@@ -18,7 +18,7 @@ fun SuccessDialog(
         icon = { Icon(Icons.Default.Done, "完了") },
         onDismissRequest = {},
         title = { Text("お疲れ様でした！") },
-        text = { if(responseMessage != "") Text(responseMessage) else Text("Loading...") },
+        text = { if(responseMessage != "") Text(responseMessage) else LoadingText() },
         confirmButton = {
             TextButton(
                 onClick = onDismissRequest

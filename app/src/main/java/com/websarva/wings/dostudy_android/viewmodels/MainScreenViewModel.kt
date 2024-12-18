@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
+import java.util.concurrent.TimeUnit
 
 class MainScreenViewModel(context: Context) : ViewModel() {
     private val db = UserRoomDataBase.getUserRoomDataBase(context)
@@ -43,8 +44,6 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     var addedTimerList by mutableStateOf<List<Int>>(listOf())
     var selectedTimer by mutableStateOf<Int?>(null)
     var setTimer by mutableStateOf<Int?>(null)
-//    var inputTimer by mutableStateOf(TextFieldValue("00h00m00s"))
-    var inputTimer by mutableIntStateOf(0)
     var isShowTimerAddingDialog by mutableStateOf(false)
     var isShowFailedDialog by mutableStateOf(false)
     var isShowSuccessDialog by mutableStateOf(false)
@@ -98,6 +97,21 @@ class MainScreenViewModel(context: Context) : ViewModel() {
 
     fun addResultData(status: Boolean) {
         val currentDate: LocalDate = LocalDate.now()
+        val setTimer = setTimer?.let {
+            val setHours = TimeUnit.SECONDS.toHours(it.toLong()).toString().padStart(2, '0')
+            val setMinutes = (TimeUnit.SECONDS.toMinutes(it.toLong()) % 60).toString().padStart(2, '0')
+            val setSeconds = (it % 60).toString().padStart(2, '0')
+            "${setHours}:${setMinutes}:${setSeconds}"
+        }
+
+        val seconds = seconds.let {
+            val hours = TimeUnit.SECONDS.toHours(it.toLong()).toString().padStart(2, '0')
+            val minutes = (TimeUnit.SECONDS.toMinutes(it.toLong()) % 60).toString().padStart(2, '0')
+            val seconds = (it % 60).toString().padStart(2, '0')
+            "${hours}:${minutes}:${seconds}"
+        }
+
+
         viewModelScope.launch {
             val resultData = ResultDataTable(date = currentDate.toString(), setTimer = setTimer, studyTime = seconds, status = status)
             try {
@@ -137,5 +151,6 @@ class MainScreenViewModel(context: Context) : ViewModel() {
         seconds = 0
         isStudyStarted = false
         selectedTimer = null
+        setTimer = null
     }
 }
