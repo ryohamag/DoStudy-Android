@@ -44,8 +44,6 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     var addedTimerList by mutableStateOf<List<Int>>(listOf())
     var selectedTimer by mutableStateOf<Int?>(null)
     var setTimer by mutableStateOf<Int?>(null)
-//    var inputTimer by mutableStateOf(TextFieldValue("00h00m00s"))
-    var inputTimer by mutableIntStateOf(0)
     var isShowTimerAddingDialog by mutableStateOf(false)
     var isShowFailedDialog by mutableStateOf(false)
     var isShowSuccessDialog by mutableStateOf(false)

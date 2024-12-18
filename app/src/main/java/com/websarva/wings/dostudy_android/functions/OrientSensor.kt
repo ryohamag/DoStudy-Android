@@ -1,7 +1,6 @@
 package com.websarva.wings.dostudy_android.functions
 
 import android.util.Log
-import androidx.compose.runtime.Composable
 import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
 import kotlin.math.abs
 

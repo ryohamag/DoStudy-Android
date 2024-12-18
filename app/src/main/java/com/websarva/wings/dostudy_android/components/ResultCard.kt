@@ -34,69 +34,6 @@ fun ResultCard(
             .padding(16.dp)
             .fillMaxWidth(), colors = CardDefaults.cardColors(Color(0xffcce6ff))
     ) {
-//        Row(
-//            modifier = Modifier
-//                .padding(16.dp)
-//                .fillMaxWidth()
-//        ) {
-//            Column(
-//                modifier = Modifier.padding(0.dp)
-//            ) {
-//                Text(
-//                    text = resultDataTable.date,
-//                    modifier = Modifier.padding(8.dp),
-//                    color = Color.Black,
-//                    fontSize = 24.sp
-//                )
-//                Row(
-//                    modifier = Modifier.padding(8.dp)
-//                ) {
-//                    Icon(
-//                        painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_timer_24)),
-//                        contentDescription = "タイマー",
-//                        modifier = Modifier
-//                            .align(Alignment.CenterVertically)
-//                            .scale(1.5f),
-//                    )
-//
-//                    Spacer(modifier = Modifier.width(8.dp))
-//
-//                    Text(
-//                        text = if(resultDataTable.setTimer == null) "未設定" else resultDataTable.setTimer!!,
-//                        modifier = Modifier.padding(8.dp),
-//                        color = Color.Black,
-//                        fontSize = 20.sp
-//                    )
-//                }
-//                Row(
-//                    modifier = Modifier.padding(8.dp)
-//                ) {
-//                    Icon(
-//                        painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.person_edit_24px)),
-//                        contentDescription = "勉強時間",
-//                        modifier = Modifier
-//                            .align(Alignment.CenterVertically)
-//                            .scale(1.5f),
-//                        tint = Color.Black
-//                    )
-//
-//                    Spacer(modifier = Modifier.width(8.dp))
-//
-//                    Text(
-//                        text = resultDataTable.studyTime,
-//                        modifier = Modifier.padding(8.dp),
-//                        color = Color.Black,
-//                        fontSize = 20.sp
-//                    )
-//                }
-//            }
-//            Text(
-//                text = if (resultDataTable.status) "成功" else "失敗",
-//                modifier = Modifier.padding(8.dp),
-//                color = Color.Black
-//            )
-//        }
-
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
