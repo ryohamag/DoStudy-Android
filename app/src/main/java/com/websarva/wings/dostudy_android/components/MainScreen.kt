@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -237,7 +238,7 @@ fun MainScreen(
                     IconButton(
                         onClick = { vm.isSettingsDialogOpen = true },
                         modifier = Modifier
-                            .padding(32.dp)
+                            .padding(28.dp)
                             .scale(3f)
                     ) {
                         Icon(
@@ -255,7 +256,7 @@ fun MainScreen(
                             if(vm.isTimerMode) navController.navigate("TimerSetting")
                         },
                         modifier = Modifier
-                            .padding(32.dp)
+                            .padding(28.dp)
                             .scale(3f),
                         colors = IconToggleButtonColors( //ボタンの色の設定
                             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -284,7 +285,8 @@ fun MainScreen(
                 ) {
                     Text(
                         text = "記録",
-                        modifier = Modifier.padding(start = 32.dp, end = 32.dp),
+                        modifier = Modifier.padding(start = 48.dp, end = 48.dp),
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
