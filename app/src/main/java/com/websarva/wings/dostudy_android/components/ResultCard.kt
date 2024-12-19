@@ -54,7 +54,7 @@ fun ResultCard(
                 Text(
                     text = if(resultDataTable.status) "Success!" else "Failed...",
                     modifier = Modifier.padding(8.dp),
-                    color = if(resultDataTable.status) Color.Black else Color.Red,
+                    color = if(resultDataTable.status) Color.Blue else Color.Red,
                     fontSize = 24.sp,
                 )
             }
@@ -95,7 +95,7 @@ fun ResultCard(
                 Text(
                     text = resultDataTable.studyTime,
                     modifier = Modifier.padding(8.dp),
-                    color = if(resultDataTable.status)Color.Black else Color.Red,
+                    color = if(resultDataTable.status) Color.Blue else Color.Red,
                     fontSize = 18.sp,
                 )
             }

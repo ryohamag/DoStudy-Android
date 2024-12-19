@@ -252,8 +252,17 @@ fun MainScreen(
 
                 Button(
                     onClick = { navController.navigate("Result") },
+                    colors = ButtonColors( //ボタンの色の設定
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        disabledContentColor = Color.Gray,
+                        disabledContainerColor = Color.Gray
+                    ),
                 ) {
-                    Text("Result")
+                    Text(
+                        text = "記録",
+                        modifier = Modifier.padding(start = 32.dp, end = 32.dp),
+                    )
                 }
             }
         }
