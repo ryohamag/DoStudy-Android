@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,7 +33,8 @@ fun ResultCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         modifier = Modifier
             .padding(16.dp)
-            .fillMaxWidth(), colors = CardDefaults.cardColors(Color(0xffcce6ff))
+            .fillMaxWidth(),
+        colors = if(resultDataTable.status) CardDefaults.cardColors(Color(0xffcce6ff)) else CardDefaults.cardColors(MaterialTheme.colorScheme.errorContainer)
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
@@ -50,9 +52,9 @@ fun ResultCard(
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Text(
-                    text = if (resultDataTable.status) "Success!" else "Failed...",
+                    text = if(resultDataTable.status) "Success!" else "Failed...",
                     modifier = Modifier.padding(8.dp),
-                    color = Color.Black,
+                    color = if(resultDataTable.status) Color.Blue else Color.Red,
                     fontSize = 24.sp,
                 )
             }
@@ -93,7 +95,7 @@ fun ResultCard(
                 Text(
                     text = resultDataTable.studyTime,
                     modifier = Modifier.padding(8.dp),
-                    color = Color.Black,
+                    color = if(resultDataTable.status) Color.Blue else Color.Red,
                     fontSize = 18.sp,
                 )
             }
