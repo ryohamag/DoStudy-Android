@@ -20,6 +20,7 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.IconToggleButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,7 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -151,6 +152,18 @@ fun MainScreen(
         )
     }
 
+    //タイマーストップダイアログを表示
+    if(vm.isShowStopTimerDialog) {
+        StopTimerDialog(
+            onDismissRequest = { vm.isShowStopTimerDialog = false },
+            onStopRequest = {
+                vm.isStudyStarted = false
+                vm.isShowStopTimerDialog = false
+                vm.isShowSuccessDialog = true
+            }
+        )
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -187,29 +200,32 @@ fun MainScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            //スタート/ストップボタン
-            Button(
-                onClick = {
-                    if(vm.isStudyStarted && !vm.isTimerMode) {
-                        vm.isShowSuccessDialog = true
-                    }
-                    vm.isStudyStarted = !vm.isStudyStarted
-                          },
-                modifier = Modifier.padding(16.dp),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonColors( //ボタンの色の設定
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    disabledContentColor = Color.Gray,
-                    disabledContainerColor = Color.Gray
-                ),
-            ) {
-                Text(
-                    text = if (vm.isStudyStarted) "stop" else "start",
-                    modifier = Modifier.padding(64.dp),
-                    fontSize = 64.sp,
+            if(vm.isStudyStarted &&!vm.isTimerMode || !vm.isStudyStarted) {
+                //スタート/ストップボタン
+                Button(
+                    onClick = {
+                        if(vm.isStudyStarted && !vm.isTimerMode) {
+                            vm.isShowStopTimerDialog = true
+                        }
+                        if(!vm.isStudyStarted) {
+                            vm.isStudyStarted = !vm.isStudyStarted
+                        }
+                    },
+                    modifier = Modifier.padding(16.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonColors( //ボタンの色の設定
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        disabledContentColor = Color.Gray,
+                        disabledContainerColor = Color.Gray
+                    ),
+                ) {
+                    Text(
+                        text = if (vm.isStudyStarted) "stop" else "start",
+                        modifier = Modifier.padding(64.dp),
+                        fontSize = 64.sp,
                     )
-
+                }
             }
 
             Spacer(modifier = Modifier.height(5.dp))
@@ -222,7 +238,7 @@ fun MainScreen(
                     IconButton(
                         onClick = { vm.isSettingsDialogOpen = true },
                         modifier = Modifier
-                            .padding(32.dp)
+                            .padding(28.dp)
                             .scale(3f)
                     ) {
                         Icon(
@@ -240,8 +256,16 @@ fun MainScreen(
                             if(vm.isTimerMode) navController.navigate("TimerSetting")
                         },
                         modifier = Modifier
-                            .padding(32.dp)
-                            .scale(3f)
+                            .padding(28.dp)
+                            .scale(3f),
+                        colors = IconToggleButtonColors( //ボタンの色の設定
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            containerColor = Color.Unspecified,
+                            disabledContentColor = Color.Gray,
+                            disabledContainerColor = Color.Gray,
+                            checkedContainerColor = Color.Unspecified,
+                            checkedContentColor = MaterialTheme.colorScheme.primaryContainer
+                        ),
                     ) {
                         Icon(
                             painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_timer_24)),
@@ -261,7 +285,8 @@ fun MainScreen(
                 ) {
                     Text(
                         text = "記録",
-                        modifier = Modifier.padding(start = 32.dp, end = 32.dp),
+                        modifier = Modifier.padding(start = 48.dp, end = 48.dp),
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
