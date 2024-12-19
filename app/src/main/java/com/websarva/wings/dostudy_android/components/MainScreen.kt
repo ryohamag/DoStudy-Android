@@ -37,7 +37,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -152,6 +151,18 @@ fun MainScreen(
         )
     }
 
+    //タイマーストップダイアログを表示
+    if(vm.isShowStopTimerDialog) {
+        StopTimerDialog(
+            onDismissRequest = { vm.isShowStopTimerDialog = false },
+            onStopRequest = {
+                vm.isStudyStarted = false
+                vm.isShowStopTimerDialog = false
+                vm.isShowSuccessDialog = true
+            }
+        )
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -188,15 +199,16 @@ fun MainScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            //ユーザ/タイマー設定ボタン
-            if (!vm.isStudyStarted) { //勉強中は非表示
+            if(vm.isStudyStarted &&!vm.isTimerMode || !vm.isStudyStarted) {
                 //スタート/ストップボタン
                 Button(
                     onClick = {
                         if(vm.isStudyStarted && !vm.isTimerMode) {
-                            vm.isShowSuccessDialog = true
+                            vm.isShowStopTimerDialog = true
                         }
-                        vm.isStudyStarted = !vm.isStudyStarted
+                        if(!vm.isStudyStarted) {
+                            vm.isStudyStarted = !vm.isStudyStarted
+                        }
                     },
                     modifier = Modifier.padding(16.dp),
                     shape = RoundedCornerShape(8.dp),
@@ -212,11 +224,13 @@ fun MainScreen(
                         modifier = Modifier.padding(64.dp),
                         fontSize = 64.sp,
                     )
-
                 }
+            }
 
-                Spacer(modifier = Modifier.height(5.dp))
+            Spacer(modifier = Modifier.height(5.dp))
 
+            //ユーザ/タイマー設定ボタン
+            if (!vm.isStudyStarted) { //勉強中は非表示
                 Row(
                     modifier = Modifier.padding(16.dp)
                 ) {

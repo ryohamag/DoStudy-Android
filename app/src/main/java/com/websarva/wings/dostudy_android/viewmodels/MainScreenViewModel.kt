@@ -49,6 +49,7 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     var isShowSuccessDialog by mutableStateOf(false)
     var responseMessage by mutableStateOf("")
     var resultDataList by mutableStateOf<List<ResultDataTable>>(listOf())
+    var isShowStopTimerDialog by mutableStateOf(false)
 
     init {
         viewModelScope.launch {
