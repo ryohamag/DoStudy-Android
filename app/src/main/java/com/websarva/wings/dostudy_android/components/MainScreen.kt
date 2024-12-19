@@ -20,6 +20,7 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.IconToggleButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -187,35 +188,35 @@ fun MainScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            //スタート/ストップボタン
-            Button(
-                onClick = {
-                    if(vm.isStudyStarted && !vm.isTimerMode) {
-                        vm.isShowSuccessDialog = true
-                    }
-                    vm.isStudyStarted = !vm.isStudyStarted
-                          },
-                modifier = Modifier.padding(16.dp),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonColors( //ボタンの色の設定
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    disabledContentColor = Color.Gray,
-                    disabledContainerColor = Color.Gray
-                ),
-            ) {
-                Text(
-                    text = if (vm.isStudyStarted) "stop" else "start",
-                    modifier = Modifier.padding(64.dp),
-                    fontSize = 64.sp,
-                    )
-
-            }
-
-            Spacer(modifier = Modifier.height(5.dp))
-
             //ユーザ/タイマー設定ボタン
             if (!vm.isStudyStarted) { //勉強中は非表示
+                //スタート/ストップボタン
+                Button(
+                    onClick = {
+                        if(vm.isStudyStarted && !vm.isTimerMode) {
+                            vm.isShowSuccessDialog = true
+                        }
+                        vm.isStudyStarted = !vm.isStudyStarted
+                    },
+                    modifier = Modifier.padding(16.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonColors( //ボタンの色の設定
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        disabledContentColor = Color.Gray,
+                        disabledContainerColor = Color.Gray
+                    ),
+                ) {
+                    Text(
+                        text = if (vm.isStudyStarted) "stop" else "start",
+                        modifier = Modifier.padding(64.dp),
+                        fontSize = 64.sp,
+                    )
+
+                }
+
+                Spacer(modifier = Modifier.height(5.dp))
+
                 Row(
                     modifier = Modifier.padding(16.dp)
                 ) {
@@ -241,7 +242,15 @@ fun MainScreen(
                         },
                         modifier = Modifier
                             .padding(32.dp)
-                            .scale(3f)
+                            .scale(3f),
+                        colors = IconToggleButtonColors( //ボタンの色の設定
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            containerColor = Color.Unspecified,
+                            disabledContentColor = Color.Gray,
+                            disabledContainerColor = Color.Gray,
+                            checkedContainerColor = Color.Unspecified,
+                            checkedContentColor = MaterialTheme.colorScheme.primaryContainer
+                        ),
                     ) {
                         Icon(
                             painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_timer_24)),
