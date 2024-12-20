@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import kotlinx.coroutines.delay
 
+//gptAPIのレスポンス待ちの際に表示するローディングテキスト
 @Composable
 fun LoadingText() {
     val count = remember { mutableIntStateOf(0) }

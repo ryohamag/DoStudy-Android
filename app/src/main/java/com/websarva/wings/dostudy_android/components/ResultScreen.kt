@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
 
+//記録画面
 @Composable
 fun ResultScreen(
     innerPadding: PaddingValues,
@@ -62,6 +63,7 @@ fun ResultScreen(
 
             if (vm.isShowChart) {
                 item {
+                    //グラフの表示
                     LineChart(
                         resultDataTable = vm.resultDataList,
                         modifier = Modifier
@@ -70,6 +72,7 @@ fun ResultScreen(
                             .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 16.dp),
                     )
                 }
+                //区切り線
                 item { HorizontalDivider(color = Color.Black) }
             }
 
@@ -79,6 +82,7 @@ fun ResultScreen(
                 fontSize = 24.sp,
             ) }
 
+            //履歴のカードを表示
             items(vm.resultDataList.reversed().take(30)) { result ->
                 ResultCard(result)
             }

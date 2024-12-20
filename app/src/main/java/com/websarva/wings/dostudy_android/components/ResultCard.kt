@@ -29,6 +29,7 @@ import com.websarva.wings.dostudy_android.Room.ResultDataTable
 fun ResultCard(
     resultDataTable: ResultDataTable
 ) {
+    //履歴のカード
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         modifier = Modifier
@@ -42,6 +43,7 @@ fun ResultCard(
             Row(
                 modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 8.dp, bottom = 0.dp)
             ) {
+                //日付
                 Text(
                     text = resultDataTable.date,
                     modifier = Modifier.padding(8.dp),
@@ -51,6 +53,7 @@ fun ResultCard(
 
                 Spacer(modifier = Modifier.width(16.dp))
 
+                //結果
                 Text(
                     text = if(resultDataTable.status) "Success!" else "Failed...",
                     modifier = Modifier.padding(8.dp),
@@ -62,6 +65,7 @@ fun ResultCard(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(start = 16.dp, top = 0.dp, end = 8.dp, bottom = 16.dp),
             ) {
+                //タイマーのアイコン
                 Icon(
                     painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_timer_24)),
                     contentDescription = "タイマー",
@@ -72,6 +76,7 @@ fun ResultCard(
 
                 Spacer(modifier = Modifier.width(8.dp))
 
+                //設定されたタイマー
                 Text(
                     text = if(resultDataTable.setTimer == null) "未設定" else resultDataTable.setTimer!!,
                     modifier = Modifier.padding(8.dp),
@@ -81,6 +86,7 @@ fun ResultCard(
 
                 Spacer(modifier = Modifier.width(16.dp))
 
+                //勉強時間のアイコン
                 Icon(
                     painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.person_edit_24px)),
                     contentDescription = "勉強時間",
@@ -92,6 +98,7 @@ fun ResultCard(
 
                 Spacer(modifier = Modifier.width(8.dp))
 
+                //勉強時間
                 Text(
                     text = resultDataTable.studyTime,
                     modifier = Modifier.padding(8.dp),
