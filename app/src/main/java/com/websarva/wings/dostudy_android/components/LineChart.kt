@@ -18,24 +18,23 @@ fun LineChart(
     lineColor: Color = Color.Black
 ) {
     val maxValue = timeToSeconds(resultDataTable.maxOf { it.studyTime })
-    val minValue = 0
+    val minValue = timeToSeconds(resultDataTable.minOf { it.studyTime })
 
     Canvas(modifier = modifier) {
         val spaceBetweenPoints = size.width / (resultDataTable.size - 1)
         val scale = size.height / (maxValue - minValue)
 
-        // Map points to canvas coordinates
+        //点の座標を計算
         val points = resultDataTable.mapIndexed { index, value ->
             val x = index * spaceBetweenPoints
             val y = size.height - (timeToSeconds(value.studyTime) - minValue) * scale
             Offset(x, y)
         }
 
-        // Draw grid lines (方眼)
+        //方眼を描画
         val gridSpacing = 10
         val gridLineColor = Color.LightGray
         for (i in 0 until (size.height / gridSpacing).toInt()) {
-            // Horizontal grid lines
             drawLine(
                 color = gridLineColor,
                 start = Offset(0f, i * gridSpacing.toFloat()),
@@ -44,7 +43,6 @@ fun LineChart(
             )
         }
         for (i in 0 until (size.width / spaceBetweenPoints).toInt()) {
-            // Vertical grid lines
             drawLine(
                 color = gridLineColor,
                 start = Offset(i * spaceBetweenPoints, 0f),
@@ -53,8 +51,8 @@ fun LineChart(
             )
         }
 
-        // Draw Y-axis markers (目盛り) with values
-        val yAxisSpacing = 10 // Y軸の目盛りの間隔
+        //y軸の目盛りを描画
+        val yAxisSpacing = 1800 // Y軸の目盛りの間隔(30分ごと)
         val textPaint = TextPaint().apply {
             color = Color.Black.toArgb()
             textSize = 30f
@@ -65,20 +63,19 @@ fun LineChart(
             drawLine(
                 color = gridLineColor,
                 start = Offset(0f, y),
-                end = Offset(10f, y), // Y軸方向の目盛り
+                end = Offset(10f, y),
                 strokeWidth = 2f
             )
 
-            // Draw the value next to the Y-axis marker
             drawContext.canvas.nativeCanvas.drawText(
-                i.toString(),
-                15f, // X position for the label (slightly to the right of the marker)
-                y + 5f, // Y position for the label (centered vertically)
+                String.format("%.1fh", i / 3600f),
+                15f,
+                y + 5f,
                 textPaint
             )
         }
 
-        // Draw X-axis markers (目盛り)
+        //x軸の目盛りを描画
         for (i in resultDataTable.indices) {
             val x = i * spaceBetweenPoints
             drawLine(
@@ -89,7 +86,6 @@ fun LineChart(
             )
         }
 
-        // Draw the line connecting points
         for (i in 0 until points.size - 1) {
             drawLine(
                 color = lineColor,
@@ -99,7 +95,7 @@ fun LineChart(
             )
         }
 
-        // Draw circles for each point with color based on `status`
+        //点を描画
         points.forEachIndexed { index, point ->
             val pointColor = if (resultDataTable[index].status) Color.Blue else Color.Red
             drawCircle(

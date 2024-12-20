@@ -11,7 +11,7 @@ class Converters {
      @TypeConverter
      fun fromStringToListInt(value: String): List<Int> {
          return if (value.isEmpty()) {
-             emptyList() // 空文字列の場合は空のリストを返す
+             emptyList() //空文字列の場合は空のリストを返す
          } else {
              value.split(",").map { it.toInt() }
          }

@@ -31,27 +31,29 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     private val resultDb = ResultRoomDataBase.getResultRoomDataBase(context)
     private val resultDataDao = resultDb.resultDataDao()
 
-    var isSettingsDialogOpen by mutableStateOf(false)
-    var isFirstStartup by mutableStateOf(false)
-    var username by mutableStateOf("")
-    var channelId by mutableStateOf("")
-    var isTimerMode by mutableStateOf(false)
-    var isStudyStarted by mutableStateOf(false)
-    val orientationSensor = OrientationSensor(context)
-    var seconds by mutableIntStateOf(0)
-    private var _timerList = MutableStateFlow(listOf(1800, 3600, 7200, 10800))
-    var timerList: StateFlow<List<Int>> = _timerList.asStateFlow()
-    var addedTimerList by mutableStateOf<List<Int>>(listOf())
-    var selectedTimer by mutableStateOf<Int?>(null)
-    var setTimer by mutableStateOf<Int?>(null)
-    var isShowTimerAddingDialog by mutableStateOf(false)
-    var isShowFailedDialog by mutableStateOf(false)
-    var isShowSuccessDialog by mutableStateOf(false)
-    var responseMessage by mutableStateOf("")
-    var resultDataList by mutableStateOf<List<ResultDataTable>>(listOf())
-    var isShowStopTimerDialog by mutableStateOf(false)
-    var isShowChart by mutableStateOf(true)
+    val orientationSensor = OrientationSensor(context) //画面の向きを検知するクラス
 
+    var isSettingsDialogOpen by mutableStateOf(false) //設定ダイアログを開くかどうか
+    var isFirstStartup by mutableStateOf(false) //初回起動かどうか
+    var username by mutableStateOf("") //ユーザー名
+    var channelId by mutableStateOf("") //チャンネルID
+    var isTimerMode by mutableStateOf(false) //タイマーモードかどうか
+    var isStudyStarted by mutableStateOf(false) //勉強が始まっているかどうか
+    var seconds by mutableIntStateOf(0) //経過時間
+    private var _timerList = MutableStateFlow(listOf(1800, 3600, 7200, 10800)) //タイマーリスト
+    var timerList: StateFlow<List<Int>> = _timerList.asStateFlow() //タイマーリスト
+    var addedTimerList by mutableStateOf<List<Int>>(listOf()) //追加したタイマーリスト
+    var selectedTimer by mutableStateOf<Int?>(null) //選択されたタイマー
+    var setTimer by mutableStateOf<Int?>(null) //設定されたタイマー
+    var isShowTimerAddingDialog by mutableStateOf(false) //タイマー追加ダイアログを表示するかどうか
+    var isShowFailedDialog by mutableStateOf(false) //失敗ダイアログを表示するかどうか
+    var isShowSuccessDialog by mutableStateOf(false) //成功ダイアログを表示するかどうか
+    var responseMessage by mutableStateOf("") //レスポンスメッセージ
+    var resultDataList by mutableStateOf<List<ResultDataTable>>(listOf()) //結果データリスト
+    var isShowStopTimerDialog by mutableStateOf(false) //タイマーを止めるダイアログを表示するかどうか
+    var isShowChart by mutableStateOf(true) //チャートを表示するかどうか
+
+    //初期化
     init {
         viewModelScope.launch {
             getCurrentUserData()
@@ -59,6 +61,7 @@ class MainScreenViewModel(context: Context) : ViewModel() {
         }
     }
 
+    //ユーザーデータを取得
     private suspend fun getCurrentUserData() {
         val userData = withContext(Dispatchers.IO) {
             userDataDao.getCurrentUser()
@@ -73,6 +76,7 @@ class MainScreenViewModel(context: Context) : ViewModel() {
         }
     }
 
+    //ユーザーデータを作成
     fun createUserData() {
         viewModelScope.launch {
             val newUserData = UserDataTable(username = username, channelId = channelId, addedTimerList = addedTimerList)
@@ -85,6 +89,7 @@ class MainScreenViewModel(context: Context) : ViewModel() {
         }
     }
 
+    //ユーザーデータを更新
     fun updateUserData() {
         viewModelScope.launch {
             val updatedUserData = UserDataTable(username = username, channelId = channelId, addedTimerList = addedTimerList)
@@ -97,6 +102,7 @@ class MainScreenViewModel(context: Context) : ViewModel() {
         }
     }
 
+    //結果データを追加
     fun addResultData(status: Boolean) {
         val currentDate: LocalDate = LocalDate.now()
         val setTimer = setTimer?.let {
@@ -126,6 +132,7 @@ class MainScreenViewModel(context: Context) : ViewModel() {
         }
     }
 
+    //結果データを全件取得
     private fun getAllResultData() {
         viewModelScope.launch {
             resultDataList = withContext(Dispatchers.IO) {
@@ -135,6 +142,7 @@ class MainScreenViewModel(context: Context) : ViewModel() {
         }
     }
 
+    //タイマーを追加
     fun addTimer(time: String) {
         val seconds = time.chunked(2).map { it.toInt() }.let { (hours, minutes, seconds) ->
             hours * 3600 + minutes * 60 + seconds
@@ -142,12 +150,14 @@ class MainScreenViewModel(context: Context) : ViewModel() {
         addedTimerList += seconds // 新しい時間を追加
     }
 
+    //タイマーを削除
     fun deleteTimer(timerToDelete: Int) {
         addedTimerList = addedTimerList.filter { it != timerToDelete }
         _timerList.value = _timerList.value.filter { it != timerToDelete }
         updateUserData()
     }
 
+    //変数をリセット
     fun reset() {
         isTimerMode = false
         seconds = 0

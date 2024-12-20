@@ -33,7 +33,7 @@ fun httpRequest(
     vm: MainScreenViewModel
 ) {
     val userData = UserData(channelId, username, status, seconds)
-    val jsonString = Gson().toJson(userData) // Gson ライブラリを使用して JSON に変換
+    val jsonString = Gson().toJson(userData) //JSONに変換
 
     val requestBody = jsonString.toRequestBody("application/json".toMediaTypeOrNull())
 
@@ -56,12 +56,13 @@ fun httpRequest(
     })
 }
 
+//JSONからメッセージを取り出す
 fun extractMessageFromJson(jsonString: String): String? {
     return try {
         val apiResponse = Gson().fromJson(jsonString, ApiResponse::class.java)
         apiResponse.message
     } catch (e: Exception) {
         Log.e("JSON Parsing Error", "Error parsing JSON: ${e.message}", e)
-        null // エラーが発生した場合は null を返す
+        null
     }
 }

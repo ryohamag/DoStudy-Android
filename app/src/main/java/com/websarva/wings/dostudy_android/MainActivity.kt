@@ -47,6 +47,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    //画面外検知の為にオーバーライド
     override fun onPause() {
         super.onPause()
         val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
