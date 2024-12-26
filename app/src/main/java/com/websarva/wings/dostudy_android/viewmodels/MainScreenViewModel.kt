@@ -66,7 +66,6 @@ class MainScreenViewModel(context: Context) : ViewModel() {
         val userData = withContext(Dispatchers.IO) {
             userDataDao.getCurrentUser()
         }
-        Log.d("MainScreenViewModel", "userData: $userData")
         if(userData == null) {
             isFirstStartup = true
         } else {
@@ -82,7 +81,6 @@ class MainScreenViewModel(context: Context) : ViewModel() {
             val newUserData = UserDataTable(username = username, channelId = channelId, addedTimerList = addedTimerList)
             try {
                 userDataDao.insert(newUserData)
-                Log.d("MainScreenViewModel", "Data inserted successfully: $newUserData")
             } catch (e: Exception) {
                 Log.e("MainScreenViewModel", "Error inserting data", e)
             }
@@ -95,7 +93,6 @@ class MainScreenViewModel(context: Context) : ViewModel() {
             val updatedUserData = UserDataTable(username = username, channelId = channelId, addedTimerList = addedTimerList)
             try {
                 userDataDao.update(updatedUserData)
-                Log.d("MainScreenViewModel", "Data updated successfully: $updatedUserData")
             } catch (e: Exception) {
                 Log.e("MainScreenViewModel", "Error updating data", e)
             }
@@ -125,9 +122,8 @@ class MainScreenViewModel(context: Context) : ViewModel() {
             try {
                 resultDataDao.insert(resultData)
                 resultDataList += resultData
-                Log.d("MainScreenViewModel", "Result data inserted successfully: $resultData")
             } catch (e: Exception) {
-                Log.e("MainScreenViewModel", "Error inserting result data", e)
+                Log.e("MainScreenViewModel", "Error inserting data", e)
             }
         }
     }
@@ -138,7 +134,6 @@ class MainScreenViewModel(context: Context) : ViewModel() {
             resultDataList = withContext(Dispatchers.IO) {
                 resultDataDao.getAllResultData()
             }
-            Log.d("MainScreenViewModel", "Result data list: $resultDataList")
         }
     }
 

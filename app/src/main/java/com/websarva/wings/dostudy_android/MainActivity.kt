@@ -17,6 +17,7 @@ import com.websarva.wings.dostudy_android.ui.theme.DoStudyAndroidTheme
 import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
 import android.content.Context
 import android.os.PowerManager
+import com.google.android.gms.ads.MobileAds
 import com.websarva.wings.dostudy_android.components.ResultScreen
 import com.websarva.wings.dostudy_android.functions.httpRequest
 
@@ -24,6 +25,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var vm: MainScreenViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         vm = MainScreenViewModel(this)
+        MobileAds.initialize(this)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
