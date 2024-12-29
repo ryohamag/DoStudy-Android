@@ -17,6 +17,5 @@ fun orientSensor(
             httpRequest(channelId = vm.channelId, username = vm.username, status = false, vm.seconds, vm = vm)
             vm.reset()
         }
-    } else {
     }
 }
