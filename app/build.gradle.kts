@@ -1,3 +1,6 @@
+import java.util.Properties
+
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -47,6 +50,17 @@ android {
                 excludes += "/META-INF/{AL2.0,LGPL2.1}"
             }
         }
+
+//        resValue("string", "ADMOB_APP_ID", project.hasProperty("ADMOB_APP_ID").toString())
+        val properties = Properties()
+        val localPropertiesFile = project.rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            properties.load(localPropertiesFile.inputStream())
+        }
+        val admobAppId = properties.getProperty("ADMOB_APP_ID", "")
+        if (admobAppId.isNotEmpty()) {
+            resValue("string", "ADMOB_APP_ID", admobAppId)
+        }
     }
 
     dependencies {
@@ -95,4 +109,5 @@ android {
 }
 dependencies {
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.play.services.ads.lite)
 }

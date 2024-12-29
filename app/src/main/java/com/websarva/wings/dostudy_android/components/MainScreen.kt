@@ -70,10 +70,6 @@ fun MainScreen(
         mediaPlayer.start() // 音を再生
     }
 
-    Log.d("resultDataList", vm.resultDataList.toString())
-
-    Log.d("MainScreen", vm.seconds.toString())
-
     //isStudyStarted が true になったら実行
     LaunchedEffect(key1 = vm.isStudyStarted) {
         if (vm.isStudyStarted) {
@@ -107,11 +103,13 @@ fun MainScreen(
 
     //失敗時のダイアログを表示
     if(vm.isShowFailedDialog) {
+        vm.isShowAdScreen = true
         FailedDialog(
             onDismissRequest = {
                 vm.isShowFailedDialog = false
                 vm.responseMessage = "" },
-            responseMessage = vm.responseMessage
+            responseMessage = vm.responseMessage,
+            vm = vm
         )
     }
 
@@ -291,6 +289,12 @@ fun MainScreen(
                 }
             }
         }
+
+        AdBanner(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+        )
     }
     // 画面が破棄されたときに音楽プレイヤーをリリース
     DisposableEffect(lifecycleOwner) {
