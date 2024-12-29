@@ -88,6 +88,36 @@ fun SettingsDialog(
                             }
                     }
                 )
+
+                Spacer(Modifier.height(10.dp))
+
+                val botInvitationText = buildAnnotatedString {
+                    append("Botの招待リンクはこちら")
+                    addStyle(
+                        style = SpanStyle(
+                            color = Color.Blue, // リンクとして青色にする
+                        ),
+                        start = 0,
+                        end = this.length
+                    )
+                    addStringAnnotation(
+                        tag = "URL",
+                        annotation = "https://discord.com/oauth2/authorize?client_id=1311225271361212436", // リンク先URL
+                        start = 0,
+                        end = this.length
+                    )
+                }
+                ClickableText(
+                    text = botInvitationText,
+                    onClick = { offset ->
+                        botInvitationText.getStringAnnotations(tag = "URL", start = offset, end = offset)
+                            .firstOrNull()?.let { annotation ->
+                                // リンクをクリックした場合の処理
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(annotation.item))
+                                context.startActivity(intent)
+                            }
+                    }
+                )
             }
         },
         confirmButton = {
