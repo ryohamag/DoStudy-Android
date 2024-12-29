@@ -52,6 +52,7 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     var resultDataList by mutableStateOf<List<ResultDataTable>>(listOf()) //結果データリスト
     var isShowStopTimerDialog by mutableStateOf(false) //タイマーを止めるダイアログを表示するかどうか
     var isShowChart by mutableStateOf(true) //チャートを表示するかどうか
+    var isShowAdScreen by mutableStateOf(false) //広告画面を表示するかどうか
 
     //初期化
     init {

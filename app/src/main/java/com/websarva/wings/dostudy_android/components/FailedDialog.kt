@@ -10,14 +10,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
 import kotlinx.coroutines.delay
 
 //失敗時のダイアログ
 @Composable
 fun FailedDialog(
     onDismissRequest: () -> Unit,
-    responseMessage: String
+    responseMessage: String,
+    vm: MainScreenViewModel
 ) {
+    AdScreen(vm)
     AlertDialog(
         icon = { Icon(Icons.Default.Warning, "警告") },
         onDismissRequest = {}, //必ず「ごめんなさい」を押させる
@@ -25,7 +28,7 @@ fun FailedDialog(
         text = { if(responseMessage != "") Text(responseMessage) else LoadingText() }, //
         confirmButton = {
             TextButton(
-                onClick = onDismissRequest
+                onClick = { if(!vm.isShowAdScreen) onDismissRequest() }
             ) {
                 Text("ごめんなさい")
             }

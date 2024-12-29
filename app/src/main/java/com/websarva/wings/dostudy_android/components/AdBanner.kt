@@ -14,7 +14,7 @@ fun AdBanner(modifier: Modifier) {
         factory = { context ->
             AdView(context).apply {
                 setAdSize(AdSize.BANNER) // 修正: setAdSize を使用
-                adUnitId = "ca-app-pub-3940256099942544/9214589741" //テスト用
+                adUnitId = "ca-app-pub-3940256099942544/6300978111" //テスト用
                 loadAd(AdRequest.Builder().build())
             }
         }

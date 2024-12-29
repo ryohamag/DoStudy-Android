@@ -103,11 +103,13 @@ fun MainScreen(
 
     //失敗時のダイアログを表示
     if(vm.isShowFailedDialog) {
+        vm.isShowAdScreen = true
         FailedDialog(
             onDismissRequest = {
                 vm.isShowFailedDialog = false
                 vm.responseMessage = "" },
-            responseMessage = vm.responseMessage
+            responseMessage = vm.responseMessage,
+            vm = vm
         )
     }
 
@@ -287,6 +289,7 @@ fun MainScreen(
                 }
             }
         }
+
         AdBanner(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
