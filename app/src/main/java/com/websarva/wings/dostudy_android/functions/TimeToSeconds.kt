@@ -1,6 +1,6 @@
 package com.websarva.wings.dostudy_android.functions
 
-//String型の時間を秒数に変換する
+//String型の時間を秒数に変換する関数
 fun timeToSeconds(time: String): Int {
     val parts = time.split(":")
 
