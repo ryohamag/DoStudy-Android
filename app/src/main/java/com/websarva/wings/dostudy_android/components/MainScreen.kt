@@ -4,6 +4,8 @@ import android.media.MediaPlayer
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,9 +16,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
@@ -26,11 +34,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -192,37 +202,75 @@ fun MainScreen(
                 text = "${hour.toString().padStart(2, '0')}h" +
                         "${minute.toString().padStart(2, '0')}m" +
                         "${second.toString().padStart(2, '0')}s",
-                modifier = Modifier.padding(64.dp),
+                modifier = Modifier.padding(start = 64.dp, end = 64.dp, top = 64.dp, bottom = 8.dp),
                 fontSize = 52.sp
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
             if(vm.isStudyStarted &&!vm.isTimerMode || !vm.isStudyStarted) {
-                //スタート/ストップボタン
-                Button(
-                    onClick = {
-                        if(vm.isStudyStarted && !vm.isTimerMode) {
-                            vm.isShowStopTimerDialog = true
-                        }
-                        if(!vm.isStudyStarted) {
-                            vm.isStudyStarted = !vm.isStudyStarted
-                        }
-                    },
-                    modifier = Modifier.padding(16.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonColors( //ボタンの色の設定
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        disabledContentColor = Color.Gray,
-                        disabledContainerColor = Color.Gray
-                    ),
+                Row(
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
                 ) {
-                    Text(
-                        text = if (vm.isStudyStarted) "stop" else "start",
-                        modifier = Modifier.padding(64.dp),
-                        fontSize = 64.sp,
-                    )
+                    //スタート/ストップボタン
+                    Button(
+                        onClick = {
+                            if(vm.isStudyStarted && !vm.isTimerMode) {
+                                vm.isShowStopTimerDialog = true
+                            }
+                            if(!vm.isStudyStarted) {
+                                vm.isStudyStarted = !vm.isStudyStarted
+                            }
+                        },
+                        modifier = Modifier
+                            .weight(5f)
+                            .padding(16.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonColors( //ボタンの色の設定
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            disabledContentColor = Color.Gray,
+                            disabledContainerColor = Color.Gray
+                        ),
+                    ) {
+                        Text(
+                            text = if (vm.isStudyStarted) "stop" else "start",
+                            modifier = Modifier.padding(32.dp),
+                            fontSize = 48.sp,
+                        )
+                    }
+
+                    Column(
+                        modifier = Modifier
+                            .weight(2f)
+                            .padding(16.dp)
+                    ) {
+                        IconButton(
+                            onClick = { vm.isSettingsDialogOpen = true },
+                            modifier = Modifier
+                                .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
+                                .scale(2.5f)
+                        ) {
+                            Icon(
+                                painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_settings_24)),
+                                contentDescription = "設定ボタン",
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
+
+                        IconButton(
+                            onClick = { navController.navigate("Result") },
+                            modifier = Modifier
+                                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
+                                .scale(2.5f)
+                        ) {
+                            Icon(
+                                painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_history_24)),
+                                contentDescription = "履歴ボタン",
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
+                    }
                 }
             }
 
@@ -230,62 +278,70 @@ fun MainScreen(
 
             //ユーザ/タイマー設定ボタン
             if (!vm.isStudyStarted) { //勉強中は非表示
-                Row(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    IconButton(
-                        onClick = { vm.isSettingsDialogOpen = true },
-                        modifier = Modifier
-                            .padding(28.dp)
-                            .scale(3f)
-                    ) {
-                        Icon(
-                            painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_settings_24)),
-                            contentDescription = "設定ボタン",
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
-
-                    //タイマー設定ボタン
-                    IconToggleButton(
-                        checked = vm.selectedTimer != null,
-                        onCheckedChange = {
-                            vm.isTimerMode = true
-                            if(vm.isTimerMode) navController.navigate("TimerSetting")
-                        },
-                        modifier = Modifier
-                            .padding(28.dp)
-                            .scale(3f),
-                        colors = IconToggleButtonColors( //ボタンの色の設定
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            containerColor = Color.Unspecified,
-                            disabledContentColor = Color.Gray,
-                            disabledContainerColor = Color.Gray,
-                            checkedContainerColor = Color.Unspecified,
-                            checkedContentColor = MaterialTheme.colorScheme.primaryContainer
-                        ),
-                    ) {
-                        Icon(
-                            painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_timer_24)),
-                            contentDescription = "タイマー設定ボタン"
-                        )
-                    }
+                //タイマー追加ダイアログ
+                if(vm.isShowTimerAddingDialog) {
+                    TimerAddingDialog(
+                        onDismissRequest = { vm.isShowTimerAddingDialog = false },
+                        vm = vm
+                    )
                 }
 
-                Button(
-                    onClick = { navController.navigate("Result") },
-                    colors = ButtonColors( //ボタンの色の設定
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        disabledContentColor = Color.Gray,
-                        disabledContainerColor = Color.Gray
-                    ),
+                //何も選択されていなければタイマーモードをオフにしておく
+                if(vm.selectedTimer == null) {
+                    vm.isTimerMode = false
+                }
+
+                //現在の設定できるタイマーのリストを取得
+                val currentTimerList by vm.timerList.collectAsState() // collectAsState で監視
+                val userTimerList = (currentTimerList + vm.addedTimerList).distinct()
+                val sortedList = userTimerList.sorted()
+
+                Box(
+                    modifier = Modifier
+                        .padding(start = 32.dp, end = 32.dp, top = 8.dp, bottom = 48.dp)
+                        .background(
+                            color = Color.White.copy(alpha = 0.5f), // 白の半透明
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .fillMaxWidth()
                 ) {
-                    Text(
-                        text = "記録",
-                        modifier = Modifier.padding(start = 48.dp, end = 48.dp),
-                        fontWeight = FontWeight.Bold
-                    )
+                    //タイマーのリストに対して1つ1つ要素をカードで表示
+                    LazyColumn {
+                        items(sortedList) { timer ->
+                            TimerCard(
+                                seconds = timer,
+                                vm = vm
+                            )
+                        }
+
+                        item { //追加するボタン
+                            Card(
+                                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(100.dp))
+                                    .clickable { vm.isShowTimerAddingDialog = true }, // Card 全体がクリック可能
+                                colors = CardDefaults.cardColors(Color(0xffcce6ff))
+                            ) {
+                                Box( // 中央寄せのため Box を使用
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp), // 余白を Box 内部に適用
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = "Add",
+                                        modifier = Modifier
+                                            .scale(2f), // アイコンのスケール調整
+                                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                    )
+                                }
+                            }
+
+                        }
+                    }
                 }
             }
         }
