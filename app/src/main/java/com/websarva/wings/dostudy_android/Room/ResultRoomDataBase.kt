@@ -22,6 +22,7 @@ abstract class ResultRoomDataBase(): RoomDatabase() {
                     klass = ResultRoomDataBase::class.java,
                     name = "result_database"
                 )
+                .fallbackToDestructiveMigration()
                 .build()
                 .also { Instance = it }
             }

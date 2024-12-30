@@ -121,7 +121,7 @@ class MainScreenViewModel(context: Context) : ViewModel() {
 
 
         viewModelScope.launch {
-            val resultData = ResultDataTable(date = currentDate.toString(), setTimer = setTimer, studyTime = seconds, status = status)
+            val resultData = ResultDataTable(date = currentDate.toString(), setTimer = setTimer, studyTime = seconds, status = status, studyTitle = studyTitle)
             try {
                 resultDataDao.insert(resultData)
                 resultDataList += resultData

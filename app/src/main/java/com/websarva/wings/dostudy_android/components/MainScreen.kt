@@ -280,7 +280,7 @@ fun MainScreen(
                         }
 
                         IconButton(
-                            onClick = { navController.navigate("Result") },
+                            onClick = { if(vm.resultDataList.isNotEmpty()) navController.navigate("Result") else Toast.makeText(context, "まだデータがありません", Toast.LENGTH_SHORT).show() },
                             modifier = Modifier
                                 .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
                                 .scale(2.5f)

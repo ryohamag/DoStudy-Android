@@ -11,5 +11,6 @@ data class ResultDataTable(
     var date: String,
     var setTimer: String?,
     var studyTime: String,
-    var status: Boolean
+    var status: Boolean,
+    var studyTitle: String
 )
