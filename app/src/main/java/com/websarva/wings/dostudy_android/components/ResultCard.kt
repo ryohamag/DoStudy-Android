@@ -53,12 +53,12 @@ fun ResultCard(
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                //結果
+                //タイトル
                 Text(
-                    text = if(resultDataTable.status) "Success!" else "Failed...",
+                    text = resultDataTable.studyTitle,
                     modifier = Modifier.padding(8.dp),
-                    color = if(resultDataTable.status) Color.Blue else Color.Red,
-                    fontSize = 24.sp,
+                    color = Color.Black,
+                    fontSize = 18.sp,
                 )
             }
             Row(
@@ -104,6 +104,17 @@ fun ResultCard(
                     modifier = Modifier.padding(8.dp),
                     color = if(resultDataTable.status) Color.Blue else Color.Red,
                     fontSize = 18.sp,
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                //勉強結果
+                Text(
+                    text = if(resultDataTable.status) "Success!" else "Failed...",
+                    modifier = Modifier.padding(8.dp),
+                    color = if(resultDataTable.status) Color.Blue else Color.Red,
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.End
                 )
             }
         }

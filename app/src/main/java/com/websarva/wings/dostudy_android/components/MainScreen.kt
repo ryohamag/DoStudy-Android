@@ -177,7 +177,8 @@ fun MainScreen(
                     httpRequest(channelId = vm.channelId, username = vm.username, status = true, vm.seconds, vm = vm, mode = "start")
                 }
                 vm.isShowStudyTitleDialog = false
-            }
+            },
+            titleList = vm.resultDataList.map { it.studyTitle }
         )
     }
 
