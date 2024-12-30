@@ -3,6 +3,7 @@ package com.websarva.wings.dostudy_android.components
 import android.media.MediaPlayer
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -167,12 +168,17 @@ fun MainScreen(
             studyTitle = vm.studyTitle,
             onStudyTitleChange = { vm.studyTitle = it },
             onConfirmButtonClick = {
+                if(vm.studyTitle.isEmpty()) {
+                    Toast.makeText(context, "タイトルを入力してください", Toast.LENGTH_SHORT).show()
+                    return@SetTitleDialog
+                }
                 if(!vm.isStudyStarted) {
                     vm.isStudyStarted = true
                     httpRequest(channelId = vm.channelId, username = vm.username, status = true, vm.seconds, vm = vm, mode = "start")
                 }
                 vm.isShowStudyTitleDialog = false
-            }
+            },
+            titleList = vm.resultDataList.map { it.studyTitle }
         )
     }
 
@@ -275,7 +281,7 @@ fun MainScreen(
                         }
 
                         IconButton(
-                            onClick = { navController.navigate("Result") },
+                            onClick = { if(vm.resultDataList.isNotEmpty()) navController.navigate("Result") else Toast.makeText(context, "まだデータがありません", Toast.LENGTH_SHORT).show() },
                             modifier = Modifier
                                 .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
                                 .scale(2.5f)
