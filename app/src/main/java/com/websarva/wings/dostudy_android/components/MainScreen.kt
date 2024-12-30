@@ -3,6 +3,7 @@ package com.websarva.wings.dostudy_android.components
 import android.media.MediaPlayer
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -167,6 +168,10 @@ fun MainScreen(
             studyTitle = vm.studyTitle,
             onStudyTitleChange = { vm.studyTitle = it },
             onConfirmButtonClick = {
+                if(vm.studyTitle.isEmpty()) {
+                    Toast.makeText(context, "タイトルを入力してください", Toast.LENGTH_SHORT).show()
+                    return@SetTitleDialog
+                }
                 if(!vm.isStudyStarted) {
                     vm.isStudyStarted = true
                     httpRequest(channelId = vm.channelId, username = vm.username, status = true, vm.seconds, vm = vm, mode = "start")
