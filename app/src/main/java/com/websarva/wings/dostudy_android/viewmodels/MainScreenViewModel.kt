@@ -53,6 +53,8 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     var isShowStopTimerDialog by mutableStateOf(false) //タイマーを止めるダイアログを表示するかどうか
     var isShowChart by mutableStateOf(true) //チャートを表示するかどうか
     var isShowAdScreen by mutableStateOf(false) //広告画面を表示するかどうか
+    var studyTitle by mutableStateOf("") //勉強タイトル
+    var isShowStudyTitleDialog by mutableStateOf(false) //勉強タイトルダイアログを表示するかどうか
 
     //初期化
     init {
