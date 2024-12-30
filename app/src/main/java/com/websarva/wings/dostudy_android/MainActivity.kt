@@ -12,7 +12,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.websarva.wings.dostudy_android.components.MainScreen
-import com.websarva.wings.dostudy_android.components.TimerSetMenu
 import com.websarva.wings.dostudy_android.ui.theme.DoStudyAndroidTheme
 import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
 import android.content.Context
@@ -36,9 +35,6 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController = navController, startDestination = "Main") {
                         composable("Main") {
                             MainScreen(navController, innerPadding, context, vm)
-                        }
-                        composable("TimerSetting") {
-                            TimerSetMenu(vm)
                         }
                         composable("Result") {
                             ResultScreen(innerPadding, vm)

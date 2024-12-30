@@ -160,6 +160,22 @@ fun MainScreen(
         )
     }
 
+    //勉強タイトルダイアログを表示
+    if(vm.isShowStudyTitleDialog) {
+        SetTitleDialog (
+            onDismissRequest = { vm.isShowStudyTitleDialog = false },
+            studyTitle = vm.studyTitle,
+            onStudyTitleChange = { vm.studyTitle = it },
+            onConfirmButtonClick = {
+                if(!vm.isStudyStarted) {
+                    vm.isStudyStarted = true
+                    httpRequest(channelId = vm.channelId, username = vm.username, status = true, vm.seconds, vm = vm, mode = "start")
+                }
+                vm.isShowStudyTitleDialog = false
+            }
+        )
+    }
+
     //タイマーストップダイアログを表示
     if(vm.isShowStopTimerDialog) {
         StopTimerDialog(
@@ -215,11 +231,11 @@ fun MainScreen(
                     //スタート/ストップボタン
                     Button(
                         onClick = {
+                            if(!vm.isStudyStarted) {
+                                vm.isShowStudyTitleDialog = true
+                            }
                             if(vm.isStudyStarted && !vm.isTimerMode) {
                                 vm.isShowStopTimerDialog = true
-                            }
-                            if(!vm.isStudyStarted) {
-                                vm.isStudyStarted = !vm.isStudyStarted
                             }
                         },
                         modifier = Modifier

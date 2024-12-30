@@ -1,6 +1,7 @@
 package com.websarva.wings.dostudy_android.functions
 
 import android.util.Log
+import androidx.work.Data
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
@@ -20,6 +21,12 @@ data class UserData(
     val realtimer_seconds: Int
 )
 
+data class TitleData(
+    val channelid: String,
+    val name: String,
+    val title: String
+)
+
 data class ApiResponse(
     @SerializedName("statusCode") val statusCode: Int,
     @SerializedName("message") val message: String
@@ -30,15 +37,21 @@ fun httpRequest(
     username: String,
     status: Boolean,
     seconds: Int,
-    vm: MainScreenViewModel
+    vm: MainScreenViewModel,
+    mode: String = "close"
 ) {
-    val userData = UserData(channelId, username, status, seconds)
+    val userData: Any = when (mode) {
+        "close" -> UserData(channelId, username, status, seconds)
+        "start" -> TitleData(channelId, username, vm.studyTitle)
+        else -> UserData(channelId, username, status, seconds)
+    }
+
     val jsonString = Gson().toJson(userData) //JSONに変換
 
     val requestBody = jsonString.toRequestBody("application/json".toMediaTypeOrNull())
 
     val request = Request.Builder()
-        .url("https://6fqsnu3hec.execute-api.ap-northeast-1.amazonaws.com/kouno")
+        .url("https://6fqsnu3hec.execute-api.ap-northeast-1.amazonaws.com/kouno/${mode}")
         .post(requestBody)
         .build()
 
