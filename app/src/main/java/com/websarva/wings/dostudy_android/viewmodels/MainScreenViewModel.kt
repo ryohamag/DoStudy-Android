@@ -7,10 +7,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.websarva.wings.dostudy_android.OrientationSensor
+import com.websarva.wings.dostudy_android.R
 import com.websarva.wings.dostudy_android.Room.ResultDataTable
 import com.websarva.wings.dostudy_android.Room.ResultRoomDataBase
 import com.websarva.wings.dostudy_android.Room.UserDataTable
@@ -55,6 +58,7 @@ class MainScreenViewModel(context: Context) : ViewModel() {
     var isShowAdScreen by mutableStateOf(false) //広告画面を表示するかどうか
     var studyTitle by mutableStateOf("") //勉強タイトル
     var isShowStudyTitleDialog by mutableStateOf(false) //勉強タイトルダイアログを表示するかどうか
+    var selectedFont by mutableIntStateOf(0) //選択されたフォント
 
     //初期化
     init {
