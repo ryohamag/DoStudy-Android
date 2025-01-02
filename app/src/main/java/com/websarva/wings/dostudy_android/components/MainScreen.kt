@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -48,6 +49,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -70,6 +73,8 @@ fun MainScreen(
     //スマホの角度を監視
     val orientation by vm.orientationSensor.orientation.observeAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
+
+    val fonts = listOf("Default", "Noto Sans JP", "Montserrat", "Open Sans", "Playfair Display", "New Amsterdam")
 
     // メディアプレイヤーを用意
     val mediaPlayer = remember { MediaPlayer.create(context, R.raw.effect_sound) }
@@ -157,7 +162,10 @@ fun MainScreen(
             onChannelIdChange = { vm.channelId = it },
             createUserData = { vm.createUserData() },
             updateUserData = { vm.updateUserData() },
-            isFirstStartup = vm.isFirstStartup
+            isFirstStartup = vm.isFirstStartup,
+            selectedFont = vm.selectedFont,
+            selectedFontChange = { vm.selectedFont = it },
+            fonts = fonts
         )
     }
 
@@ -224,8 +232,18 @@ fun MainScreen(
                 text = "${hour.toString().padStart(2, '0')}h" +
                         "${minute.toString().padStart(2, '0')}m" +
                         "${second.toString().padStart(2, '0')}s",
-                modifier = Modifier.padding(start = 64.dp, end = 64.dp, top = 64.dp, bottom = 8.dp),
-                fontSize = 52.sp
+                modifier = Modifier
+                    .padding(start = 32.dp, end = 32.dp, top = 64.dp, bottom = 8.dp),
+                fontSize = 52.sp,
+                fontFamily = when(vm.selectedFont) {
+                    0 -> FontFamily.Default
+                    1 -> FontFamily(Font(R.font.noto_sans_jp))
+                    2 -> FontFamily(Font(R.font.montserrat))
+                    3 -> FontFamily(Font(R.font.open_sans))
+                    4 -> FontFamily(Font(R.font.playfair_display))
+                    5 -> FontFamily(Font(R.font.new_amsterdam))
+                    else -> FontFamily.Default
+                },
             )
 
             Spacer(modifier = Modifier.height(20.dp))
