@@ -227,24 +227,37 @@ fun MainScreen(
             val minute = if(!vm.isTimerMode) (vm.seconds % 3600) / 60 else (vm.selectedTimer?.rem(3600) ?: 0) / 60
             val second = if(!vm.isTimerMode) vm.seconds % 60 else vm.selectedTimer?.rem(60) ?: 0
 
-            //タイマー
-            Text(
-                text = "${hour.toString().padStart(2, '0')}h" +
-                        "${minute.toString().padStart(2, '0')}m" +
-                        "${second.toString().padStart(2, '0')}s",
-                modifier = Modifier
-                    .padding(start = 32.dp, end = 32.dp, top = 64.dp, bottom = 8.dp),
-                fontSize = 52.sp,
-                fontFamily = when(vm.selectedFont) {
-                    0 -> FontFamily.Default
-                    1 -> FontFamily(Font(R.font.noto_sans_jp))
-                    2 -> FontFamily(Font(R.font.montserrat))
-                    3 -> FontFamily(Font(R.font.open_sans))
-                    4 -> FontFamily(Font(R.font.playfair_display))
-                    5 -> FontFamily(Font(R.font.new_amsterdam))
-                    else -> FontFamily.Default
-                },
-            )
+            if(!vm.isStudyStarted || (vm.isStudyStarted && !vm.isTimerMode)) {
+                //タイマー
+                Text(
+                    text = "${hour.toString().padStart(2, '0')}h" +
+                            "${minute.toString().padStart(2, '0')}m" +
+                            "${second.toString().padStart(2, '0')}s",
+                    modifier = Modifier
+                        .padding(start = 32.dp, end = 32.dp, top = 64.dp, bottom = 8.dp),
+                    fontSize = 52.sp,
+                    fontFamily = when (vm.selectedFont) {
+                        0 -> FontFamily.Default
+                        1 -> FontFamily(Font(R.font.noto_sans_jp))
+                        2 -> FontFamily(Font(R.font.montserrat))
+                        3 -> FontFamily(Font(R.font.open_sans))
+                        4 -> FontFamily(Font(R.font.playfair_display))
+                        5 -> FontFamily(Font(R.font.new_amsterdam))
+                        else -> FontFamily.Default
+                    },
+                )
+            }
+
+            //円形タイマー
+            if(vm.isStudyStarted && vm.isTimerMode) {
+                CircularTimer(
+                    hour = hour,
+                    minute = minute,
+                    second = second,
+                    setTimer = vm.setTimer!!,
+                    selectedFont = vm.selectedFont,
+                )
+            }
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -286,7 +299,7 @@ fun MainScreen(
                             .padding(16.dp)
                     ) {
                         IconButton(
-                            onClick = { vm.isSettingsDialogOpen = true },
+                            onClick = { if(!vm.isStudyStarted) vm.isSettingsDialogOpen = true },
                             modifier = Modifier
                                 .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
                                 .scale(2.5f)
@@ -299,7 +312,7 @@ fun MainScreen(
                         }
 
                         IconButton(
-                            onClick = { if(vm.resultDataList.isNotEmpty()) navController.navigate("Result") else Toast.makeText(context, "まだデータがありません", Toast.LENGTH_SHORT).show() },
+                            onClick = { if(!vm.isStudyStarted) { if(vm.resultDataList.isNotEmpty()) navController.navigate("Result") else Toast.makeText(context, "まだデータがありません", Toast.LENGTH_SHORT).show() }},
                             modifier = Modifier
                                 .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
                                 .scale(2.5f)
@@ -386,6 +399,7 @@ fun MainScreen(
             }
         }
 
+        //広告バナー
         AdBanner(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
