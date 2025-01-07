@@ -19,11 +19,14 @@ import android.os.PowerManager
 import com.google.android.gms.ads.MobileAds
 import com.websarva.wings.dostudy_android.components.ResultScreen
 import com.websarva.wings.dostudy_android.functions.httpRequest
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private lateinit var vm: MainScreenViewModel
+    @Inject
+    lateinit var vm: MainScreenViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
-        vm = MainScreenViewModel(this)
         MobileAds.initialize(this)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

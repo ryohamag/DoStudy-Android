@@ -43,7 +43,7 @@ fun SetTitleDialog(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                titleList.reversed().take(5).forEach {
+                titleList.reversed().distinct().take(5).forEach {
                     TextButton(
                         onClick = { onStudyTitleChange(it) },
                     ) {

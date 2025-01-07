@@ -165,7 +165,7 @@ fun SettingsDialog(
                 ) {
                     TextField(
                         readOnly = true,
-                        value = fonts[selectedFont.toInt()],
+                        value = fonts[selectedFont],
                         onValueChange = { },
                         modifier = Modifier.menuAnchor(),
                         label = { Text("フォント") },
