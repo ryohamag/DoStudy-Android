@@ -18,6 +18,8 @@ import com.websarva.wings.dostudy_android.Room.ResultDataTable
 import com.websarva.wings.dostudy_android.Room.ResultRoomDataBase
 import com.websarva.wings.dostudy_android.Room.UserDataTable
 import com.websarva.wings.dostudy_android.Room.UserRoomDataBase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,8 +28,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class MainScreenViewModel(context: Context) : ViewModel() {
+@HiltViewModel
+class MainScreenViewModel @Inject constructor(
+    @ApplicationContext private val context: Context
+) : ViewModel() {
     private val db = UserRoomDataBase.getUserRoomDataBase(context)
     private val userDataDao = db.userDataDao()
 

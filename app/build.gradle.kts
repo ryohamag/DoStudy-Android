@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.devtools.ksp")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -105,6 +106,10 @@ android {
 
         //PermissionRequest
         implementation (libs.accompanist.permissions)
+
+        //hilt
+        implementation(libs.hilt.android)
+        ksp(libs.hilt.android.compiler)
     }
 }
 dependencies {
