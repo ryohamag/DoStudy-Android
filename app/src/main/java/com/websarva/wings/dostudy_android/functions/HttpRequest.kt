@@ -1,7 +1,6 @@
 package com.websarva.wings.dostudy_android.functions
 
 import android.util.Log
-import androidx.work.Data
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
