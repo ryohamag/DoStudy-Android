@@ -17,15 +17,16 @@ fun LineChart(
     modifier: Modifier = Modifier,
     lineColor: Color = Color.Black
 ) {
-    val maxValue = timeToSeconds(resultDataTable.maxOf { it.studyTime })
-    val minValue = timeToSeconds(resultDataTable.minOf { it.studyTime })
+    val dataTable = resultDataTable.reversed().take(20).reversed()
+    val maxValue = timeToSeconds(dataTable.maxOf { it.studyTime })
+    val minValue = timeToSeconds(dataTable.minOf { it.studyTime })
 
     Canvas(modifier = modifier) {
-        val spaceBetweenPoints = size.width / (resultDataTable.size - 1)
+        val spaceBetweenPoints = size.width / (dataTable.size - 1)
         val scale = size.height / (maxValue - minValue)
 
         //点の座標を計算
-        val points = resultDataTable.mapIndexed { index, value ->
+        val points = dataTable.mapIndexed { index, value ->
             val x = index * spaceBetweenPoints
             val y = size.height - (timeToSeconds(value.studyTime) - minValue) * scale
             Offset(x, y)
@@ -76,7 +77,7 @@ fun LineChart(
         }
 
         //x軸の目盛りを描画
-        for (i in resultDataTable.indices) {
+        for (i in dataTable.indices) {
             val x = i * spaceBetweenPoints
             drawLine(
                 color = gridLineColor,
@@ -97,7 +98,7 @@ fun LineChart(
 
         //点を描画
         points.forEachIndexed { index, point ->
-            val pointColor = if (resultDataTable[index].status) Color.Blue else Color.Red
+            val pointColor = if (dataTable[index].status) Color.Blue else Color.Red
             drawCircle(
                 color = pointColor,
                 center = point,

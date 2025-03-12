@@ -1,15 +1,15 @@
 [versions]
 accompanistPermissions = "0.16.1"
-agp = "8.7.2"
-animation = "1.7.5"
+agp = "8.7.3"
+animation = "1.7.6"
 annotations = "23.0.0"
-cascadeCompose = "2.0.0-rc01"
+cascadeCompose = "2.3.0"
 cascadeVersion = "2.3.0"
 converterGson = "2.9.0"
 hiltAndroid = "2.51.1"
-hiltAndroidCompiler = "2.44"
+hiltAndroidCompiler = "2.51.1"
 hiltAndroidVersion = "2.51.1"
-hiltCompilerVersion = "2.44"
+hiltCompilerVersion = "2.51.1"
 hiltNavigationCompose = "1.2.0"
 kotlin = "1.9.0"
 coreKtx = "1.15.0"
@@ -19,18 +19,19 @@ espressoCore = "3.6.1"
 kotlinGradlePlugin = "2.0.21"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
-composeBom = "2024.11.00"
-material3 = "1.4.0-alpha04"
-materialIconsCore = "1.7.5"
-navigationCompose = "2.8.4"
+composeBom = "2024.12.01"
+material3 = "1.4.0-alpha05"
+materialIconsCore = "1.7.6"
+navigationCompose = "2.8.5"
 numberpicker = "latestVersion"
 okhttp = "4.12.0"
 retrofit = "2.9.0"
 roomRuntime = "2.6.1"
 tracingPerfettoHandshake = "1.0.0"
-runtimeLivedata = "1.7.5"
+runtimeLivedata = "1.7.6"
 wheelpickerCompose = "1.0.0"
 wheelpickercomposeVersion = "1.1.11"
+playServicesAdsLite = "23.6.0"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
@@ -74,6 +75,7 @@ androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtim
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 wheelpicker-compose = { module = "com.github.guilhe:wheelpicker-compose", version.ref = "wheelpickerCompose" }
 wheelpickercompose = { module = "com.github.commandiron:WheelPickerCompose", version.ref = "wheelpickercomposeVersion" }
+play-services-ads-lite = { group = "com.google.android.gms", name = "play-services-ads-lite", version.ref = "playServicesAdsLite" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
