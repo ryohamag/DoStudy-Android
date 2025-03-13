@@ -17,7 +17,8 @@ data class UserData(
     val channelid: String,
     val name: String,
     val close: Boolean,
-    val realtimer_seconds: Int
+    val realtimer_seconds: Int,
+    val title: String = ""
 )
 
 data class TitleData(
@@ -40,7 +41,7 @@ fun httpRequest(
     mode: String = "close"
 ) {
     val userData: Any = when (mode) {
-        "close" -> UserData(channelId, username, status, seconds)
+        "close" -> UserData(channelId, username, status, seconds, vm.studyTitle)
         "start" -> TitleData(channelId, username, vm.studyTitle)
         else -> UserData(channelId, username, status, seconds)
     }
