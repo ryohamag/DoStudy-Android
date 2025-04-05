@@ -201,10 +201,6 @@ fun SettingsDialog(
                         Toast.makeText(context, "チャンネルIDを入力してください", Toast.LENGTH_SHORT).show()
                         return@TextButton
                     }
-                    if (channelId.length != 19) { // チャンネルIDが19桁かどうかをチェック
-                        Toast.makeText(context, "チャンネルIDは19桁で入力してください", Toast.LENGTH_SHORT).show()
-                        return@TextButton
-                    }
                     if(isFirstStartup) {
                         createUserData() //初回起動時ならcreate
                     } else {
