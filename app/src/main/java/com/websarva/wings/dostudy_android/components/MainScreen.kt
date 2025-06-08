@@ -348,7 +348,7 @@ fun MainScreen(
                     modifier = Modifier
                         .padding(start = 32.dp, end = 32.dp, top = 8.dp, bottom = 48.dp)
                         .background(
-                            color = Color.White.copy(alpha = 0.5f), // 白の半透明
+                            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f), // 白の半透明
                             shape = RoundedCornerShape(8.dp)
                         )
                         .fillMaxWidth()
@@ -370,7 +370,10 @@ fun MainScreen(
                                     .fillMaxWidth()
                                     .clip(RoundedCornerShape(100.dp))
                                     .clickable { vm.isShowTimerAddingDialog = true }, // Card 全体がクリック可能
-                                colors = CardDefaults.cardColors(Color(0xffcce6ff))
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
                             ) {
                                 Box( // 中央寄せのため Box を使用
                                     modifier = Modifier
