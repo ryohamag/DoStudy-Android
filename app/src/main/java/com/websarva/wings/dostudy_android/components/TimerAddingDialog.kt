@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Text
@@ -76,7 +77,7 @@ fun TimerAddingDialog(
                             "${timerState.substring(2, 4)}m " +
                             "${timerState.substring(4, 6)}s",
                     modifier = Modifier.padding(8.dp),
-                    fontSize = 42.sp
+                    fontSize = 42.sp,
                 )
 
                 //数字入力ボタン
@@ -145,7 +146,7 @@ fun NumpadButton(
             .size(70.dp),
         colors = ButtonDefaults.outlinedButtonColors( //ボタンの色
             containerColor = Color.Transparent,
-            contentColor = Color.Black)
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer)
     ) {
         Text(
             text = text,
