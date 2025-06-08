@@ -5,6 +5,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -196,17 +197,17 @@ fun MainScreen(
         )
     }
 
+    val gradientColors = if (isSystemInDarkTheme()) {
+        listOf(Color(0xFF1a1a1a), Color(0xFF333333), Color(0xFF4d4d4d)) // ダークモード向け
+    } else {
+        listOf(Color(0xffcce6ff), Color(0xff66b3ff), Color(0xff0080ff)) // ライトモード向け
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                brush = Brush.verticalGradient( //背景のグラデーション
-                    colors = listOf(
-                        Color(0xffcce6ff),
-                        Color(0xff66b3ff),
-                        Color(0xff0080ff),
-                    )
-                )
+                brush = Brush.verticalGradient(gradientColors)
             )
     ) {
         Column(
