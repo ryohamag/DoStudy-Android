@@ -35,7 +35,10 @@ fun ResultCard(
         modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth(),
-        colors = if(resultDataTable.status) CardDefaults.cardColors(Color(0xffcce6ff)) else CardDefaults.cardColors(MaterialTheme.colorScheme.errorContainer)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        )
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
@@ -47,7 +50,6 @@ fun ResultCard(
                 Text(
                     text = resultDataTable.date,
                     modifier = Modifier.padding(8.dp),
-                    color = Color.Black,
                     fontSize = 24.sp,
                 )
 
@@ -57,7 +59,6 @@ fun ResultCard(
                 Text(
                     text = resultDataTable.studyTitle,
                     modifier = Modifier.padding(8.dp),
-                    color = Color.Black,
                     fontSize = 18.sp,
                 )
             }
@@ -80,7 +81,6 @@ fun ResultCard(
                 Text(
                     text = if(resultDataTable.setTimer == null) "未設定" else resultDataTable.setTimer!!,
                     modifier = Modifier.padding(8.dp),
-                    color = Color.Black,
                     fontSize = 18.sp,
                 )
 
@@ -93,7 +93,6 @@ fun ResultCard(
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
                         .scale(1f),
-                    tint = Color.Black
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -102,7 +101,6 @@ fun ResultCard(
                 Text(
                     text = resultDataTable.studyTime,
                     modifier = Modifier.padding(8.dp),
-                    color = if(resultDataTable.status) Color.Blue else Color.Red,
                     fontSize = 18.sp,
                 )
 
@@ -110,9 +108,9 @@ fun ResultCard(
 
                 //勉強結果
                 Text(
-                    text = if(resultDataTable.status) "Success!" else "Failed...",
+                    text = if(resultDataTable.status) "Success" else "Failed",
                     modifier = Modifier.padding(8.dp),
-                    color = if(resultDataTable.status) Color.Blue else Color.Red,
+                    color = if(resultDataTable.status) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
                     fontSize = 18.sp,
                     textAlign = TextAlign.End
                 )

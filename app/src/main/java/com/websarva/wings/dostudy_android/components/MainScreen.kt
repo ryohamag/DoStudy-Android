@@ -2,11 +2,10 @@ package com.websarva.wings.dostudy_android.components
 
 import android.media.MediaPlayer
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,8 +27,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconToggleButton
-import androidx.compose.material3.IconToggleButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,7 +47,6 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -202,17 +197,17 @@ fun MainScreen(
         )
     }
 
+    val gradientColors = if (isSystemInDarkTheme()) {
+        listOf(Color(0xFF1a1a1a), Color(0xFF333333), Color(0xFF4d4d4d)) // ダークモード向け
+    } else {
+        listOf(Color(0xffcce6ff), Color(0xff66b3ff), Color(0xff0080ff)) // ライトモード向け
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                brush = Brush.verticalGradient( //背景のグラデーション
-                    colors = listOf(
-                        Color(0xffcce6ff),
-                        Color(0xff66b3ff),
-                        Color(0xff0080ff),
-                    )
-                )
+                brush = Brush.verticalGradient(gradientColors)
             )
     ) {
         Column(
@@ -353,7 +348,7 @@ fun MainScreen(
                     modifier = Modifier
                         .padding(start = 32.dp, end = 32.dp, top = 8.dp, bottom = 48.dp)
                         .background(
-                            color = Color.White.copy(alpha = 0.5f), // 白の半透明
+                            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f), // 白の半透明
                             shape = RoundedCornerShape(8.dp)
                         )
                         .fillMaxWidth()
@@ -375,7 +370,10 @@ fun MainScreen(
                                     .fillMaxWidth()
                                     .clip(RoundedCornerShape(100.dp))
                                     .clickable { vm.isShowTimerAddingDialog = true }, // Card 全体がクリック可能
-                                colors = CardDefaults.cardColors(Color(0xffcce6ff))
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
                             ) {
                                 Box( // 中央寄せのため Box を使用
                                     modifier = Modifier

@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Text
@@ -40,7 +41,7 @@ fun TimerAddingDialog(
 
     //数字ボタンを押した時の処理
     fun updateTimer(input: String) {
-        // 先頭が"0"でない場合は追加しない
+        //先頭が"0"でない場合は追加しない
         if (timerState.first() == '0') {
             if(input == "00") { //00が押されたときの分岐
                 if (timerState.getOrNull(1) != '0') {
@@ -48,7 +49,7 @@ fun TimerAddingDialog(
                     timerState = (timerState + "0").takeLast(6) //0を1つだけ追加
                     return
                 } else {
-                    // 先頭から2番目が"0"ではない場合の処理
+                    //先頭から2番目が"0"ではない場合の処理
                     timerState = (timerState + input).takeLast(6)
                     return
                 }
@@ -59,7 +60,7 @@ fun TimerAddingDialog(
 
     //バックスペースボタンの処理
     fun removeLastDigit() {
-        timerState = timerState.dropLast(1).padStart(6, '0') // 最後の桁を削除し、0で埋める
+        timerState = timerState.dropLast(1).padStart(6, '0') //最後の桁を削除し、0で埋める
     }
 
     AlertDialog(
@@ -76,7 +77,7 @@ fun TimerAddingDialog(
                             "${timerState.substring(2, 4)}m " +
                             "${timerState.substring(4, 6)}s",
                     modifier = Modifier.padding(8.dp),
-                    fontSize = 42.sp
+                    fontSize = 42.sp,
                 )
 
                 //数字入力ボタン
@@ -145,7 +146,7 @@ fun NumpadButton(
             .size(70.dp),
         colors = ButtonDefaults.outlinedButtonColors( //ボタンの色
             containerColor = Color.Transparent,
-            contentColor = Color.Black)
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer)
     ) {
         Text(
             text = text,

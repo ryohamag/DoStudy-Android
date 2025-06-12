@@ -18,16 +18,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -91,7 +87,7 @@ fun SettingsDialog(
                     append("チャンネルIDの調べ方はこちら")
                     addStyle(
                         style = SpanStyle(
-                            color = Color.Blue, // リンクとして青色にする
+                            color = MaterialTheme.colorScheme.primary, // リンクとして青色にする
                         ),
                         start = 0,
                         end = this.length
@@ -121,7 +117,7 @@ fun SettingsDialog(
                     append("Botの招待リンクはこちら")
                     addStyle(
                         style = SpanStyle(
-                            color = Color.Blue, // リンクとして青色にする
+                            color = MaterialTheme.colorScheme.primary, // リンクとして青色にする
                         ),
                         start = 0,
                         end = this.length
@@ -204,10 +200,6 @@ fun SettingsDialog(
                     }
                     if (channelId.isEmpty()) {
                         Toast.makeText(context, "チャンネルIDを入力してください", Toast.LENGTH_SHORT).show()
-                        return@TextButton
-                    }
-                    if (channelId.length != 19) { // チャンネルIDが19桁かどうかをチェック
-                        Toast.makeText(context, "チャンネルIDは19桁で入力してください", Toast.LENGTH_SHORT).show()
                         return@TextButton
                     }
                     if(isFirstStartup) {
