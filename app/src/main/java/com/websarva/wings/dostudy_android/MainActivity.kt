@@ -18,6 +18,7 @@ import android.content.Context
 import android.os.PowerManager
 import com.google.android.gms.ads.MobileAds
 import com.websarva.wings.dostudy_android.components.ResultScreen
+import com.websarva.wings.dostudy_android.components.SettingScreen
 import com.websarva.wings.dostudy_android.functions.httpRequest
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -41,6 +42,20 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("Result") {
                             ResultScreen(innerPadding, vm)
+                        }
+                        composable("Settings") {
+                            SettingScreen(
+                                username = "テストユーザー",
+                                onUsernameChange = {},
+                                channelId = "123456789",
+                                onChannelIdChange = {},
+                                createUserData = {},
+                                updateUserData = {},
+                                isFirstStartup = true,
+                                selectedFont = 0,
+                                selectedFontChange = {},
+                                fonts = listOf("デフォルト", "明朝体", "ゴシック体")
+                            )
                         }
                     }
                 }

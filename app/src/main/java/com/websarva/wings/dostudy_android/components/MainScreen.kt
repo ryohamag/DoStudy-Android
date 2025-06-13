@@ -294,7 +294,7 @@ fun MainScreen(
                             .padding(16.dp)
                     ) {
                         IconButton(
-                            onClick = { if(!vm.isStudyStarted) vm.isSettingsDialogOpen = true },
+                            onClick = { navController.navigate("Settings") },
                             modifier = Modifier
                                 .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
                                 .scale(2.5f)
