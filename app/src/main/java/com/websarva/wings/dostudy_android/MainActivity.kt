@@ -11,22 +11,24 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.websarva.wings.dostudy_android.components.MainScreen
+import com.websarva.wings.dostudy_android.view.MainScreen
 import com.websarva.wings.dostudy_android.ui.theme.DoStudyAndroidTheme
-import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
+import com.websarva.wings.dostudy_android.viewmodel.MainViewModel
 import android.content.Context
 import android.os.PowerManager
+import androidx.activity.viewModels
 import com.google.android.gms.ads.MobileAds
-import com.websarva.wings.dostudy_android.components.ResultScreen
-import com.websarva.wings.dostudy_android.components.SettingScreen
+import com.websarva.wings.dostudy_android.view.ResultScreen
+import com.websarva.wings.dostudy_android.view.SettingScreen
 import com.websarva.wings.dostudy_android.functions.httpRequest
+import com.websarva.wings.dostudy_android.util.FontConstants
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import kotlin.getValue
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @Inject
-    lateinit var vm: MainScreenViewModel
+    private val mainVM: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         MobileAds.initialize(this)
         super.onCreate(savedInstanceState)
@@ -38,23 +40,24 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = "Main") {
                         composable("Main") {
-                            MainScreen(navController, innerPadding, context, vm)
+                            MainScreen(navController, innerPadding, context, mainVM)
                         }
                         composable("Result") {
-                            ResultScreen(innerPadding, vm)
+                            ResultScreen(innerPadding, mainVM)
                         }
                         composable("Settings") {
                             SettingScreen(
-                                username = "テストユーザー",
-                                onUsernameChange = {},
-                                channelId = "123456789",
-                                onChannelIdChange = {},
-                                createUserData = {},
-                                updateUserData = {},
-                                isFirstStartup = true,
-                                selectedFont = 0,
-                                selectedFontChange = {},
-                                fonts = listOf("デフォルト", "明朝体", "ゴシック体")
+                                username = mainVM.username,
+                                onUsernameChange = { mainVM.username = it },
+                                channelId = mainVM.channelId,
+                                onChannelIdChange = { mainVM.channelId = it },
+                                createUserData = { mainVM.createUserData() },
+                                updateUserData = { mainVM.updateUserData() },
+                                isFirstStartup = mainVM.isFirstStartup,
+                                selectedFont = mainVM.selectedFont,
+                                selectedFontChange = { mainVM.selectedFont = it },
+                                fonts = FontConstants.fonts,
+                                navController = navController
                             )
                         }
                     }
@@ -69,11 +72,11 @@ class MainActivity : ComponentActivity() {
         val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         if (powerManager.isInteractive) {
             // 通常の onPause（アプリが非表示になった等）
-            handleReturnFromBackground(vm)
+            handleReturnFromBackground(mainVM)
         }
     }
 
-    private fun handleReturnFromBackground(vm: MainScreenViewModel) {
+    private fun handleReturnFromBackground(vm: MainViewModel) {
         if(vm.isStudyStarted) {
             vm.addResultData(false)
             vm.isShowFailedDialog = true

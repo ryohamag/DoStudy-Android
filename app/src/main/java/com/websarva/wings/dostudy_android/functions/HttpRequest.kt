@@ -3,7 +3,7 @@ package com.websarva.wings.dostudy_android.functions
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
-import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
+import com.websarva.wings.dostudy_android.viewmodel.MainViewModel
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -37,7 +37,7 @@ fun httpRequest(
     username: String,
     status: Boolean,
     seconds: Int,
-    vm: MainScreenViewModel,
+    vm: MainViewModel,
     mode: String = "close"
 ) {
     val userData: Any = when (mode) {

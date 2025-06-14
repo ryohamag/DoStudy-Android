@@ -7,13 +7,15 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class OrientationSensor(context: Context) : SensorEventListener {
     private val sensorManager: SensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private val rotationVectorSensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
 
-    private val _orientation = MutableLiveData<FloatArray>() // LiveData
-    val orientation: LiveData<FloatArray> = _orientation
+    private val _orientation = MutableStateFlow(FloatArray(3)) // StateFlow
+    val orientation: StateFlow<FloatArray> = _orientation
 
     fun start() {
         sensorManager.registerListener(this, rotationVectorSensor, SensorManager.SENSOR_DELAY_NORMAL)
