@@ -85,13 +85,11 @@ fun MainScreen(
             vm.startSensor()
             while (vm.isStudyStarted) {
                 delay(1000) //1秒ごとにカウント
-                if(!vm.isTimerMode || vm.selectedTimer == null) {
-//                    vm.seconds.value++ //カウントアップモード
+                if(!vm.isTimerMode || vm.selectedTimer.value == null) {
                     vm.incrementSeconds()
                 } else {
-//                    vm.selectedTimer.value = vm.selectedTimer.value!! - 1 //カウントダウン(タイマー)モード
+                    //カウントダウン(タイマー)モード
                     vm.decrementSeconds()
-//                    vm.seconds++
                     vm.incrementSeconds()
                     if(vm.selectedTimer.value == 0) { //カウントが0になったら成功ダイアログを表示
                         vm.isShowSuccessDialog = true
@@ -100,8 +98,7 @@ fun MainScreen(
                 }
             }
         } else {
-            delay(1000)
-//            vm.seconds = 0
+            vm.reset()
             vm.stopSensor()
         }
     }
@@ -206,11 +203,12 @@ fun MainScreen(
                 .fillMaxWidth()
         ) {
             val seconds by vm.seconds.collectAsState() //経過時間を監視
+            val selectedTimer by vm.selectedTimer.collectAsState() //選択されたタイマーを監視
 
             //表示用のタイマー
-            val hour = if(!vm.isTimerMode) seconds / 3600 else vm.selectedTimer.value?.div(3600) ?: 0
-            val minute = if(!vm.isTimerMode) (seconds % 3600) / 60 else (vm.selectedTimer.value?.rem(3600) ?: 0) / 60
-            val second = if(!vm.isTimerMode) seconds % 60 else vm.selectedTimer.value?.rem(60) ?: 0
+            val hour = if (!vm.isTimerMode) seconds / 3600 else (selectedTimer ?: 0) / 3600
+            val minute = if (!vm.isTimerMode) (seconds % 3600) / 60 else ((selectedTimer ?: 0) % 3600) / 60
+            val second = if (!vm.isTimerMode) seconds % 60 else (selectedTimer ?: 0) % 60
 
             if(!vm.isStudyStarted || (vm.isStudyStarted && !vm.isTimerMode)) {
                 //タイマー
@@ -334,8 +332,9 @@ fun MainScreen(
                     )
                 }
 
+                val selectedTimer by vm.selectedTimer.collectAsState() //選択されたタイマーを監視
                 //何も選択されていなければタイマーモードをオフにしておく
-                if(vm.selectedTimer == null) {
+                if(selectedTimer == null) {
                     vm.isTimerMode = false
                 }
 

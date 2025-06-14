@@ -32,12 +32,6 @@ class MainViewModel @Inject constructor(
     private var _orientation: MutableStateFlow<FloatArray> = orientationSensor.orientation as MutableStateFlow<FloatArray>
     var orientation: StateFlow<FloatArray> = _orientation.asStateFlow()
 
-//    private val _isTimerMode = MutableStateFlow(false)
-//    val isTimerMode: StateFlow<Boolean> = _isTimerMode.asStateFlow()
-
-//    private val _isStudyStarted = MutableStateFlow(false)
-//    val isStudyStarted: StateFlow<Boolean> = _isStudyStarted.asStateFlow()
-
     private val _seconds = MutableStateFlow(0) // intでもStateFlow化可能
     val seconds: StateFlow<Int> = _seconds.asStateFlow()
 
@@ -49,9 +43,6 @@ class MainViewModel @Inject constructor(
 
     private val _setTimer = MutableStateFlow<Int?>(null)
     var setTimer: StateFlow<Int?> = _setTimer.asStateFlow()
-
-//    private val _studyTitle = MutableStateFlow("")
-//    val studyTitle: StateFlow<String> = _studyTitle.asStateFlow()
 
     private val _resultDataList = MutableStateFlow<List<ResultDataTable>>(listOf())
     val resultDataList: StateFlow<List<ResultDataTable>> = _resultDataList.asStateFlow()
@@ -71,29 +62,6 @@ class MainViewModel @Inject constructor(
     var selectedFont by mutableIntStateOf(0)
     var username by mutableStateOf("")
     var channelId by mutableStateOf("")
-
-
-
-//    var isFirstStartup by mutableStateOf(false) //初回起動かどうか
-//    var username by mutableStateOf("") //ユーザー名
-//    var channelId by mutableStateOf("") //チャンネルID
-//    var isTimerMode by mutableStateOf(false) //タイマーモードかどうか
-//    var isStudyStarted by mutableStateOf(false) //勉強が始まっているかどうか
-//    var seconds by mutableIntStateOf(0) //経過時間
-//    var addedTimerList by mutableStateOf<List<Int>>(listOf()) //追加したタイマーリスト
-//    var selectedTimer by mutableStateOf<Int?>(null) //選択されたタイマー
-//    var setTimer by mutableStateOf<Int?>(null) //設定されたタイマー
-//    var isShowTimerAddingDialog by mutableStateOf(false) //タイマー追加ダイアログを表示するかどうか
-//    var isShowFailedDialog by mutableStateOf(false) //失敗ダイアログを表示するかどうか
-//    var isShowSuccessDialog by mutableStateOf(false) //成功ダイアログを表示するかどうか
-//    var responseMessage by mutableStateOf("") //レスポンスメッセージ
-//    var resultDataList by mutableStateOf<List<ResultDataTable>>(listOf()) //結果データリスト
-//    var isShowStopTimerDialog by mutableStateOf(false) //タイマーを止めるダイアログを表示するかどうか
-//    var isShowChart by mutableStateOf(true) //チャートを表示するかどうか
-//    var isShowAdScreen by mutableStateOf(false) //広告画面を表示するかどうか
-//    var studyTitle by mutableStateOf("") //勉強タイトル
-//    var isShowStudyTitleDialog by mutableStateOf(false) //勉強タイトルダイアログを表示するかどうか
-//    var selectedFont by mutableIntStateOf(0) //選択されたフォント
 
     //初期化
     init {
