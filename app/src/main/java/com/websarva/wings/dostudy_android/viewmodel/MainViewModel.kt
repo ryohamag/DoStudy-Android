@@ -29,12 +29,9 @@ class MainViewModel @Inject constructor(
     private val repository: Repository,
     private val orientationSensor: OrientationSensor
 ) : ViewModel() {
-//    val orientationSensor = OrientationSensor(context) //画面の向きを検知するクラス
-
     private var _orientation: MutableStateFlow<FloatArray> = orientationSensor.orientation as MutableStateFlow<FloatArray>
     var orientation: StateFlow<FloatArray> = _orientation.asStateFlow()
 
-    var isSettingsDialogOpen by mutableStateOf(false) //設定ダイアログを開くかどうか
     var isFirstStartup by mutableStateOf(false) //初回起動かどうか
     var username by mutableStateOf("") //ユーザー名
     var channelId by mutableStateOf("") //チャンネルID

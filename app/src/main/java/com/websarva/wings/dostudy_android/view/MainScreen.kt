@@ -68,8 +68,6 @@ fun MainScreen(
     val orientation by vm.orientation.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
 
-//    val fonts = listOf("Default", "Noto Sans JP", "Montserrat", "Open Sans", "Playfair Display", "New Amsterdam")
-
     // メディアプレイヤーを用意
     val mediaPlayer = remember { MediaPlayer.create(context, R.raw.effect_sound) }
     // 音声再生関数
@@ -142,26 +140,6 @@ fun MainScreen(
             vm.reset()
         }
     }
-
-//    //ユーザ設定ダイアログを表示
-//    if (vm.isSettingsDialogOpen || vm.isFirstStartup) { //設定ボタンor初回起動時
-//        SettingsDialog(
-//            onDismissRequest = {
-//                vm.isSettingsDialogOpen = false
-//                vm.isFirstStartup = false
-//            },
-//            username = vm.username,
-//            onUsernameChange = { vm.username = it },
-//            channelId = vm.channelId,
-//            onChannelIdChange = { vm.channelId = it },
-//            createUserData = { vm.createUserData() },
-//            updateUserData = { vm.updateUserData() },
-//            isFirstStartup = vm.isFirstStartup,
-//            selectedFont = vm.selectedFont,
-//            selectedFontChange = { vm.selectedFont = it },
-//            fonts = fonts
-//        )
-//    }
 
     //勉強タイトルダイアログを表示
     if(vm.isShowStudyTitleDialog) {
