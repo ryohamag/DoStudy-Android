@@ -14,7 +14,10 @@ fun orientSensor(
         if (abs(Math.toDegrees(orientation[1].toDouble())) > 30.0) { //30度以上傾いたら停止
             vm.addResultData(false)
             vm.isShowFailedDialog = true
-            httpRequest(channelId = vm.channelId, username = vm.username, status = false, vm.seconds, vm = vm)
+            httpRequest(
+                channelId = vm.channelId, username = vm.username,
+                status = false, vm.seconds.value, vm = vm
+            )
             vm.reset()
         }
     }

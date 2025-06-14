@@ -20,7 +20,9 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object Module {
     @Provides
-    fun provideMainViewModel(repository: Repository, orientationSensor: OrientationSensor): MainViewModel {
+    fun provideMainViewModel(
+        repository: Repository, orientationSensor: OrientationSensor
+    ): MainViewModel {
         return MainViewModel(repository, orientationSensor)
     }
 

@@ -109,7 +109,11 @@ fun ResultCard(
                 Text(
                     text = if(resultDataTable.status) "Success" else "Failed",
                     modifier = Modifier.padding(8.dp),
-                    color = if(resultDataTable.status) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
+                    color = if(resultDataTable.status) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.error
+                    },
                     fontSize = 18.sp,
                     textAlign = TextAlign.End
                 )

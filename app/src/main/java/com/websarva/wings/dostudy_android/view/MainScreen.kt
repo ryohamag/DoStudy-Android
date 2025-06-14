@@ -53,6 +53,7 @@ import androidx.navigation.NavController
 import com.websarva.wings.dostudy_android.R
 import com.websarva.wings.dostudy_android.functions.httpRequest
 import com.websarva.wings.dostudy_android.functions.orientSensor
+import com.websarva.wings.dostudy_android.util.DefaultTimerConstants
 import com.websarva.wings.dostudy_android.viewmodel.MainViewModel
 import kotlinx.coroutines.delay
 
@@ -85,11 +86,14 @@ fun MainScreen(
             while (vm.isStudyStarted) {
                 delay(1000) //1秒ごとにカウント
                 if(!vm.isTimerMode || vm.selectedTimer == null) {
-                    vm.seconds++ //カウントアップモード
+//                    vm.seconds.value++ //カウントアップモード
+                    vm.incrementSeconds()
                 } else {
-                    vm.selectedTimer = vm.selectedTimer!! - 1 //カウントダウン(タイマー)モード
-                    vm.seconds++
-                    if(vm.selectedTimer == 0) { //カウントが0になったら成功ダイアログを表示
+//                    vm.selectedTimer.value = vm.selectedTimer.value!! - 1 //カウントダウン(タイマー)モード
+                    vm.decrementSeconds()
+//                    vm.seconds++
+                    vm.incrementSeconds()
+                    if(vm.selectedTimer.value == 0) { //カウントが0になったら成功ダイアログを表示
                         vm.isShowSuccessDialog = true
                         break
                     }
@@ -97,7 +101,7 @@ fun MainScreen(
             }
         } else {
             delay(1000)
-            vm.seconds = 0
+//            vm.seconds = 0
             vm.stopSensor()
         }
     }
@@ -136,13 +140,17 @@ fun MainScreen(
     LaunchedEffect(key1 = vm.isShowSuccessDialog) {
         if (vm.isShowSuccessDialog) {
             vm.addResultData(true)
-            httpRequest(channelId = vm.channelId, username = vm.username, status = true, vm.seconds, vm = vm)
+            httpRequest(
+                channelId = vm.channelId, username = vm.username, status = true,
+                vm.seconds.value, vm = vm
+            )
             vm.reset()
         }
     }
 
     //勉強タイトルダイアログを表示
     if(vm.isShowStudyTitleDialog) {
+        val resultDataList by vm.resultDataList.collectAsState()
         SetTitleDialog (
             onDismissRequest = { vm.isShowStudyTitleDialog = false },
             studyTitle = vm.studyTitle,
@@ -154,11 +162,14 @@ fun MainScreen(
                 }
                 if(!vm.isStudyStarted) {
                     vm.isStudyStarted = true
-                    httpRequest(channelId = vm.channelId, username = vm.username, status = true, vm.seconds, vm = vm, mode = "start")
+                    httpRequest(
+                        channelId = vm.channelId, username = vm.username,
+                        status = true, seconds = vm.seconds.value, vm = vm, mode = "start"
+                    )
                 }
                 vm.isShowStudyTitleDialog = false
             },
-            titleList = vm.resultDataList.map { it.studyTitle }
+            titleList = resultDataList.map { it.studyTitle }
         )
     }
 
@@ -194,10 +205,12 @@ fun MainScreen(
                 .padding(innerPadding)
                 .fillMaxWidth()
         ) {
+            val seconds by vm.seconds.collectAsState() //経過時間を監視
+
             //表示用のタイマー
-            val hour = if(!vm.isTimerMode) vm.seconds / 3600 else vm.selectedTimer?.div(3600) ?: 0
-            val minute = if(!vm.isTimerMode) (vm.seconds % 3600) / 60 else (vm.selectedTimer?.rem(3600) ?: 0) / 60
-            val second = if(!vm.isTimerMode) vm.seconds % 60 else vm.selectedTimer?.rem(60) ?: 0
+            val hour = if(!vm.isTimerMode) seconds / 3600 else vm.selectedTimer.value?.div(3600) ?: 0
+            val minute = if(!vm.isTimerMode) (seconds % 3600) / 60 else (vm.selectedTimer.value?.rem(3600) ?: 0) / 60
+            val second = if(!vm.isTimerMode) seconds % 60 else vm.selectedTimer.value?.rem(60) ?: 0
 
             if(!vm.isStudyStarted || (vm.isStudyStarted && !vm.isTimerMode)) {
                 //タイマー
@@ -222,11 +235,13 @@ fun MainScreen(
 
             //円形タイマー
             if(vm.isStudyStarted && vm.isTimerMode) {
+                val setTimer by vm.setTimer.collectAsState() //設定されたタイマーを監視
+
                 CircularTimer(
                     hour = hour,
                     minute = minute,
                     second = second,
-                    setTimer = vm.setTimer!!,
+                    setTimer = setTimer!!,
                     selectedFont = vm.selectedFont,
                 )
             }
@@ -284,7 +299,15 @@ fun MainScreen(
                         }
 
                         IconButton(
-                            onClick = { if(!vm.isStudyStarted) { if(vm.resultDataList.isNotEmpty()) navController.navigate("Result") else Toast.makeText(context, "まだデータがありません", Toast.LENGTH_SHORT).show() }},
+                            onClick = {
+                                if(!vm.isStudyStarted) {
+                                    if(vm.resultDataList.value.isNotEmpty()) {
+                                        navController.navigate("Result")
+                                    } else {
+                                        Toast.makeText(context, "まだデータがありません", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            },
                             modifier = Modifier
                                 .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
                                 .scale(2.5f)
@@ -317,8 +340,8 @@ fun MainScreen(
                 }
 
                 //現在の設定できるタイマーのリストを取得
-                val currentTimerList by vm.timerList.collectAsState() // collectAsState で監視
-                val userTimerList = (currentTimerList + vm.addedTimerList).distinct()
+                val addedTimerList by vm.addedTimerList.collectAsState() //追加されたタイマーを監視
+                val userTimerList = (DefaultTimerConstants.defaultTimers + addedTimerList).distinct()
                 val sortedList = userTimerList.sorted()
 
                 Box(

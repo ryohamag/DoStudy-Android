@@ -15,11 +15,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.websarva.wings.dostudy_android.viewmodel.MainViewModel
+import androidx.compose.runtime.getValue
 
 //タイマー一覧用のカード
 @Composable
@@ -37,7 +39,8 @@ fun TimerCard(
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer
         )
     ) {
-        val isChecked = vm.selectedTimer == seconds
+        val selectedTimer by vm.selectedTimer.collectAsState() // selectedTimer の状態を監視
+        val isChecked = selectedTimer == seconds
 
         Row(
             modifier = Modifier.padding(16.dp),
@@ -62,12 +65,10 @@ fun TimerCard(
                 checked = isChecked,
                 onCheckedChange = {
                     if (it) {
-                        vm.selectedTimer = seconds // トグルがオンになったら selectedTimerId を更新
-                        vm.setTimer = seconds
+                        vm.setTimer(seconds)
                         vm.isTimerMode = true
                     } else {
-                        vm.selectedTimer = null // トグルがオフになったら selectedTimerId を null に設定
-                        vm.setTimer = null
+                        vm.resetTimer()
                     }
                 },
                 modifier = Modifier

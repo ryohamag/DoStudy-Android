@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -23,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.websarva.wings.dostudy_android.viewmodel.MainViewModel
+import androidx.compose.runtime.getValue
 
 //記録画面
 @Composable
@@ -35,6 +37,8 @@ fun ResultScreen(
     } else {
         listOf(Color(0xffcce6ff), Color(0xff66b3ff), Color(0xff0080ff)) // ライトモード向け
     }
+
+    val resultDataTable by vm.resultDataList.collectAsState()
 
     Box(
         modifier = Modifier
@@ -70,7 +74,7 @@ fun ResultScreen(
                 item {
                     //グラフの表示
                     LineChart(
-                        resultDataTable = vm.resultDataList,
+                        resultDataTable = resultDataTable,
                         modifier = Modifier
                             .height(300.dp)
                             .fillMaxWidth()
@@ -88,7 +92,7 @@ fun ResultScreen(
             ) }
 
             //履歴のカードを表示
-            items(vm.resultDataList.reversed().take(30)) { result ->
+            items(vm.resultDataList.value.reversed().take(30)) { result ->
                 ResultCard(result)
             }
         }

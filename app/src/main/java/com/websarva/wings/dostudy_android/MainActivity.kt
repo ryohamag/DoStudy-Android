@@ -80,7 +80,7 @@ class MainActivity : ComponentActivity() {
         if(vm.isStudyStarted) {
             vm.addResultData(false)
             vm.isShowFailedDialog = true
-            httpRequest(channelId = vm.channelId, username = vm.username, status = false, vm.seconds, vm = vm)
+            httpRequest(channelId = vm.channelId, username = vm.username, status = false, vm.seconds.value, vm = vm)
             vm.reset()
         }
     }

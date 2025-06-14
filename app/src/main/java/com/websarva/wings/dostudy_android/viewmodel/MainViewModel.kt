@@ -32,34 +32,74 @@ class MainViewModel @Inject constructor(
     private var _orientation: MutableStateFlow<FloatArray> = orientationSensor.orientation as MutableStateFlow<FloatArray>
     var orientation: StateFlow<FloatArray> = _orientation.asStateFlow()
 
-    var isFirstStartup by mutableStateOf(false) //初回起動かどうか
-    var username by mutableStateOf("") //ユーザー名
-    var channelId by mutableStateOf("") //チャンネルID
-    var isTimerMode by mutableStateOf(false) //タイマーモードかどうか
-    var isStudyStarted by mutableStateOf(false) //勉強が始まっているかどうか
-    var seconds by mutableIntStateOf(0) //経過時間
-    private var _timerList = MutableStateFlow(listOf(1800, 3600, 7200, 10800)) //タイマーリスト
-    var timerList: StateFlow<List<Int>> = _timerList.asStateFlow() //タイマーリスト
-    var addedTimerList by mutableStateOf<List<Int>>(listOf()) //追加したタイマーリスト
-    var selectedTimer by mutableStateOf<Int?>(null) //選択されたタイマー
-    var setTimer by mutableStateOf<Int?>(null) //設定されたタイマー
-    var isShowTimerAddingDialog by mutableStateOf(false) //タイマー追加ダイアログを表示するかどうか
-    var isShowFailedDialog by mutableStateOf(false) //失敗ダイアログを表示するかどうか
-    var isShowSuccessDialog by mutableStateOf(false) //成功ダイアログを表示するかどうか
-    var responseMessage by mutableStateOf("") //レスポンスメッセージ
-    var resultDataList by mutableStateOf<List<ResultDataTable>>(listOf()) //結果データリスト
-    var isShowStopTimerDialog by mutableStateOf(false) //タイマーを止めるダイアログを表示するかどうか
-    var isShowChart by mutableStateOf(true) //チャートを表示するかどうか
-    var isShowAdScreen by mutableStateOf(false) //広告画面を表示するかどうか
-    var studyTitle by mutableStateOf("") //勉強タイトル
-    var isShowStudyTitleDialog by mutableStateOf(false) //勉強タイトルダイアログを表示するかどうか
-    var selectedFont by mutableIntStateOf(0) //選択されたフォント
+//    private val _isTimerMode = MutableStateFlow(false)
+//    val isTimerMode: StateFlow<Boolean> = _isTimerMode.asStateFlow()
+
+//    private val _isStudyStarted = MutableStateFlow(false)
+//    val isStudyStarted: StateFlow<Boolean> = _isStudyStarted.asStateFlow()
+
+    private val _seconds = MutableStateFlow(0) // intでもStateFlow化可能
+    val seconds: StateFlow<Int> = _seconds.asStateFlow()
+
+    private val _addedTimerList = MutableStateFlow<List<Int>>(listOf())
+    val addedTimerList: StateFlow<List<Int>> = _addedTimerList.asStateFlow()
+
+    private val _selectedTimer = MutableStateFlow<Int?>(null)
+    val selectedTimer: StateFlow<Int?> = _selectedTimer.asStateFlow()
+
+    private val _setTimer = MutableStateFlow<Int?>(null)
+    var setTimer: StateFlow<Int?> = _setTimer.asStateFlow()
+
+//    private val _studyTitle = MutableStateFlow("")
+//    val studyTitle: StateFlow<String> = _studyTitle.asStateFlow()
+
+    private val _resultDataList = MutableStateFlow<List<ResultDataTable>>(listOf())
+    val resultDataList: StateFlow<List<ResultDataTable>> = _resultDataList.asStateFlow()
+
+    var isTimerMode by mutableStateOf(false) // タイマーモードかどうか
+    var studyTitle by mutableStateOf("") // 勉強タイトル
+    var isStudyStarted by mutableStateOf(false) // 勉強が始まっているかどうか
+    var isFirstStartup by mutableStateOf(false) // 起動時だけの一時的なフラグ
+    var isShowTimerAddingDialog by mutableStateOf(false)
+    var isShowFailedDialog by mutableStateOf(false)
+    var isShowSuccessDialog by mutableStateOf(false)
+    var isShowStopTimerDialog by mutableStateOf(false)
+    var isShowChart by mutableStateOf(true)
+    var isShowAdScreen by mutableStateOf(false)
+    var isShowStudyTitleDialog by mutableStateOf(false)
+    var responseMessage by mutableStateOf("")
+    var selectedFont by mutableIntStateOf(0)
+    var username by mutableStateOf("")
+    var channelId by mutableStateOf("")
+
+
+
+//    var isFirstStartup by mutableStateOf(false) //初回起動かどうか
+//    var username by mutableStateOf("") //ユーザー名
+//    var channelId by mutableStateOf("") //チャンネルID
+//    var isTimerMode by mutableStateOf(false) //タイマーモードかどうか
+//    var isStudyStarted by mutableStateOf(false) //勉強が始まっているかどうか
+//    var seconds by mutableIntStateOf(0) //経過時間
+//    var addedTimerList by mutableStateOf<List<Int>>(listOf()) //追加したタイマーリスト
+//    var selectedTimer by mutableStateOf<Int?>(null) //選択されたタイマー
+//    var setTimer by mutableStateOf<Int?>(null) //設定されたタイマー
+//    var isShowTimerAddingDialog by mutableStateOf(false) //タイマー追加ダイアログを表示するかどうか
+//    var isShowFailedDialog by mutableStateOf(false) //失敗ダイアログを表示するかどうか
+//    var isShowSuccessDialog by mutableStateOf(false) //成功ダイアログを表示するかどうか
+//    var responseMessage by mutableStateOf("") //レスポンスメッセージ
+//    var resultDataList by mutableStateOf<List<ResultDataTable>>(listOf()) //結果データリスト
+//    var isShowStopTimerDialog by mutableStateOf(false) //タイマーを止めるダイアログを表示するかどうか
+//    var isShowChart by mutableStateOf(true) //チャートを表示するかどうか
+//    var isShowAdScreen by mutableStateOf(false) //広告画面を表示するかどうか
+//    var studyTitle by mutableStateOf("") //勉強タイトル
+//    var isShowStudyTitleDialog by mutableStateOf(false) //勉強タイトルダイアログを表示するかどうか
+//    var selectedFont by mutableIntStateOf(0) //選択されたフォント
 
     //初期化
     init {
         viewModelScope.launch {
             // 結果データを全件取得
-            resultDataList = withContext(Dispatchers.IO) {
+            _resultDataList.value = withContext(Dispatchers.IO) {
                 repository.getAllResultData()
             }
 
@@ -72,15 +112,36 @@ class MainViewModel @Inject constructor(
             } else {
                 username = userData.username
                 channelId = userData.channelId
-                addedTimerList = userData.addedTimerList
+                _addedTimerList.value = userData.addedTimerList
             }
         }
+    }
+
+    //1秒ずつ増やす
+    fun incrementSeconds() {
+        _seconds.value++
+    }
+
+    fun decrementSeconds() {
+        _selectedTimer.value = _selectedTimer.value!! - 1
+    }
+
+    fun setTimer(time: Int) {
+        _selectedTimer.value = time
+        _setTimer.value = time
+    }
+
+    fun resetTimer() {
+        _selectedTimer.value = null
+        _setTimer.value = null
     }
 
     //ユーザーデータを作成
     fun createUserData() {
         viewModelScope.launch {
-            val newUserData = UserDataTable(username = username, channelId = channelId, addedTimerList = addedTimerList)
+            val newUserData = UserDataTable(
+                username = username, channelId = channelId, addedTimerList = addedTimerList.value
+            )
             try {
                 repository.insertUserData(newUserData)
             } catch (e: Exception) {
@@ -92,7 +153,9 @@ class MainViewModel @Inject constructor(
     //ユーザーデータを更新
     fun updateUserData() {
         viewModelScope.launch {
-            val updatedUserData = UserDataTable(username = username, channelId = channelId, addedTimerList = addedTimerList)
+            val updatedUserData = UserDataTable(
+                username = username, channelId = channelId, addedTimerList = addedTimerList.value
+            )
             try {
                 repository.updateUserData(updatedUserData)
             } catch (e: Exception) {
@@ -104,14 +167,14 @@ class MainViewModel @Inject constructor(
     //結果データを追加
     fun addResultData(status: Boolean) {
         val currentDate: LocalDate = LocalDate.now()
-        val setTimer = setTimer?.let {
+        val setTimer = _setTimer.value?.let {
             val setHours = TimeUnit.SECONDS.toHours(it.toLong()).toString().padStart(2, '0')
             val setMinutes = (TimeUnit.SECONDS.toMinutes(it.toLong()) % 60).toString().padStart(2, '0')
             val setSeconds = (it % 60).toString().padStart(2, '0')
             "${setHours}:${setMinutes}:${setSeconds}"
         }
 
-        val seconds = seconds.let {
+        val seconds = _seconds.value.let {
             val hours = TimeUnit.SECONDS.toHours(it.toLong()).toString().padStart(2, '0')
             val minutes = (TimeUnit.SECONDS.toMinutes(it.toLong()) % 60).toString().padStart(2, '0')
             val seconds = (it % 60).toString().padStart(2, '0')
@@ -120,10 +183,13 @@ class MainViewModel @Inject constructor(
 
 
         viewModelScope.launch {
-            val resultData = ResultDataTable(date = currentDate.toString(), setTimer = setTimer, studyTime = seconds, status = status, studyTitle = studyTitle)
+            val resultData = ResultDataTable(
+                date = currentDate.toString(), setTimer = setTimer, studyTime = seconds,
+                status = status, studyTitle = studyTitle
+            )
             try {
                 repository.insertResultData(resultData)
-                resultDataList += resultData
+                _resultDataList.value += resultData
             } catch (e: Exception) {
                 Log.e("MainScreenViewModel", "Error inserting data", e)
             }
@@ -135,23 +201,22 @@ class MainViewModel @Inject constructor(
         val seconds = time.chunked(2).map { it.toInt() }.let { (hours, minutes, seconds) ->
             hours * 3600 + minutes * 60 + seconds
         }
-        addedTimerList += seconds // 新しい時間を追加
+        _addedTimerList.value += seconds // 新しい時間を追加
     }
 
     //タイマーを削除
     fun deleteTimer(timerToDelete: Int) {
-        addedTimerList = addedTimerList.filter { it != timerToDelete }
-        _timerList.value = _timerList.value.filter { it != timerToDelete }
+        _addedTimerList.value = _addedTimerList.value.filter { it != timerToDelete }
         updateUserData()
     }
 
     //変数をリセット
     fun reset() {
         isTimerMode = false
-        seconds = 0
+        _seconds.value = 0
         isStudyStarted = false
-        selectedTimer = null
-        setTimer = null
+        _selectedTimer.value = null
+        _setTimer.value = null
     }
 
     fun startSensor() {
