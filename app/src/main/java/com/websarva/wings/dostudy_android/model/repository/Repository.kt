@@ -1,9 +1,9 @@
 package com.websarva.wings.dostudy_android.model.repository
 
-import com.websarva.wings.dostudy_android.model.Room.ResultDataDao
-import com.websarva.wings.dostudy_android.model.Room.ResultDataTable
-import com.websarva.wings.dostudy_android.model.Room.UserDataDao
-import com.websarva.wings.dostudy_android.model.Room.UserDataTable
+import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultDataDao
+import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultDataTable
+import com.websarva.wings.dostudy_android.model.Room.UserData.UserDataDao
+import com.websarva.wings.dostudy_android.model.Room.UserData.UserDataTable
 import javax.inject.Inject
 
 class Repository @Inject constructor(

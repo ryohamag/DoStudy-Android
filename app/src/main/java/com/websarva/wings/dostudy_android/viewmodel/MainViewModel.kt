@@ -1,6 +1,5 @@
 package com.websarva.wings.dostudy_android.viewmodel
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -9,11 +8,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.websarva.wings.dostudy_android.OrientationSensor
-import com.websarva.wings.dostudy_android.model.Room.ResultDataTable
-import com.websarva.wings.dostudy_android.model.Room.UserDataTable
+import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultDataTable
+import com.websarva.wings.dostudy_android.model.Room.UserData.UserDataTable
 import com.websarva.wings.dostudy_android.model.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -1,4 +1,4 @@
-package com.websarva.wings.dostudy_android.model.Room
+package com.websarva.wings.dostudy_android.model.Room.ResultData
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

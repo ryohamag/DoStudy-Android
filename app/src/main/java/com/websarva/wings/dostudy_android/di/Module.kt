@@ -3,10 +3,10 @@ package com.websarva.wings.dostudy_android.di
 import android.content.Context
 import androidx.room.Room
 import com.websarva.wings.dostudy_android.OrientationSensor
-import com.websarva.wings.dostudy_android.model.Room.ResultDataDao
-import com.websarva.wings.dostudy_android.model.Room.ResultRoomDataBase
-import com.websarva.wings.dostudy_android.model.Room.UserDataDao
-import com.websarva.wings.dostudy_android.model.Room.UserRoomDataBase
+import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultDataDao
+import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultRoomDataBase
+import com.websarva.wings.dostudy_android.model.Room.UserData.UserDataDao
+import com.websarva.wings.dostudy_android.model.Room.UserData.UserRoomDataBase
 import com.websarva.wings.dostudy_android.model.repository.Repository
 import com.websarva.wings.dostudy_android.viewmodel.MainViewModel
 import dagger.Module

@@ -1,4 +1,4 @@
-package com.websarva.wings.dostudy_android.model.Room
+package com.websarva.wings.dostudy_android.model.Room.UserData
 
 import androidx.room.Dao
 import androidx.room.Delete

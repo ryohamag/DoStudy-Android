@@ -8,7 +8,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
-import com.websarva.wings.dostudy_android.model.Room.ResultDataTable
+import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultDataTable
 import com.websarva.wings.dostudy_android.functions.timeToSeconds
 
 @Composable
