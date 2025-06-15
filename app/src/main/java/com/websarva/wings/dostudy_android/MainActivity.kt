@@ -23,6 +23,7 @@ import com.websarva.wings.dostudy_android.view.SettingScreen
 import com.websarva.wings.dostudy_android.functions.httpRequest
 import com.websarva.wings.dostudy_android.util.FontConstants
 import com.websarva.wings.dostudy_android.view.BottomBar
+import com.websarva.wings.dostudy_android.view.ToDoScreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.getValue
 
@@ -63,6 +64,11 @@ class MainActivity : ComponentActivity() {
                                 selectedFont = mainVM.selectedFont,
                                 selectedFontChange = { mainVM.selectedFont = it },
                                 fonts = FontConstants.fonts,
+                                navController = navController
+                            )
+                        }
+                        composable("ToDoList") {
+                            ToDoScreen(
                                 navController = navController
                             )
                         }
