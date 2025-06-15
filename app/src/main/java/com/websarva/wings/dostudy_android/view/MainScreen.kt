@@ -202,6 +202,9 @@ fun MainScreen(
                 .padding(innerPadding)
                 .fillMaxWidth()
         ) {
+            //広告バナー
+            AdBanner(modifier = Modifier.fillMaxWidth())
+
             val seconds by vm.seconds.collectAsState() //経過時間を監視
             val selectedTimer by vm.selectedTimer.collectAsState() //選択されたタイマーを監視
 
@@ -345,7 +348,7 @@ fun MainScreen(
 
                 Box(
                     modifier = Modifier
-                        .padding(start = 32.dp, end = 32.dp, top = 8.dp, bottom = 48.dp)
+                        .padding(start = 32.dp, end = 32.dp, top = 10.dp, bottom = 32.dp)
                         .background(
                             color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f), // 白の半透明
                             shape = RoundedCornerShape(8.dp)
@@ -396,12 +399,7 @@ fun MainScreen(
             }
         }
 
-        //広告バナー
-        AdBanner(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-        )
+
     }
     // 画面が破棄されたときに音楽プレイヤーをリリース
     DisposableEffect(lifecycleOwner) {

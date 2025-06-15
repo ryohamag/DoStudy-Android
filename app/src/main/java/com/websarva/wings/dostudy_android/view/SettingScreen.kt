@@ -73,7 +73,7 @@ fun SettingScreen(
                     Text("設定")
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate("Main") }) {
+                    IconButton(onClick = { navController.navigate("Home") }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "戻る",
@@ -83,7 +83,7 @@ fun SettingScreen(
                 actions = {
                     IconButton(onClick = {
                         if (isFirstStartup) createUserData() else updateUserData()
-                        navController.navigate("Main")
+                        navController.navigate("Home")
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.baseline_save_alt_24),

@@ -22,6 +22,7 @@ import com.websarva.wings.dostudy_android.view.ResultScreen
 import com.websarva.wings.dostudy_android.view.SettingScreen
 import com.websarva.wings.dostudy_android.functions.httpRequest
 import com.websarva.wings.dostudy_android.util.FontConstants
+import com.websarva.wings.dostudy_android.view.BottomBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.getValue
 
@@ -35,11 +36,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DoStudyAndroidTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                val navController = rememberNavController()
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    bottomBar = {
+                        BottomBar(navController)
+                    }
+                ) { innerPadding ->
                     val context = LocalContext.current
-                    val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "Main") {
-                        composable("Main") {
+                    NavHost(navController = navController, startDestination = "Home") {
+                        composable("Home") {
                             MainScreen(navController, innerPadding, context, mainVM)
                         }
                         composable("Result") {
