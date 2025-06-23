@@ -69,7 +69,8 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("ToDoList") {
                             ToDoScreen(
-                                navController = navController
+                                navController = navController,
+                                vm = mainVM
                             )
                         }
                     }
