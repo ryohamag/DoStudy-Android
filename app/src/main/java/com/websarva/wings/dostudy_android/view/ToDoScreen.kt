@@ -28,13 +28,16 @@ import com.websarva.wings.dostudy_android.R
 import com.websarva.wings.dostudy_android.viewmodel.MainViewModel
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CardDefaults
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.text.style.TextAlign
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ToDoScreen(
     navController: NavController,
-    vm: MainViewModel
+    vm: MainViewModel,
+    showAddToDoDialog: () -> Unit
 ) {
     val titles = listOf(
         "ToDoリスト",
@@ -43,6 +46,19 @@ fun ToDoScreen(
         "やることリスト",
         "TODOアプリ"
     )
+
+    if (vm.isShowAddToDoDialog) {
+        AddToDoDialog(
+            onDismiss = { vm.isShowAddToDoDialog = false },
+            addToDo = { title -> vm.addToDo(title) }
+        )
+    }
+
+    LaunchedEffect(Unit) {
+        vm.getToDoList()
+    }
+
+    var todoList = vm.todoList.collectAsState()
 
     Scaffold(
         modifier = Modifier
@@ -70,7 +86,7 @@ fun ToDoScreen(
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.baseline_swap_vert_24),
-                            contentDescription = "保存",
+                            contentDescription = "並び替え",
                         )
                     }
                 }
@@ -78,7 +94,7 @@ fun ToDoScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /*todo*/ },
+                onClick = { showAddToDoDialog() },
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
@@ -97,25 +113,62 @@ fun ToDoScreen(
                 .padding(16.dp)
                 .fillMaxSize()
         ) {
-            items(titles) { title ->
-                Card(
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                ) {
+//            items(todoList.value) { title ->
+//                Card(
+//                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+//                    modifier = Modifier
+//                        .padding(16.dp)
+//                        .fillMaxWidth(),
+//                    colors = CardDefaults.cardColors(
+//                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+//                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+//                    )
+//                ) {
+//                    Text(
+//                        text = title,
+//                        modifier = Modifier
+//                            .padding(16.dp)
+//                            .fillMaxWidth(),
+//                        style = MaterialTheme.typography.headlineMedium,
+//                        textAlign = TextAlign.Center
+//                    )
+//                }
+//            }
+            if (todoList.value.isEmpty()) {
+                // ToDoがない場合のメッセージを表示
+                item {
                     Text(
-                        text = title,
+                        text = "ToDoがまだ追加されていません",
+                        modifier = Modifier
+                            .padding(32.dp)
+                            .fillMaxWidth(),
+                        style = MaterialTheme.typography.headlineSmall,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            } else {
+                // ToDoリストがある場合は通常通り表示
+                items(todoList.value) { title ->
+                    Card(
+                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                         modifier = Modifier
                             .padding(16.dp)
                             .fillMaxWidth(),
-                        style = MaterialTheme.typography.headlineMedium,
-                        textAlign = TextAlign.Center
-                    )
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    ) {
+                        Text(
+                            text = title,
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth(),
+                            style = MaterialTheme.typography.headlineMedium,
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             }
         }

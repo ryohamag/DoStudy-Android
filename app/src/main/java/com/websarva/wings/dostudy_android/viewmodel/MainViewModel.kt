@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.websarva.wings.dostudy_android.OrientationSensor
 import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultDataTable
+import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoDataTable
 import com.websarva.wings.dostudy_android.model.Room.UserData.UserDataTable
 import com.websarva.wings.dostudy_android.model.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,7 +31,7 @@ class MainViewModel @Inject constructor(
     private var _orientation: MutableStateFlow<FloatArray> = orientationSensor.orientation as MutableStateFlow<FloatArray>
     var orientation: StateFlow<FloatArray> = _orientation.asStateFlow()
 
-    private val _seconds = MutableStateFlow(0) // intでもStateFlow化可能
+    private val _seconds = MutableStateFlow(0)
     val seconds: StateFlow<Int> = _seconds.asStateFlow()
 
     private val _addedTimerList = MutableStateFlow<List<Int>>(listOf())
@@ -44,6 +45,9 @@ class MainViewModel @Inject constructor(
 
     private val _resultDataList = MutableStateFlow<List<ResultDataTable>>(listOf())
     val resultDataList: StateFlow<List<ResultDataTable>> = _resultDataList.asStateFlow()
+
+    private val _todoList = MutableStateFlow<List<String>>(listOf())
+    val todoList: StateFlow<List<String>> = _todoList.asStateFlow()
 
     var isTimerMode by mutableStateOf(false) // タイマーモードかどうか
     var studyTitle by mutableStateOf("") // 勉強タイトル
@@ -60,6 +64,7 @@ class MainViewModel @Inject constructor(
     var selectedFont by mutableIntStateOf(0)
     var username by mutableStateOf("")
     var channelId by mutableStateOf("")
+    var isShowAddToDoDialog by mutableStateOf(false)
 
     //初期化
     init {
@@ -174,6 +179,33 @@ class MainViewModel @Inject constructor(
     fun deleteTimer(timerToDelete: Int) {
         _addedTimerList.value = _addedTimerList.value.filter { it != timerToDelete }
         updateUserData()
+    }
+
+    fun getToDoList() {
+        viewModelScope.launch {
+            try {
+                _todoList.value = withContext(Dispatchers.IO) {
+                    repository.getAllToDoData().map { it.title }
+                }
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Error fetching ToDo list", e)
+            }
+        }
+    }
+
+    //タスクを追加
+    fun addToDo(todo: String) {
+        _todoList.value = _todoList.value + todo
+        viewModelScope.launch {
+            try {
+                val toDoData = ToDoDataTable(title = todo)
+                withContext(Dispatchers.IO) {
+                    repository.addToDoData(toDoData)
+                }
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Error adding ToDo", e)
+            }
+        }
     }
 
     //変数をリセット

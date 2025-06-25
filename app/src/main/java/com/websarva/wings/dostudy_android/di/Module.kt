@@ -5,6 +5,8 @@ import androidx.room.Room
 import com.websarva.wings.dostudy_android.OrientationSensor
 import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultDataDao
 import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultRoomDataBase
+import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoDataDao
+import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoRoomDataBase
 import com.websarva.wings.dostudy_android.model.Room.UserData.UserDataDao
 import com.websarva.wings.dostudy_android.model.Room.UserData.UserRoomDataBase
 import com.websarva.wings.dostudy_android.model.repository.Repository
@@ -42,11 +44,16 @@ object Module {
 
     @Provides
     @Singleton
+    fun provideToDoDataDao(db: ToDoRoomDataBase) = db.toDoDataDao()
+
+    @Provides
+    @Singleton
     fun provideRepository(
         resultDataDao: ResultDataDao,
-        userDataDao: UserDataDao
+        userDataDao: UserDataDao,
+        toDoDataDao: ToDoDataDao
     ): Repository {
-        return Repository(resultDataDao, userDataDao)
+        return Repository(resultDataDao, userDataDao, toDoDataDao)
     }
 
     @Provides
@@ -66,4 +73,14 @@ object Module {
             ResultRoomDataBase::class.java,
             "result_database"
         ).fallbackToDestructiveMigration().build()
+
+    @Provides
+    @Singleton
+    fun provideToDoDataBase(@ApplicationContext context: Context): ToDoRoomDataBase {
+        return Room.databaseBuilder(
+            context,
+            ToDoRoomDataBase::class.java,
+            "todo_database"
+        ).fallbackToDestructiveMigration().build()
+    }
 }

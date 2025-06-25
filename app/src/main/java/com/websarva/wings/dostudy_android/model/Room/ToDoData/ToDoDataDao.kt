@@ -9,13 +9,13 @@ import androidx.room.Update
 @Dao
 interface ToDoDataDao {
     @Insert
-    suspend fun insert(toDoData: ToDoDataTable)
+    suspend fun insert(toDoDataTable: ToDoDataTable)
 
     @Update
-    suspend fun update(toDoData: ToDoDataTable)
+    suspend fun update(toDoDataTable: ToDoDataTable)
 
     @Delete
-    suspend fun delete(toDoData: ToDoDataTable)
+    suspend fun delete(toDoDataTable: ToDoDataTable)
 
     @Query("SELECT * FROM ToDoDataTable")
     suspend fun getAllToDoData(): List<ToDoDataTable>

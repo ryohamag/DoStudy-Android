@@ -70,7 +70,8 @@ class MainActivity : ComponentActivity() {
                         composable("ToDoList") {
                             ToDoScreen(
                                 navController = navController,
-                                vm = mainVM
+                                vm = mainVM,
+                                showAddToDoDialog = { mainVM.isShowAddToDoDialog = true }
                             )
                         }
                     }

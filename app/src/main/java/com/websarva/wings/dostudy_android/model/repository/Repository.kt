@@ -2,6 +2,8 @@ package com.websarva.wings.dostudy_android.model.repository
 
 import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultDataDao
 import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultDataTable
+import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoDataDao
+import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoDataTable
 import com.websarva.wings.dostudy_android.model.Room.UserData.UserDataDao
 import com.websarva.wings.dostudy_android.model.Room.UserData.UserDataTable
 import javax.inject.Inject
@@ -9,6 +11,7 @@ import javax.inject.Inject
 class Repository @Inject constructor(
     private val resultDataDao: ResultDataDao,
     private val userDataDao: UserDataDao,
+    private val toDoDataDao: ToDoDataDao
 ) {
     // ResultDataDaoを通じてデータベースにアクセスするメソッド
     suspend fun insertResultData(resultData: ResultDataTable) {
@@ -38,5 +41,18 @@ class Repository @Inject constructor(
 
     suspend fun deleteUserData(userData: UserDataTable) {
         userDataDao.delete(userData)
+    }
+
+    // ToDoDataDaoを通じてデータベースにアクセスするメソッド
+    suspend fun addToDoData(toDoData: ToDoDataTable) {
+        toDoDataDao.insert(toDoData)
+    }
+
+    suspend fun deleteToDoData(toDoData: ToDoDataTable) {
+        toDoDataDao.delete(toDoData)
+    }
+
+    suspend fun getAllToDoData(): List<ToDoDataTable> {
+        return toDoDataDao.getAllToDoData()
     }
 }

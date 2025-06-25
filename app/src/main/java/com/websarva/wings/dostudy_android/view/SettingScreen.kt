@@ -95,147 +95,141 @@ fun SettingScreen(
         }
     ) { innerPadding ->
         // グラデーション背景の色を設定
-        val gradientColors = if (isSystemInDarkTheme()) {
-            listOf(Color(0xFF1a1a1a), Color(0xFF333333), Color(0xFF4d4d4d)) // ダークモード向け
-        } else {
-            listOf(Color(0xffcce6ff), Color(0xff66b3ff), Color(0xff0080ff)) // ライトモード向け
-        }
-
-        Box(
+//        val gradientColors = if (isSystemInDarkTheme()) {
+//            listOf(Color(0xFF1a1a1a), Color(0xFF333333), Color(0xFF4d4d4d)) // ダークモード向け
+//        } else {
+//            listOf(Color(0xffcce6ff), Color(0xff66b3ff), Color(0xff0080ff)) // ライトモード向け
+//        }
+        Column(
             modifier = Modifier
+                .padding(innerPadding)
+                .padding(16.dp)
                 .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(gradientColors)
-                )
+                .background(color = MaterialTheme.colorScheme.background)
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .padding(16.dp)
+            Text(
+                text = "ユーザー設定",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(Modifier.height(10.dp))
+
+            TextField(
+                value = username,
+                onValueChange = onUsernameChange,
+                label = { Text("ユーザー名") },
+            )
+
+            Spacer(Modifier.height(20.dp))
+
+            Text(
+                text = "Discord設定",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(Modifier.height(10.dp))
+
+            TextField(
+                value = channelId,
+                onValueChange = onChannelIdChange,
+                label = { Text("チャンネルID") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
+
+            Spacer(Modifier.height(20.dp))
+
+            val uriHandler = LocalUriHandler.current
+            val annotatedText = buildAnnotatedString {
+                append("チャンネルIDの調べ方はこちら")
+                addStyle(
+                    style = SpanStyle(
+                        color = MaterialTheme.colorScheme.primary,
+                        textDecoration = TextDecoration.Underline
+                    ),
+                    start = 0,
+                    end = this.length
+                )
+            }
+
+            Text(
+                text = annotatedText,
+                modifier = Modifier.clickable {
+                    uriHandler.openUri("https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID#h_01HRSTXPS5FMK2A5SMVSX4JW4E")
+                }
+            )
+
+            Spacer(Modifier.height(10.dp))
+
+            val botInvitationText = buildAnnotatedString {
+                append("Botの招待リンクはこちら")
+                addStyle(
+                    style = SpanStyle(
+                        color = MaterialTheme.colorScheme.primary,
+                        textDecoration = TextDecoration.Underline
+                    ),
+                    start = 0,
+                    end = this.length
+                )
+            }
+
+            Text(
+                text = botInvitationText,
+                modifier = Modifier.clickable {
+                    uriHandler.openUri("https://discord.com/oauth2/authorize?client_id=1311225271361212436")
+                }
+            )
+
+            Spacer(Modifier.height(20.dp))
+
+            Text(
+                text = "デザイン設定",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(Modifier.height(10.dp))
+
+            var expanded by remember { mutableStateOf(false) }
+
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = {
+                    expanded = !expanded
+                }
             ) {
-                Text(
-                    text = "ユーザー設定",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(Modifier.height(10.dp))
-
                 TextField(
-                    value = username,
-                    onValueChange = onUsernameChange,
-                    label = { Text("ユーザー名") },
+                    readOnly = true,
+                    value = fonts[selectedFont],
+                    onValueChange = { },
+                    modifier = Modifier.menuAnchor(),
+                    label = { Text("フォント") },
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(
+                            expanded = expanded
+                        )
+                    },
+                    colors = ExposedDropdownMenuDefaults.textFieldColors()
                 )
-
-                Spacer(Modifier.height(20.dp))
-
-                Text(
-                    text = "Discord設定",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(Modifier.height(10.dp))
-
-                TextField(
-                    value = channelId,
-                    onValueChange = onChannelIdChange,
-                    label = { Text("チャンネルID") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                )
-
-                Spacer(Modifier.height(20.dp))
-
-                val uriHandler = LocalUriHandler.current
-                val annotatedText = buildAnnotatedString {
-                    append("チャンネルIDの調べ方はこちら")
-                    addStyle(
-                        style = SpanStyle(
-                            color = MaterialTheme.colorScheme.primary,
-                            textDecoration = TextDecoration.Underline
-                        ),
-                        start = 0,
-                        end = this.length
-                    )
-                }
-
-                Text(
-                    text = annotatedText,
-                    modifier = Modifier.clickable {
-                        uriHandler.openUri("https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID#h_01HRSTXPS5FMK2A5SMVSX4JW4E")
-                    }
-                )
-
-                Spacer(Modifier.height(10.dp))
-
-                val botInvitationText = buildAnnotatedString {
-                    append("Botの招待リンクはこちら")
-                    addStyle(
-                        style = SpanStyle(
-                            color = MaterialTheme.colorScheme.primary,
-                            textDecoration = TextDecoration.Underline
-                        ),
-                        start = 0,
-                        end = this.length
-                    )
-                }
-
-                Text(
-                    text = botInvitationText,
-                    modifier = Modifier.clickable {
-                        uriHandler.openUri("https://discord.com/oauth2/authorize?client_id=1311225271361212436")
-                    }
-                )
-
-                Spacer(Modifier.height(20.dp))
-
-                Text(
-                    text = "デザイン設定",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(Modifier.height(10.dp))
-
-                var expanded by remember { mutableStateOf(false) }
-
-                ExposedDropdownMenuBox(
+                ExposedDropdownMenu(
                     expanded = expanded,
-                    onExpandedChange = {
-                        expanded = !expanded
+                    onDismissRequest = {
+                        expanded = false
                     }
                 ) {
-                    TextField(
-                        readOnly = true,
-                        value = fonts[selectedFont],
-                        onValueChange = { },
-                        modifier = Modifier.menuAnchor(),
-                        label = { Text("フォント") },
-                        trailingIcon = {
-                            ExposedDropdownMenuDefaults.TrailingIcon(
-                                expanded = expanded
-                            )
-                        },
-                        colors = ExposedDropdownMenuDefaults.textFieldColors()
-                    )
-                    ExposedDropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = {
-                            expanded = false
-                        }
-                    ) {
-                        fonts.forEachIndexed { index, font ->
-                            DropdownMenuItem(
-                                onClick = {
-                                    selectedFontChange(index)
-                                    expanded = false
-                                },
-                                text = { Text(font) }
-                            )
-                        }
+                    fonts.forEachIndexed { index, font ->
+                        DropdownMenuItem(
+                            onClick = {
+                                selectedFontChange(index)
+                                expanded = false
+                            },
+                            text = { Text(font) }
+                        )
                     }
                 }
             }
         }
     }
+
 }
