@@ -262,7 +262,7 @@ fun MainScreen(
 
             if(vm.isStudyStarted &&!vm.isTimerMode || !vm.isStudyStarted) {
                 Row(
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
+                    modifier = Modifier.padding(start = 32.dp, end = 32.dp, top = 8.dp, bottom = 8.dp)
                 ) {
                     //スタート/ストップボタン
                     Button(
@@ -297,45 +297,45 @@ fun MainScreen(
                         )
                     }
 
-                    Column(
-                        modifier = Modifier
-                            .weight(2f)
-                            .padding(16.dp)
-                    ) {
-                        IconButton(
-                            onClick = { navController.navigate("Settings") },
-                            modifier = Modifier
-                                .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
-                                .scale(2.5f)
-                        ) {
-                            Icon(
-                                painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_settings_24)),
-                                contentDescription = "設定ボタン",
-                                tint = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                        }
-
-                        IconButton(
-                            onClick = {
-                                if(!vm.isStudyStarted) {
-                                    if(vm.resultDataList.value.isNotEmpty()) {
-                                        navController.navigate("Result")
-                                    } else {
-                                        Toast.makeText(context, "まだデータがありません", Toast.LENGTH_SHORT).show()
-                                    }
-                                }
-                            },
-                            modifier = Modifier
-                                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
-                                .scale(2.5f)
-                        ) {
-                            Icon(
-                                painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_history_24)),
-                                contentDescription = "履歴ボタン",
-                                tint = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                        }
-                    }
+//                    Column(
+//                        modifier = Modifier
+//                            .weight(2f)
+//                            .padding(16.dp)
+//                    ) {
+//                        IconButton(
+//                            onClick = { navController.navigate("Settings") },
+//                            modifier = Modifier
+//                                .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
+//                                .scale(2.5f)
+//                        ) {
+//                            Icon(
+//                                painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_settings_24)),
+//                                contentDescription = "設定ボタン",
+//                                tint = MaterialTheme.colorScheme.onPrimaryContainer
+//                            )
+//                        }
+//
+//                        IconButton(
+//                            onClick = {
+//                                if(!vm.isStudyStarted) {
+//                                    if(vm.resultDataList.value.isNotEmpty()) {
+//                                        navController.navigate("Result")
+//                                    } else {
+//                                        Toast.makeText(context, "まだデータがありません", Toast.LENGTH_SHORT).show()
+//                                    }
+//                                }
+//                            },
+//                            modifier = Modifier
+//                                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
+//                                .scale(2.5f)
+//                        ) {
+//                            Icon(
+//                                painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_history_24)),
+//                                contentDescription = "履歴ボタン",
+//                                tint = MaterialTheme.colorScheme.onPrimaryContainer
+//                            )
+//                        }
+//                    }
                 }
             }
 
