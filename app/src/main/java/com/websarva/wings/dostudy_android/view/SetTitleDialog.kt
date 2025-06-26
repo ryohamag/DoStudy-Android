@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -14,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoDataTable
+import androidx.compose.foundation.lazy.items
 
 @Composable
 fun SetTitleDialog(
@@ -28,51 +30,70 @@ fun SetTitleDialog(
         onDismissRequest = onDismissRequest,
         title = { Text("タイトルの入力") },
         text = {
-            Column {
+
+            Column(
+                modifier = Modifier.height(400.dp)
+            ) {
                 TextField(
                     value = studyTitle,
                     onValueChange = onStudyTitleChange,
                     label = { Text("勉強タイトル") }
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = "履歴",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                titleList.reversed().distinct().take(5).forEach {
-                    TextButton(
-                        onClick = { onStudyTitleChange(it) },
-                    ) {
-                        Log.d("SetTitleDialog", "Title: $it")
-                        Text(text = it)
+                LazyColumn {
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
-                }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    item {
+                        Text(
+                            text = "履歴",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
 
-                Text(
-                    text = "ToDo",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                    item {
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    items(titleList.reversed().distinct().take(5)) { title ->
+                        TextButton(
+                            onClick = { onStudyTitleChange(title) },
+                        ) {
+                            Log.d("SetTitleDialog", "Title: $title")
+                            Text(text = title)
+                        }
+                    }
 
-                todoList.forEach {
-                    TextButton(
-                        onClick = { onStudyTitleChange(it.title) },
-                    ) {
-                        Log.d("SetTitleDialog", "ToDo: $it")
-                        Text(text = it.title)
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+
+                    item {
+                        Text(
+                            text = "ToDo",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+
+                    items(todoList) { todo ->
+                        TextButton(
+                            onClick = { onStudyTitleChange(todo.title) },
+                        ) {
+                            Log.d("SetTitleDialog", "ToDo: $todo")
+                            Text(text = todo.title)
+                        }
                     }
                 }
             }
+
+
         },
         confirmButton = {
             TextButton(
