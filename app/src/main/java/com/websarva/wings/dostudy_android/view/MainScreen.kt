@@ -154,6 +154,7 @@ fun MainScreen(
     //勉強タイトルダイアログを表示
     if(vm.isShowStudyTitleDialog) {
         val resultDataList by vm.resultDataList.collectAsState()
+        val todoList by vm.todoList.collectAsState()
         SetTitleDialog (
             onDismissRequest = { vm.isShowStudyTitleDialog = false },
             studyTitle = vm.studyTitle,
@@ -172,7 +173,8 @@ fun MainScreen(
                 }
                 vm.isShowStudyTitleDialog = false
             },
-            titleList = resultDataList.map { it.studyTitle }
+            titleList = resultDataList.map { it.studyTitle },
+            todoList = todoList,
         )
     }
 

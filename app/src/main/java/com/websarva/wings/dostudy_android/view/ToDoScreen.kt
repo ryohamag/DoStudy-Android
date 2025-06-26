@@ -34,6 +34,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.text.style.TextAlign
+import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoDataTable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,7 +42,7 @@ fun ToDoScreen(
     navController: NavController,
     vm: MainViewModel,
     showAddToDoDialog: () -> Unit,
-    deleteToDo: (String) -> Unit
+    deleteToDo: (ToDoDataTable) -> Unit
 ) {
     if (vm.isShowAddToDoDialog) {
         AddToDoDialog(
@@ -124,7 +125,7 @@ fun ToDoScreen(
                 }
             } else {
                 // ToDoリストがある場合は通常通り表示
-                items(todoList.value) { title ->
+                items(todoList.value) { it ->
                     Card(
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                         modifier = Modifier
@@ -140,7 +141,7 @@ fun ToDoScreen(
                             modifier = Modifier.padding(16.dp)
                         ) {
                             Text(
-                                text = title,
+                                text = it.title,
                                 modifier = Modifier
                                     .padding(16.dp)
                                     .fillMaxWidth()
@@ -150,7 +151,7 @@ fun ToDoScreen(
                             )
 
                             IconButton(
-                                onClick = { deleteToDo(title) },
+                                onClick = { deleteToDo(it) },
                                 modifier = Modifier
                                     .weight(1f)
                             ) {

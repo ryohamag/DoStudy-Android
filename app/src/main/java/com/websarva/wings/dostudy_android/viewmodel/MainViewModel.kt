@@ -46,8 +46,8 @@ class MainViewModel @Inject constructor(
     private val _resultDataList = MutableStateFlow<List<ResultDataTable>>(listOf())
     val resultDataList: StateFlow<List<ResultDataTable>> = _resultDataList.asStateFlow()
 
-    private val _todoList = MutableStateFlow<List<String>>(listOf())
-    val todoList: StateFlow<List<String>> = _todoList.asStateFlow()
+    private val _todoList = MutableStateFlow<List<ToDoDataTable>>(listOf())
+    val todoList: StateFlow<List<ToDoDataTable>> = _todoList.asStateFlow()
 
     var isTimerMode by mutableStateOf(false) // タイマーモードかどうか
     var studyTitle by mutableStateOf("") // 勉強タイトル
@@ -185,7 +185,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _todoList.value = withContext(Dispatchers.IO) {
-                    repository.getAllToDoData().map { it.title }
+                    repository.getAllToDoData()
                 }
             } catch (e: Exception) {
                 Log.e("MainViewModel", "Error fetching ToDo list", e)
@@ -195,12 +195,12 @@ class MainViewModel @Inject constructor(
 
     //タスクを追加
     fun addToDo(todo: String) {
-        _todoList.value = _todoList.value + todo
+        val todoData = ToDoDataTable(title = todo)
+        _todoList.value = _todoList.value + todoData
         viewModelScope.launch {
             try {
-                val toDoData = ToDoDataTable(title = todo)
                 withContext(Dispatchers.IO) {
-                    repository.addToDoData(toDoData)
+                    repository.addToDoData(todoData)
                 }
             } catch (e: Exception) {
                 Log.e("MainViewModel", "Error adding ToDo", e)
@@ -208,16 +208,19 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun deleteToDo(todo: String) {
+    fun deleteToDo(todo: ToDoDataTable) {
         _todoList.value = _todoList.value - todo
         viewModelScope.launch {
             try {
-                val toDoData = ToDoDataTable(title = todo)
                 withContext(Dispatchers.IO) {
-                    repository.deleteToDoData(toDoData)
+                    repository.deleteToDoData(todo)
                 }
+                // データベースから削除成功後にローカル状態を更新
             } catch (e: Exception) {
                 Log.e("MainViewModel", "Error deleting ToDo", e)
+                // エラーが発生した場合は、ローカル状態を元に戻すか
+                // 最新のデータを再取得する
+                getToDoList()
             }
         }
     }
