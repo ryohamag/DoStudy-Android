@@ -3,6 +3,7 @@ package com.websarva.wings.dostudy_android.view
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
@@ -32,7 +33,9 @@ fun SetTitleDialog(
         text = {
 
             Column(
-                modifier = Modifier.height(400.dp)
+                modifier = Modifier
+                    .height(400.dp)
+                    .fillMaxWidth()
             ) {
                 TextField(
                     value = studyTitle,
@@ -40,7 +43,10 @@ fun SetTitleDialog(
                     label = { Text("勉強タイトル") }
                 )
 
-                LazyColumn {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
                     item {
                         Spacer(modifier = Modifier.height(16.dp))
                     }
