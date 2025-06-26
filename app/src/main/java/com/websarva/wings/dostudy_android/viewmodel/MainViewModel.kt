@@ -208,6 +208,20 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun deleteToDo(todo: String) {
+        _todoList.value = _todoList.value - todo
+        viewModelScope.launch {
+            try {
+                val toDoData = ToDoDataTable(title = todo)
+                withContext(Dispatchers.IO) {
+                    repository.deleteToDoData(toDoData)
+                }
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Error deleting ToDo", e)
+            }
+        }
+    }
+
     //変数をリセット
     fun reset() {
         isTimerMode = false

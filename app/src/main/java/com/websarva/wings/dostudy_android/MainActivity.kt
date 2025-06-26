@@ -71,7 +71,10 @@ class MainActivity : ComponentActivity() {
                             ToDoScreen(
                                 navController = navController,
                                 vm = mainVM,
-                                showAddToDoDialog = { mainVM.isShowAddToDoDialog = true }
+                                showAddToDoDialog = { mainVM.isShowAddToDoDialog = true },
+                                deleteToDo = { title ->
+                                    mainVM.deleteToDo(title)
+                                }
                             )
                         }
                     }
