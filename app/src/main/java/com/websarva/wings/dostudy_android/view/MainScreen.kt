@@ -85,6 +85,10 @@ fun MainScreen(
         mediaPlayer.start() // 音を再生
     }
 
+    LaunchedEffect(Unit) {
+        vm.getToDoList()
+    }
+
     //isStudyStarted が true になったら実行
     LaunchedEffect(key1 = vm.isStudyStarted) {
         if (vm.isStudyStarted) {
