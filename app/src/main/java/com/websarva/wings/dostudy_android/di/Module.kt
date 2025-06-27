@@ -10,6 +10,7 @@ import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoRoomDataBase
 import com.websarva.wings.dostudy_android.model.Room.UserData.UserDataDao
 import com.websarva.wings.dostudy_android.model.Room.UserData.UserRoomDataBase
 import com.websarva.wings.dostudy_android.model.notification.NotificationHelper
+import com.websarva.wings.dostudy_android.model.repository.DataStoreRepository
 import com.websarva.wings.dostudy_android.model.repository.Repository
 import com.websarva.wings.dostudy_android.viewmodel.MainViewModel
 import dagger.Module
@@ -31,15 +32,21 @@ object Module {
 
     @Provides
     fun provideMainViewModel(
-        repository: Repository, orientationSensor: OrientationSensor
+        repository: Repository, orientationSensor: OrientationSensor, dataStoreRepository: DataStoreRepository
     ): MainViewModel {
-        return MainViewModel(repository, orientationSensor)
+        return MainViewModel(repository, orientationSensor, dataStoreRepository)
     }
 
     @Provides
     @Singleton
     fun provideOrientationSensor(@ApplicationContext context: Context): OrientationSensor {
         return OrientationSensor(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDataStoreRepository(@ApplicationContext context: Context): DataStoreRepository {
+        return DataStoreRepository(context)
     }
 
     @Provides

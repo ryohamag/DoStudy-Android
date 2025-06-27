@@ -110,6 +110,11 @@ android {
         //hilt
         implementation(libs.hilt.android)
         ksp(libs.hilt.android.compiler)
+
+        //DataStore
+        implementation ("androidx.datastore:datastore-preferences:1.1.7")
+
+
     }
 }
 dependencies {

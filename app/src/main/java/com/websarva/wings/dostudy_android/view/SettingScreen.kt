@@ -59,7 +59,9 @@ fun SettingScreen(
     selectedFont: Int,
     selectedFontChange: (Int) -> Unit,
     fonts: List<String>,
-    navController: NavController
+    navController: NavController,
+    dailyLimit: Int,
+    onDailyLimitChange: (Int) -> Unit
 ) {
     Scaffold(
         contentWindowInsets = WindowInsets.systemBars,
@@ -229,6 +231,25 @@ fun SettingScreen(
                     }
                 }
             }
+
+            Spacer(Modifier.height(20.dp))
+
+            Text(
+                text = "スクリーンタイム設定",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(Modifier.height(10.dp))
+
+            TextField(
+                value = dailyLimit.toString(),
+                onValueChange = { value ->
+                    value.toIntOrNull()?.let { onDailyLimitChange(it) }
+                },
+                label = { Text("一日の制限時間（分）") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
         }
     }
 

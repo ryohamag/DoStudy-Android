@@ -18,6 +18,7 @@ import androidx.core.app.NotificationCompat
 import com.websarva.wings.dostudy_android.MainActivity
 import com.websarva.wings.dostudy_android.R
 import com.websarva.wings.dostudy_android.model.notification.NotificationHelper
+import com.websarva.wings.dostudy_android.model.repository.DataStoreRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import java.util.*
@@ -28,6 +29,9 @@ class ScreenTimeService : Service() {
 
     @Inject
     lateinit var notificationHelper: NotificationHelper
+
+    @Inject
+    lateinit var dataStoreRepository: DataStoreRepository
 
     private var dailyLimitMinutes: Int = 120
     private var serviceJob: Job? = null
@@ -49,13 +53,15 @@ class ScreenTimeService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        dailyLimitMinutes = intent?.getIntExtra("daily_limit", 120) ?: 120
-        Log.d("ScreenTimeService", "サービス開始 - 制限時間: ${dailyLimitMinutes}分")
+        // DataStoreから制限時間を取得
+        serviceJob = CoroutineScope(Dispatchers.IO).launch {
+            dataStoreRepository.getDailyLimit().collect { limit ->
+                dailyLimitMinutes = limit
+                Log.d("ScreenTimeService", "制限時間更新: ${dailyLimitMinutes}分")
+            }
+        }
 
-        // フォアグラウンドサービスとして開始
         startForeground(FOREGROUND_NOTIFICATION_ID, createForegroundNotification())
-
-
         startPeriodicCheck()
         return START_STICKY
     }

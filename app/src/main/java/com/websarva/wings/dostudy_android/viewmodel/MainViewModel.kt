@@ -11,6 +11,7 @@ import com.websarva.wings.dostudy_android.OrientationSensor
 import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultDataTable
 import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoDataTable
 import com.websarva.wings.dostudy_android.model.Room.UserData.UserDataTable
+import com.websarva.wings.dostudy_android.model.repository.DataStoreRepository
 import com.websarva.wings.dostudy_android.model.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +27,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val repository: Repository,
-    private val orientationSensor: OrientationSensor
+    private val orientationSensor: OrientationSensor,
+    private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
     private var _orientation: MutableStateFlow<FloatArray> = orientationSensor.orientation as MutableStateFlow<FloatArray>
     var orientation: StateFlow<FloatArray> = _orientation.asStateFlow()
@@ -48,6 +50,9 @@ class MainViewModel @Inject constructor(
 
     private val _todoList = MutableStateFlow<List<ToDoDataTable>>(listOf())
     val todoList: StateFlow<List<ToDoDataTable>> = _todoList.asStateFlow()
+
+    private val _dailyLimit = MutableStateFlow(120)
+    val dailyLimit: StateFlow<Int> = _dailyLimit.asStateFlow()
 
     var isTimerMode by mutableStateOf(false) // タイマーモードかどうか
     var studyTitle by mutableStateOf("") // 勉強タイトル
@@ -84,6 +89,10 @@ class MainViewModel @Inject constructor(
                 username = userData.username
                 channelId = userData.channelId
                 _addedTimerList.value = userData.addedTimerList
+            }
+
+            dataStoreRepository.getDailyLimit().collect { limit ->
+                _dailyLimit.value = limit
             }
         }
     }
@@ -222,6 +231,12 @@ class MainViewModel @Inject constructor(
                 // 最新のデータを再取得する
                 getToDoList()
             }
+        }
+    }
+
+    fun saveDailyLimit(limit: Int) {
+        viewModelScope.launch {
+            dataStoreRepository.saveDailyLimit(limit)
         }
     }
 

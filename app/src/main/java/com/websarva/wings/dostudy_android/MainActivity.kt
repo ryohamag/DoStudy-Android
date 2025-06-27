@@ -25,6 +25,7 @@ import android.os.PowerManager
 import android.provider.Settings
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -40,6 +41,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.getValue
+import kotlin.text.compareTo
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -89,7 +91,10 @@ class MainActivity : ComponentActivity() {
                                 selectedFont = mainVM.selectedFont,
                                 selectedFontChange = { mainVM.selectedFont = it },
                                 fonts = FontConstants.fonts,
-                                navController = navController
+                                navController = navController,
+                                dailyLimit = mainVM.dailyLimit.collectAsState().value,
+                                onDailyLimitChange = { limit -> mainVM.saveDailyLimit(limit) }
+
                             )
                         }
                         composable("ToDoList") {
@@ -133,13 +138,8 @@ class MainActivity : ComponentActivity() {
 
     private fun startScreenTimeService() {
         val intent = Intent(this, ScreenTimeService::class.java)
-        intent.putExtra("daily_limit", 120) // 制限時間を設定
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(intent)
-        } else {
-            startService(intent)
-        }
+        // intentからの値渡しは不要（DataStoreから取得するため）
+        startForegroundService(intent)
         Log.d("MainActivity", "ScreenTimeService開始要求")
     }
 
