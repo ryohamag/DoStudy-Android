@@ -9,6 +9,7 @@ import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoDataDao
 import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoRoomDataBase
 import com.websarva.wings.dostudy_android.model.Room.UserData.UserDataDao
 import com.websarva.wings.dostudy_android.model.Room.UserData.UserRoomDataBase
+import com.websarva.wings.dostudy_android.model.notification.NotificationHelper
 import com.websarva.wings.dostudy_android.model.repository.Repository
 import com.websarva.wings.dostudy_android.viewmodel.MainViewModel
 import dagger.Module
@@ -21,6 +22,13 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object Module {
+
+    @Provides
+    @Singleton
+    fun provideNotificationHelper(@ApplicationContext context: Context): NotificationHelper {
+        return NotificationHelper(context)
+    }
+
     @Provides
     fun provideMainViewModel(
         repository: Repository, orientationSensor: OrientationSensor
