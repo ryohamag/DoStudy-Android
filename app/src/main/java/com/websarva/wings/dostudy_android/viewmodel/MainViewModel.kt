@@ -124,6 +124,7 @@ class MainViewModel @Inject constructor(
             )
             try {
                 repository.insertUserData(newUserData)
+                dataStoreRepository.saveDailyLimit(_dailyLimit.value)
             } catch (e: Exception) {
                 Log.e("MainScreenViewModel", "Error inserting data", e)
             }
@@ -138,6 +139,7 @@ class MainViewModel @Inject constructor(
             )
             try {
                 repository.updateUserData(updatedUserData)
+                dataStoreRepository.saveDailyLimit(_dailyLimit.value)
             } catch (e: Exception) {
                 Log.e("MainScreenViewModel", "Error updating data", e)
             }
@@ -174,6 +176,11 @@ class MainViewModel @Inject constructor(
                 Log.e("MainScreenViewModel", "Error inserting data", e)
             }
         }
+    }
+
+    // 制限時間を一時的に更新する関数を追加
+    fun updateDailyLimitTemporary(limit: Int) {
+        _dailyLimit.value = limit
     }
 
     //タイマーを追加

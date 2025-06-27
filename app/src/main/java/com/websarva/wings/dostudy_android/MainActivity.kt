@@ -93,7 +93,7 @@ class MainActivity : ComponentActivity() {
                                 fonts = FontConstants.fonts,
                                 navController = navController,
                                 dailyLimit = mainVM.dailyLimit.collectAsState().value,
-                                onDailyLimitChange = { limit -> mainVM.saveDailyLimit(limit) }
+                                onDailyLimitChange = { limit -> mainVM.updateDailyLimitTemporary(limit) }
 
                             )
                         }
