@@ -36,6 +36,7 @@ import com.websarva.wings.dostudy_android.functions.httpRequest
 import com.websarva.wings.dostudy_android.model.notification.service.ScreenTimeService
 import com.websarva.wings.dostudy_android.util.FontConstants
 import com.websarva.wings.dostudy_android.view.BottomBar
+import com.websarva.wings.dostudy_android.view.MonitorScreen
 import com.websarva.wings.dostudy_android.view.ToDoScreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -78,6 +79,12 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("Result") {
                             ResultScreen(innerPadding, mainVM)
+                        }
+                        composable("Monitor") {
+                            MonitorScreen(
+                                navController = navController,
+                                vm = mainVM
+                            )
                         }
                         composable("Settings") {
                             SettingScreen(

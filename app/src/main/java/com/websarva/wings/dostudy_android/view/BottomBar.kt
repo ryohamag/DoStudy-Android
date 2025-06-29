@@ -39,7 +39,7 @@ fun BottomBar(navController: NavController) {
                 )
             }
             IconButton(
-                onClick = { navController.navigate("Result") },
+                onClick = { navController.navigate("Monitor") },
                 modifier = Modifier.weight(1f)
             ) {
                 Icon(
