@@ -1,5 +1,6 @@
 package com.websarva.wings.dostudy_android.view
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,7 +37,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.text.style.TextAlign
 import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoDataTable
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ToDoScreen(
     navController: NavController,
@@ -56,6 +57,7 @@ fun ToDoScreen(
     }
 
     var todoList = vm.todoList.collectAsState()
+    val selectedToDos = vm.selectedToDos.collectAsState()
 
     Scaffold(
         modifier = Modifier
@@ -67,7 +69,13 @@ fun ToDoScreen(
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 ),
                 title = {
-                    Text("ToDo")
+                    Text(
+                        if (vm.isSwapMode) {
+                            "並び替えモード"
+                        } else {
+                            "ToDo"
+                        }
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate("Home") }) {
@@ -79,26 +87,33 @@ fun ToDoScreen(
                 },
                 actions = {
                     IconButton(onClick = {
-                        /*todo*/
+                        vm.isSwapMode = !vm.isSwapMode
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.baseline_swap_vert_24),
                             contentDescription = "並び替え",
+                            tint = if (vm.isSwapMode) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.onPrimaryContainer
+                            }
                         )
                     }
                 }
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { showAddToDoDialog() },
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "追加",
-                )
+            if (!vm.isSwapMode) {
+                FloatingActionButton(
+                    onClick = { showAddToDoDialog() },
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "追加",
+                    )
+                }
             }
         }
     ) { innerPadding ->
@@ -125,23 +140,35 @@ fun ToDoScreen(
                 }
             } else {
                 // ToDoリストがある場合は通常通り表示
-                items(todoList.value) { it ->
+                items(todoList.value, key = { it.id }) { toDo ->
+                    val isSelected = selectedToDos.value.contains(toDo)
+
                     Card(
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                         modifier = Modifier
                             .padding(16.dp)
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .animateItem(fadeInSpec = null, fadeOutSpec = null),
                         colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
+                            containerColor = when {
+                                isSelected -> MaterialTheme.colorScheme.secondary
+                                vm.isSwapMode -> MaterialTheme.colorScheme.surfaceVariant
+                                else -> MaterialTheme.colorScheme.primaryContainer
+                            },
+                            contentColor = when {
+                                isSelected -> MaterialTheme.colorScheme.onSecondary
+                                vm.isSwapMode -> MaterialTheme.colorScheme.onSurfaceVariant
+                                else -> MaterialTheme.colorScheme.onPrimaryContainer
+                            }
+                        ),
+                        onClick = { if (vm.isSwapMode) vm.selectToDo(toDo) }
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(16.dp)
                         ) {
                             Text(
-                                text = it.title,
+                                text = toDo.title,
                                 modifier = Modifier
                                     .padding(16.dp)
                                     .fillMaxWidth()
@@ -150,17 +177,17 @@ fun ToDoScreen(
                                 textAlign = TextAlign.Center
                             )
 
-                            IconButton(
-                                onClick = { deleteToDo(it) },
-                                modifier = Modifier
-                                    .weight(1f)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Delete,
-                                    contentDescription = "削除ボタン",
-                                    modifier = Modifier
-                                        .size(30.dp)
-                                )
+                            if (!vm.isSwapMode) {
+                                IconButton(
+                                    onClick = { deleteToDo(toDo) },
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = "削除ボタン",
+                                        modifier = Modifier.size(30.dp)
+                                    )
+                                }
                             }
                         }
                     }

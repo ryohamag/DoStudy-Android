@@ -54,6 +54,9 @@ class MainViewModel @Inject constructor(
     private val _dailyLimit = MutableStateFlow(120)
     val dailyLimit: StateFlow<Int> = _dailyLimit.asStateFlow()
 
+    private val _selectedToDos = MutableStateFlow<List<ToDoDataTable>>(emptyList())
+    val selectedToDos: StateFlow<List<ToDoDataTable>> = _selectedToDos.asStateFlow()
+
     var isTimerMode by mutableStateOf(false) // タイマーモードかどうか
     var studyTitle by mutableStateOf("") // 勉強タイトル
     var isStudyStarted by mutableStateOf(false) // 勉強が始まっているかどうか
@@ -70,6 +73,7 @@ class MainViewModel @Inject constructor(
     var username by mutableStateOf("")
     var channelId by mutableStateOf("")
     var isShowAddToDoDialog by mutableStateOf(false)
+    var isSwapMode by mutableStateOf(false) // タスクの並び替えモード
 
     //初期化
     init {
@@ -244,6 +248,53 @@ class MainViewModel @Inject constructor(
     fun saveDailyLimit(limit: Int) {
         viewModelScope.launch {
             dataStoreRepository.saveDailyLimit(limit)
+        }
+    }
+
+    fun selectToDo(toDo: ToDoDataTable) {
+        val currentSelected = _selectedToDos.value
+        when {
+            currentSelected.contains(toDo) -> {
+                // 既に選択されている場合は選択解除
+                _selectedToDos.value = currentSelected - toDo
+            }
+            currentSelected.size < 2 -> {
+                // 2つ未満の場合は追加
+                _selectedToDos.value = currentSelected + toDo
+
+                // 2つ目が選択された場合は自動的に入れ替え
+                if (_selectedToDos.value.size == 2) {
+                    swapToDos(_selectedToDos.value[0], _selectedToDos.value[1])
+                }
+            }
+        }
+    }
+
+    private fun swapToDos(toDo1: ToDoDataTable, toDo2: ToDoDataTable) {
+        viewModelScope.launch {
+            try {
+                val currentList = _todoList.value.toMutableList()
+                val index1 = currentList.indexOfFirst { it.id == toDo1.id }
+                val index2 = currentList.indexOfFirst { it.id == toDo2.id }
+
+                if (index1 != -1 && index2 != -1) {
+                    // リスト内で位置を入れ替え
+                    currentList[index1] = toDo2
+                    currentList[index2] = toDo1
+
+                    // UIを更新
+                    _todoList.value = currentList
+
+                    repository.updateToDoData(currentList[index1])
+                    repository.updateToDoData(currentList[index2])
+                }
+
+                // 選択状態をリセット
+                _selectedToDos.value = emptyList()
+
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Error swapping todos", e)
+            }
         }
     }
 

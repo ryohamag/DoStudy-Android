@@ -52,6 +52,10 @@ class Repository @Inject constructor(
         toDoDataDao.delete(toDoData)
     }
 
+    suspend fun updateToDoData(toDoData: ToDoDataTable) {
+        toDoDataDao.update(toDoData)
+    }
+
     suspend fun getAllToDoData(): List<ToDoDataTable> {
         return toDoDataDao.getAllToDoData()
     }
