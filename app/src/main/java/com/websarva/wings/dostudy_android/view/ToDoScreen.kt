@@ -155,7 +155,7 @@ fun ToDoScreen(
                                 fadeInSpec = tween(durationMillis = 300),
                                 fadeOutSpec = tween(durationMillis = 300),
                                 placementSpec = spring(
-                                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                                    dampingRatio = Spring.DampingRatioLowBouncy,
                                     stiffness = Spring.StiffnessLow
                                 )
                             ),

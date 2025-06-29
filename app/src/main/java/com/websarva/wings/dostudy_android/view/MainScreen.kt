@@ -3,6 +3,9 @@ package com.websarva.wings.dostudy_android.view
 import android.media.MediaPlayer
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -384,14 +387,23 @@ fun MainScreen(
                 ) {
                     //タイマーのリストに対して1つ1つ要素をカードで表示
                     LazyColumn {
-                        items(sortedList) { timer ->
+                        items(sortedList, key = { it }) { timer ->
                             TimerCard(
                                 seconds = timer,
-                                vm = vm
+                                vm = vm,
+                                modifier = Modifier
+                                    .animateItem(
+                                    fadeInSpec = tween(durationMillis = 300),
+                                    fadeOutSpec = tween(durationMillis = 300),
+                                    placementSpec = spring(
+                                        dampingRatio = Spring.DampingRatioLowBouncy,
+                                        stiffness = Spring.StiffnessLow
+                                    )
+                                )
                             )
                         }
 
-                        item { //追加するボタン
+                        item(key = "add_button") { //追加するボタン
                             Card(
                                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                                 modifier = Modifier

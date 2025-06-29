@@ -1,5 +1,8 @@
 package com.websarva.wings.dostudy_android.view
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,11 +30,12 @@ import androidx.compose.runtime.getValue
 @Composable
 fun TimerCard(
     seconds: Int,
-    vm: MainViewModel
+    vm: MainViewModel,
+    modifier: Modifier = Modifier
 ) {
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        modifier = Modifier
+        modifier = modifier
             .padding(16.dp)
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(
