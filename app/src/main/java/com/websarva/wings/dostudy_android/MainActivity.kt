@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
                             MainScreen(navController, innerPadding, context, mainVM)
                         }
                         composable("Result") {
-                            ResultScreen(innerPadding, mainVM)
+                            ResultScreen(innerPadding, mainVM, navController)
                         }
                         composable("Monitor") {
                             MonitorScreen(
