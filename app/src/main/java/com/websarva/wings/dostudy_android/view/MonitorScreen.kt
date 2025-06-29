@@ -2,6 +2,7 @@ package com.websarva.wings.dostudy_android.view
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,14 +35,20 @@ import com.websarva.wings.dostudy_android.viewmodel.MainViewModel
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.runtime.LaunchedEffect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MonitorScreen(
     navController: NavController,
-    vm: MainViewModel
+    vm: MainViewModel,
 ) {
     val resultData by vm.resultDataList.collectAsState()
+    val screenTimeData by vm.screenTimeData.collectAsState()
+
+    LaunchedEffect(Unit) {
+        vm.getScreenTimeData()
+    }
 
     Scaffold(
         modifier = Modifier.padding(bottom = 90.dp),
@@ -76,13 +83,13 @@ fun MonitorScreen(
         LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(16.dp)
+                .padding(8.dp)
                 .fillMaxSize()
         ) {
             item {
                 Row(
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(8.dp)
                         .fillMaxWidth()
                 ) {
                     LineChart(
@@ -125,7 +132,19 @@ fun MonitorScreen(
             }
 
             item {
-                HorizontalDivider()
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+            }
+
+            item {
+                ScreenTimeChart(
+                    screenTimeData = screenTimeData,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 4.dp)
+                        .height(300.dp)
+                )
             }
         }
     }

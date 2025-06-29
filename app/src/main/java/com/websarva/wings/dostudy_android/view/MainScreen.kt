@@ -213,12 +213,13 @@ fun MainScreen(
                 )
             )
         }
-    ) { innerPadding ->
+    ) { innerPadding1 ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
-                .padding(innerPadding)
+//                .padding(innerPadding)
+                .padding(innerPadding1)
                 .fillMaxWidth()
                 .background(color = MaterialTheme.colorScheme.background)
         ) {

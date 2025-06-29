@@ -5,6 +5,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -46,7 +47,8 @@ fun ToDoScreen(
     navController: NavController,
     vm: MainViewModel,
     showAddToDoDialog: () -> Unit,
-    deleteToDo: (ToDoDataTable) -> Unit
+    deleteToDo: (ToDoDataTable) -> Unit,
+    innerPadding: PaddingValues
 ) {
     if (vm.isShowAddToDoDialog) {
         AddToDoDialog(
@@ -63,8 +65,8 @@ fun ToDoScreen(
     val selectedToDos = vm.selectedToDos.collectAsState()
 
     Scaffold(
-        modifier = Modifier
-            .padding(bottom = 90.dp),
+//        modifier = Modifier
+//            .padding(bottom = 90.dp),
         topBar = {
             CenterAlignedTopAppBar(
                 colors = topAppBarColors(
@@ -109,6 +111,7 @@ fun ToDoScreen(
             if (!vm.isSwapMode) {
                 FloatingActionButton(
                     onClick = { showAddToDoDialog() },
+                    modifier = Modifier.padding(bottom = 90.dp),
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 ) {
@@ -124,7 +127,7 @@ fun ToDoScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .padding(innerPadding)
+                .padding(top = 90.dp, bottom = 80.dp)
                 .padding(16.dp)
                 .fillMaxSize()
         ) {

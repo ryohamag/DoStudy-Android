@@ -13,6 +13,7 @@ import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoDataTable
 import com.websarva.wings.dostudy_android.model.Room.UserData.UserDataTable
 import com.websarva.wings.dostudy_android.model.repository.DataStoreRepository
 import com.websarva.wings.dostudy_android.model.repository.Repository
+import com.websarva.wings.dostudy_android.model.repository.ScreenTimeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +29,8 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val repository: Repository,
     private val orientationSensor: OrientationSensor,
-    private val dataStoreRepository: DataStoreRepository
+    private val dataStoreRepository: DataStoreRepository,
+    private val screenTimeRepository: ScreenTimeRepository
 ) : ViewModel() {
     private var _orientation: MutableStateFlow<FloatArray> = orientationSensor.orientation as MutableStateFlow<FloatArray>
     var orientation: StateFlow<FloatArray> = _orientation.asStateFlow()
@@ -56,6 +58,10 @@ class MainViewModel @Inject constructor(
 
     private val _selectedToDos = MutableStateFlow<List<ToDoDataTable>>(emptyList())
     val selectedToDos: StateFlow<List<ToDoDataTable>> = _selectedToDos.asStateFlow()
+
+    private val _screenTimeData = MutableStateFlow<List<Pair<String, Long>>>(emptyList())
+    val screenTimeData: StateFlow<List<Pair<String, Long>>> = _screenTimeData.asStateFlow()
+
 
     var isTimerMode by mutableStateOf(false) // タイマーモードかどうか
     var studyTitle by mutableStateOf("") // 勉強タイトル
@@ -295,6 +301,20 @@ class MainViewModel @Inject constructor(
 
             } catch (e: Exception) {
                 Log.e("MainViewModel", "Error swapping todos", e)
+            }
+        }
+    }
+
+    fun getScreenTimeData() {
+        viewModelScope.launch {
+            try {
+                val data = withContext(Dispatchers.IO) {
+                    screenTimeRepository.getScreenTimeData()
+                }
+                _screenTimeData.value = data
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Error getting screen time data", e)
+                _screenTimeData.value = emptyList()
             }
         }
     }

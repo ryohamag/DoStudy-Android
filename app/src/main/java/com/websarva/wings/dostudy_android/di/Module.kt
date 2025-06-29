@@ -12,6 +12,7 @@ import com.websarva.wings.dostudy_android.model.Room.UserData.UserRoomDataBase
 import com.websarva.wings.dostudy_android.model.notification.NotificationHelper
 import com.websarva.wings.dostudy_android.model.repository.DataStoreRepository
 import com.websarva.wings.dostudy_android.model.repository.Repository
+import com.websarva.wings.dostudy_android.model.repository.ScreenTimeRepository
 import com.websarva.wings.dostudy_android.viewmodel.MainViewModel
 import dagger.Module
 import dagger.Provides
@@ -32,9 +33,12 @@ object Module {
 
     @Provides
     fun provideMainViewModel(
-        repository: Repository, orientationSensor: OrientationSensor, dataStoreRepository: DataStoreRepository
+        repository: Repository,
+        orientationSensor: OrientationSensor,
+        dataStoreRepository: DataStoreRepository,
+        screenTimeRepository: ScreenTimeRepository
     ): MainViewModel {
-        return MainViewModel(repository, orientationSensor, dataStoreRepository)
+        return MainViewModel(repository, orientationSensor, dataStoreRepository, screenTimeRepository)
     }
 
     @Provides
@@ -47,6 +51,12 @@ object Module {
     @Singleton
     fun provideDataStoreRepository(@ApplicationContext context: Context): DataStoreRepository {
         return DataStoreRepository(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideScreenTimeRepository(@ApplicationContext context: Context): ScreenTimeRepository {
+        return ScreenTimeRepository(context)
     }
 
     @Provides

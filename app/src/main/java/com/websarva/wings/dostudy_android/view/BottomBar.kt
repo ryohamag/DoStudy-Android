@@ -15,7 +15,10 @@ import androidx.navigation.NavController
 import com.websarva.wings.dostudy_android.R
 
 @Composable
-fun BottomBar(navController: NavController) {
+fun BottomBar(
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
     BottomAppBar(
         actions = {
             IconButton(

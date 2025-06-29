@@ -83,7 +83,7 @@ class MainActivity : ComponentActivity() {
                         composable("Monitor") {
                             MonitorScreen(
                                 navController = navController,
-                                vm = mainVM
+                                vm = mainVM,
                             )
                         }
                         composable("Settings") {
@@ -111,7 +111,8 @@ class MainActivity : ComponentActivity() {
                                 showAddToDoDialog = { mainVM.isShowAddToDoDialog = true },
                                 deleteToDo = { title ->
                                     mainVM.deleteToDo(title)
-                                }
+                                },
+                                innerPadding = innerPadding
                             )
                         }
                     }
