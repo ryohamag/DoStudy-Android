@@ -222,6 +222,7 @@ class MainViewModel @Inject constructor(
                 withContext(Dispatchers.IO) {
                     repository.addToDoData(todoData)
                 }
+                getToDoList()
             } catch (e: Exception) {
                 Log.e("MainViewModel", "Error adding ToDo", e)
             }

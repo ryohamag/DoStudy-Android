@@ -1,5 +1,8 @@
 package com.websarva.wings.dostudy_android.view
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -148,7 +151,14 @@ fun ToDoScreen(
                         modifier = Modifier
                             .padding(16.dp)
                             .fillMaxWidth()
-                            .animateItem(fadeInSpec = null, fadeOutSpec = null),
+                            .animateItem(
+                                fadeInSpec = tween(durationMillis = 300),
+                                fadeOutSpec = tween(durationMillis = 300),
+                                placementSpec = spring(
+                                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                                    stiffness = Spring.StiffnessLow
+                                )
+                            ),
                         colors = CardDefaults.cardColors(
                             containerColor = when {
                                 isSelected -> MaterialTheme.colorScheme.secondary
