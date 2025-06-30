@@ -166,6 +166,9 @@ class MainViewModel @Inject constructor(
             "${setHours}:${setMinutes}:${setSeconds}"
         }
 
+        Log.d("MainScreenViewModel", "setTimer: ${_setTimer.value}")
+        Log.d("MainScreenViewModel", "seconds: ${_seconds.value}")
+
         val seconds = _seconds.value.let {
             val hours = TimeUnit.SECONDS.toHours(it.toLong()).toString().padStart(2, '0')
             val minutes = (TimeUnit.SECONDS.toMinutes(it.toLong()) % 60).toString().padStart(2, '0')

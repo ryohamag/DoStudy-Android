@@ -111,6 +111,7 @@ fun MainScreen(
                 }
             }
         } else {
+            delay(500)
             vm.reset()
             vm.stopSensor()
         }
@@ -152,7 +153,7 @@ fun MainScreen(
             vm.addResultData(true)
             httpRequest(
                 channelId = vm.channelId, username = vm.username, status = true,
-                vm.seconds.value, vm = vm
+                seconds = vm.seconds.value, vm = vm
             )
             vm.reset()
         }
