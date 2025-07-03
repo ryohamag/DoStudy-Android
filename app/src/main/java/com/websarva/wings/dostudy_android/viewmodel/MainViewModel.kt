@@ -8,12 +8,15 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.websarva.wings.dostudy_android.OrientationSensor
+import com.websarva.wings.dostudy_android.model.Room.PlatformData.PlatformDataTable
 import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultDataTable
 import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoDataTable
 import com.websarva.wings.dostudy_android.model.Room.UserData.UserDataTable
 import com.websarva.wings.dostudy_android.model.repository.DataStoreRepository
 import com.websarva.wings.dostudy_android.model.repository.Repository
 import com.websarva.wings.dostudy_android.model.repository.ScreenTimeRepository
+import com.websarva.wings.dostudy_android.util.FontConstants.fonts
+import com.websarva.wings.dostudy_android.util.PlatformConstants.platforms
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,6 +65,8 @@ class MainViewModel @Inject constructor(
     private val _screenTimeData = MutableStateFlow<List<Pair<String, Long>>>(emptyList())
     val screenTimeData: StateFlow<List<Pair<String, Long>>> = _screenTimeData.asStateFlow()
 
+    private val _platformData = MutableStateFlow<List<PlatformDataTable>>(emptyList())
+    val platformData: StateFlow<List<PlatformDataTable>> = _platformData.asStateFlow()
 
     var isTimerMode by mutableStateOf(false) // タイマーモードかどうか
     var studyTitle by mutableStateOf("") // 勉強タイトル
@@ -80,6 +85,10 @@ class MainViewModel @Inject constructor(
     var channelId by mutableStateOf("")
     var isShowAddToDoDialog by mutableStateOf(false)
     var isSwapMode by mutableStateOf(false) // タスクの並び替えモード
+    var channelName by mutableStateOf("")
+    var platformKey by mutableStateOf("")
+    var isShowPlatformDialog by mutableStateOf(false) // プラットフォーム追加ダイアログの表示フラグ
+    var selectedPlatform by mutableIntStateOf(0) // 選択されたプラットフォームのインデックス
 
     //初期化
     init {
@@ -318,6 +327,64 @@ class MainViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e("MainViewModel", "Error getting screen time data", e)
                 _screenTimeData.value = emptyList()
+            }
+        }
+    }
+
+    fun getPlatformData() {
+        viewModelScope.launch {
+            try {
+                val data = withContext(Dispatchers.IO) {
+                    repository.getAllPlatformData()
+                }
+                _platformData.value = data
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Error getting platform data", e)
+                _platformData.value = emptyList()
+            }
+        }
+    }
+
+    //プラットフォームデータを追加
+    fun addPlatformData() {
+        val platformData = PlatformDataTable(platformName = platforms[selectedPlatform], channelName = channelName, platformKey = platformKey)
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    repository.insertPlatformData(platformData)
+                }
+                getPlatformData()
+                isShowPlatformDialog = false
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Error adding platform data", e)
+            }
+        }
+    }
+
+    //プラットフォームデータを更新
+    fun updatePlatformData(platformData: PlatformDataTable) {
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    repository.updatePlatformData(platformData)
+                }
+                getPlatformData()
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Error updating platform data", e)
+            }
+        }
+    }
+
+    //プラットフォームデータを削除
+    fun deletePlatformData(platformData: PlatformDataTable) {
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    repository.deletePlatformData(platformData)
+                }
+                getPlatformData()
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Error deleting platform data", e)
             }
         }
     }

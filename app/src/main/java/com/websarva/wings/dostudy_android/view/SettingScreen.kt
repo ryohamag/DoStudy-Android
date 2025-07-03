@@ -1,16 +1,26 @@
 package com.websarva.wings.dostudy_android.view
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -24,13 +34,17 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -40,29 +54,42 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.websarva.wings.dostudy_android.R
+import com.websarva.wings.dostudy_android.viewmodel.MainViewModel
+import com.websarva.wings.dostudy_android.util.FontConstants.fonts
+import androidx.compose.foundation.lazy.items
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingScreen(
-    username: String,
-    onUsernameChange: (String) -> Unit,
-    channelId: String,
-    onChannelIdChange: (String) -> Unit,
-    createUserData: () -> Unit,
-    updateUserData: () -> Unit,
-    isFirstStartup: Boolean,
-    selectedFont: Int,
-    selectedFontChange: (Int) -> Unit,
-    fonts: List<String>,
     navController: NavController,
-    dailyLimit: Int,
-    onDailyLimitChange: (Int) -> Unit
+    vm: MainViewModel,
 ) {
+    LaunchedEffect(Unit) {
+        vm.getPlatformData()
+    }
+
+    if (vm.isShowPlatformDialog) {
+        AddPlatformDialog(
+            onDismiss = { vm.isShowPlatformDialog = false },
+            addPlatform = {
+                vm.addPlatformData()
+                vm.isShowPlatformDialog = false
+            },
+            selectedPlatform = vm.selectedPlatform,
+            selectedPlatformChange = { vm.selectedPlatform = it },
+            channelName = vm.channelName,
+            channelNameChange = { vm.channelName = it },
+            key = vm.platformKey,
+            keyChange = { vm.platformKey = it },
+        )
+    }
+
     Scaffold(
         contentWindowInsets = WindowInsets.systemBars,
         topBar = {
@@ -84,7 +111,7 @@ fun SettingScreen(
                 },
                 actions = {
                     IconButton(onClick = {
-                        if (isFirstStartup) createUserData() else updateUserData()
+                        if (vm.isFirstStartup) vm.createUserData() else vm.updateUserData()
                         navController.navigate("Home")
                     }) {
                         Icon(
@@ -96,12 +123,6 @@ fun SettingScreen(
             )
         }
     ) { innerPadding ->
-        // グラデーション背景の色を設定
-//        val gradientColors = if (isSystemInDarkTheme()) {
-//            listOf(Color(0xFF1a1a1a), Color(0xFF333333), Color(0xFF4d4d4d)) // ダークモード向け
-//        } else {
-//            listOf(Color(0xffcce6ff), Color(0xff66b3ff), Color(0xff0080ff)) // ライトモード向け
-//        }
         Column(
             modifier = Modifier
                 .padding(innerPadding)
@@ -110,7 +131,7 @@ fun SettingScreen(
                 .background(color = MaterialTheme.colorScheme.background)
         ) {
             Text(
-                text = "ユーザー設定",
+                text = "ユーザー名",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -118,75 +139,15 @@ fun SettingScreen(
             Spacer(Modifier.height(10.dp))
 
             TextField(
-                value = username,
-                onValueChange = onUsernameChange,
+                value = vm.username,
+                onValueChange = { vm.username = it },
                 label = { Text("ユーザー名") },
             )
 
             Spacer(Modifier.height(20.dp))
 
             Text(
-                text = "Discord設定",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(Modifier.height(10.dp))
-
-            TextField(
-                value = channelId,
-                onValueChange = onChannelIdChange,
-                label = { Text("チャンネルID") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
-
-            Spacer(Modifier.height(20.dp))
-
-            val uriHandler = LocalUriHandler.current
-            val annotatedText = buildAnnotatedString {
-                append("チャンネルIDの調べ方はこちら")
-                addStyle(
-                    style = SpanStyle(
-                        color = MaterialTheme.colorScheme.primary,
-                        textDecoration = TextDecoration.Underline
-                    ),
-                    start = 0,
-                    end = this.length
-                )
-            }
-
-            Text(
-                text = annotatedText,
-                modifier = Modifier.clickable {
-                    uriHandler.openUri("https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID#h_01HRSTXPS5FMK2A5SMVSX4JW4E")
-                }
-            )
-
-            Spacer(Modifier.height(10.dp))
-
-            val botInvitationText = buildAnnotatedString {
-                append("Botの招待リンクはこちら")
-                addStyle(
-                    style = SpanStyle(
-                        color = MaterialTheme.colorScheme.primary,
-                        textDecoration = TextDecoration.Underline
-                    ),
-                    start = 0,
-                    end = this.length
-                )
-            }
-
-            Text(
-                text = botInvitationText,
-                modifier = Modifier.clickable {
-                    uriHandler.openUri("https://discord.com/oauth2/authorize?client_id=1311225271361212436")
-                }
-            )
-
-            Spacer(Modifier.height(20.dp))
-
-            Text(
-                text = "デザイン設定",
+                text = "デザイン",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -203,7 +164,7 @@ fun SettingScreen(
             ) {
                 TextField(
                     readOnly = true,
-                    value = fonts[selectedFont],
+                    value = fonts[vm.selectedFont],
                     onValueChange = { },
                     modifier = Modifier.menuAnchor(),
                     label = { Text("フォント") },
@@ -223,7 +184,7 @@ fun SettingScreen(
                     fonts.forEachIndexed { index, font ->
                         DropdownMenuItem(
                             onClick = {
-                                selectedFontChange(index)
+                                vm.selectedFont = index
                                 expanded = false
                             },
                             text = { Text(font) }
@@ -235,21 +196,84 @@ fun SettingScreen(
             Spacer(Modifier.height(20.dp))
 
             Text(
-                text = "スクリーンタイム設定",
+                text = "スクリーンタイム",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
 
             Spacer(Modifier.height(10.dp))
 
+            val dailyLimit = vm.dailyLimit.collectAsState().value
+
             TextField(
                 value = dailyLimit.toString(),
                 onValueChange = { value ->
-                    value.toIntOrNull()?.let { onDailyLimitChange(it) }
+                    value.toIntOrNull()?.let { vm.updateDailyLimitTemporary(it) }
                 },
                 label = { Text("一日の制限時間（分）") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
+
+            Spacer(Modifier.height(20.dp))
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "プラットフォーム",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+
+                TextButton(
+                    onClick = {
+                        vm.isShowPlatformDialog = true
+                    },
+                ) {
+                    Text(
+                        text = "追加",
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(20.dp))
+
+            val platformData = vm.platformData.collectAsState().value
+
+            if (platformData.isEmpty()) {
+                Text(
+                    text = "プラットフォームがありません",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(bottom = 90.dp)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outlineVariant,
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                ) {
+                    items(platformData, key = { it.id }) { platform ->
+                        PlatformCard(
+                            platform = platform,
+                            deletePlatformData = { platform -> vm.deletePlatformData(platform) },
+                            modifier = Modifier.animateItem(
+                                fadeInSpec = tween(durationMillis = 300),
+                                fadeOutSpec = tween(durationMillis = 300),
+                                placementSpec = spring(
+                                    dampingRatio = Spring.DampingRatioLowBouncy,
+                                    stiffness = Spring.StiffnessLow
+                                )
+                            )
+                        )
+                    }
+                }
+            }
         }
     }
 

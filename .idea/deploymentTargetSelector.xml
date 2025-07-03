@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-06-29T07:25:18.209556800Z">
+        <DropdownSelection timestamp="2025-07-03T00:04:15.727784300Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=57c3310a" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Ryo Hamajima\.android\avd\Pixel_6_API_33_1.avd" />
             </handle>
           </Target>
         </DropdownSelection>
@@ -28,6 +28,9 @@
         <DialogSelection />
       </SelectionState>
       <SelectionState runConfigName="MonitorScreenPreview">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="AddPlatformDialogPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

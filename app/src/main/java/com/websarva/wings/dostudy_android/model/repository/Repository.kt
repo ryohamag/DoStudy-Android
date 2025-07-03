@@ -1,5 +1,7 @@
 package com.websarva.wings.dostudy_android.model.repository
 
+import com.websarva.wings.dostudy_android.model.Room.PlatformData.PlatformDataDao
+import com.websarva.wings.dostudy_android.model.Room.PlatformData.PlatformDataTable
 import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultDataDao
 import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultDataTable
 import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoDataDao
@@ -11,7 +13,8 @@ import javax.inject.Inject
 class Repository @Inject constructor(
     private val resultDataDao: ResultDataDao,
     private val userDataDao: UserDataDao,
-    private val toDoDataDao: ToDoDataDao
+    private val toDoDataDao: ToDoDataDao,
+    private val platformDataDao: PlatformDataDao
 ) {
     // ResultDataDaoを通じてデータベースにアクセスするメソッド
     suspend fun insertResultData(resultData: ResultDataTable) {
@@ -58,5 +61,22 @@ class Repository @Inject constructor(
 
     suspend fun getAllToDoData(): List<ToDoDataTable> {
         return toDoDataDao.getAllToDoData()
+    }
+
+    // PlatformDataDaoを通じてデータベースにアクセスするメソッド
+    suspend fun insertPlatformData(platformData: PlatformDataTable) {
+        platformDataDao.insert(platformData)
+    }
+
+    suspend fun updatePlatformData(platformData: PlatformDataTable) {
+        platformDataDao.update(platformData)
+    }
+
+    suspend fun deletePlatformData(platformData: PlatformDataTable) {
+        platformDataDao.delete(platformData)
+    }
+
+    suspend fun getAllPlatformData(): List<PlatformDataTable> {
+        return platformDataDao.getAllPlatformData()
     }
 }

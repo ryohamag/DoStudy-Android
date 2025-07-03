@@ -38,7 +38,7 @@ fun ScreenTimeChart(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "スクリーンタイムデータがありません",
+                    text = "使用状況へのアクセスが許可されていません。",
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
@@ -57,7 +57,7 @@ fun ScreenTimeChart(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = "スクリーンタイム（直近7日）",
+                text = "スクリーンタイム（直近7日間）",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,

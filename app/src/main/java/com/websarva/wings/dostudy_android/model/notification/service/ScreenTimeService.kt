@@ -38,8 +38,7 @@ class ScreenTimeService : Service() {
     private var timer: Timer? = null
     private val checkInterval = 60 * 1000L // 1分ごとにチェック
     private var lastNotificationTime = 0L
-//    private val notificationCooldown = 60 * 60 * 1000L // 1時間のクールダウン
-    private val notificationCooldown = 10L // 1時間のクールダウン
+    private val notificationCooldown = 60 * 60 * 1000L // 1時間のクールダウン
 
     companion object {
         private const val FOREGROUND_CHANNEL_ID = "screen_time_service"

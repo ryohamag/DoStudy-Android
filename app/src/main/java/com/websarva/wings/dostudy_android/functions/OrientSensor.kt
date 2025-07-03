@@ -15,7 +15,7 @@ fun orientSensor(
             vm.addResultData(false)
             vm.isShowFailedDialog = true
             httpRequest(
-                channelId = vm.channelId, username = vm.username,
+                platformDataList = vm.platformData.value, username = vm.username,
                 status = false, vm.seconds.value, vm = vm
             )
             vm.reset()

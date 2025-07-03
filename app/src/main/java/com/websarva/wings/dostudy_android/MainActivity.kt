@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
-                        BottomBar(navController)
+                        BottomBar(navController, mainVM.isStudyStarted)
                     }
                 ) { innerPadding ->
                     val context = LocalContext.current
@@ -88,20 +88,8 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("Settings") {
                             SettingScreen(
-                                username = mainVM.username,
-                                onUsernameChange = { mainVM.username = it },
-                                channelId = mainVM.channelId,
-                                onChannelIdChange = { mainVM.channelId = it },
-                                createUserData = { mainVM.createUserData() },
-                                updateUserData = { mainVM.updateUserData() },
-                                isFirstStartup = mainVM.isFirstStartup,
-                                selectedFont = mainVM.selectedFont,
-                                selectedFontChange = { mainVM.selectedFont = it },
-                                fonts = FontConstants.fonts,
                                 navController = navController,
-                                dailyLimit = mainVM.dailyLimit.collectAsState().value,
-                                onDailyLimitChange = { limit -> mainVM.updateDailyLimitTemporary(limit) }
-
+                                vm = mainVM,
                             )
                         }
                         composable("ToDoList") {
@@ -123,7 +111,6 @@ class MainActivity : ComponentActivity() {
 
     private fun checkAndRequestPermissions() {
         requestNotificationPermission()
-        requestUsageStatsPermission()
         // 例: バッテリー最適化の除外要求等も必要であれば実装
     }
 
@@ -203,7 +190,7 @@ class MainActivity : ComponentActivity() {
         if(vm.isStudyStarted) {
             vm.addResultData(false)
             vm.isShowFailedDialog = true
-            httpRequest(channelId = vm.channelId, username = vm.username, status = false, seconds = vm.seconds.value, vm = vm)
+            httpRequest(platformDataList = vm.platformData.value, username = vm.username, status = false, seconds = vm.seconds.value, vm = vm)
             vm.reset()
         }
     }

@@ -3,6 +3,8 @@ package com.websarva.wings.dostudy_android.di
 import android.content.Context
 import androidx.room.Room
 import com.websarva.wings.dostudy_android.OrientationSensor
+import com.websarva.wings.dostudy_android.model.Room.PlatformData.PlatformDataDao
+import com.websarva.wings.dostudy_android.model.Room.PlatformData.PlatformRoomDataBase
 import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultDataDao
 import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultRoomDataBase
 import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoDataDao
@@ -73,12 +75,17 @@ object Module {
 
     @Provides
     @Singleton
+    fun providePlatformDataDao(db: PlatformRoomDataBase) = db.platformDataDao()
+
+    @Provides
+    @Singleton
     fun provideRepository(
         resultDataDao: ResultDataDao,
         userDataDao: UserDataDao,
-        toDoDataDao: ToDoDataDao
+        toDoDataDao: ToDoDataDao,
+        platformDataDao: PlatformDataDao
     ): Repository {
-        return Repository(resultDataDao, userDataDao, toDoDataDao)
+        return Repository(resultDataDao, userDataDao, toDoDataDao, platformDataDao)
     }
 
     @Provides
@@ -106,6 +113,16 @@ object Module {
             context,
             ToDoRoomDataBase::class.java,
             "todo_database"
+        ).fallbackToDestructiveMigration().build()
+    }
+
+    @Provides
+    @Singleton
+    fun providePlatformDataBase(@ApplicationContext context: Context): PlatformRoomDataBase {
+        return Room.databaseBuilder(
+            context,
+            PlatformRoomDataBase::class.java,
+            "platform_data_database"
         ).fallbackToDestructiveMigration().build()
     }
 }

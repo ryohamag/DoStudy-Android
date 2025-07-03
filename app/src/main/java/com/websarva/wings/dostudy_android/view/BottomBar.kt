@@ -17,12 +17,17 @@ import com.websarva.wings.dostudy_android.R
 @Composable
 fun BottomBar(
     navController: NavController,
+    isStudyStarted: Boolean,
     modifier: Modifier = Modifier
 ) {
     BottomAppBar(
         actions = {
             IconButton(
-                onClick = { navController.navigate("Home") },
+                onClick = {
+                    if (!isStudyStarted) {
+                        navController.navigate("Home")
+                    }
+                },
                 modifier = Modifier.weight(1f)
             ) {
                 Icon(
@@ -32,7 +37,11 @@ fun BottomBar(
                 )
             }
             IconButton(
-                onClick = { navController.navigate("ToDoList") },
+                onClick = {
+                    if (!isStudyStarted) {
+                        navController.navigate("ToDoList")
+                    }
+                },
                 modifier = Modifier.weight(1f)
             ) {
                 Icon(
@@ -42,7 +51,11 @@ fun BottomBar(
                 )
             }
             IconButton(
-                onClick = { navController.navigate("Monitor") },
+                onClick = {
+                    if (!isStudyStarted) {
+                        navController.navigate("Monitor")
+                    }
+                },
                 modifier = Modifier.weight(1f)
             ) {
                 Icon(
@@ -52,7 +65,11 @@ fun BottomBar(
                 )
             }
             IconButton(
-                onClick = { navController.navigate("Settings") },
+                onClick = {
+                    if (!isStudyStarted) {
+                        navController.navigate("Settings")
+                    }
+                },
                 modifier = Modifier.weight(1f)
             ) {
                 Icon(

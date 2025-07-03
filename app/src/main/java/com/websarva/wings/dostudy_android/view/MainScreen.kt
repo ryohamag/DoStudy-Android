@@ -90,6 +90,7 @@ fun MainScreen(
 
     LaunchedEffect(Unit) {
         vm.getToDoList()
+        vm.getPlatformData()
     }
 
     //isStudyStarted が true になったら実行
@@ -152,7 +153,7 @@ fun MainScreen(
         if (vm.isShowSuccessDialog) {
             vm.addResultData(true)
             httpRequest(
-                channelId = vm.channelId, username = vm.username, status = true,
+                platformDataList = vm.platformData.value, username = vm.username, status = true,
                 seconds = vm.seconds.value, vm = vm
             )
             vm.reset()
@@ -175,7 +176,7 @@ fun MainScreen(
                 if(!vm.isStudyStarted) {
                     vm.isStudyStarted = true
                     httpRequest(
-                        channelId = vm.channelId, username = vm.username,
+                        platformDataList = vm.platformData.value, username = vm.username,
                         status = true, seconds = vm.seconds.value, vm = vm, mode = "start"
                     )
                 }
