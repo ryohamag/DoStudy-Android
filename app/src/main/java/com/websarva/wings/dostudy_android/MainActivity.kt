@@ -25,24 +25,18 @@ import android.os.PowerManager
 import android.provider.Settings
 import android.util.Log
 import androidx.activity.viewModels
-import androidx.compose.runtime.collectAsState
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.ads.MobileAds
 import com.websarva.wings.dostudy_android.view.ResultScreen
 import com.websarva.wings.dostudy_android.view.SettingScreen
 import com.websarva.wings.dostudy_android.functions.httpRequest
 import com.websarva.wings.dostudy_android.model.notification.service.ScreenTimeService
-import com.websarva.wings.dostudy_android.util.FontConstants
 import com.websarva.wings.dostudy_android.view.BottomBar
 import com.websarva.wings.dostudy_android.view.MonitorScreen
 import com.websarva.wings.dostudy_android.view.ToDoScreen
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.getValue
-import kotlin.text.compareTo
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -75,10 +69,10 @@ class MainActivity : ComponentActivity() {
                     val context = LocalContext.current
                     NavHost(navController = navController, startDestination = "Home") {
                         composable("Home") {
-                            MainScreen(navController, innerPadding, context, mainVM)
+                            MainScreen(context, mainVM)
                         }
                         composable("Result") {
-                            ResultScreen(innerPadding, mainVM, navController)
+                            ResultScreen(mainVM, navController)
                         }
                         composable("Monitor") {
                             MonitorScreen(

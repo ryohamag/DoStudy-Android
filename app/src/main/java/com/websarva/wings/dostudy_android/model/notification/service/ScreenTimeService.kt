@@ -8,9 +8,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.app.usage.UsageStatsManager
-import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.annotation.RequiresPermission
@@ -48,7 +46,6 @@ class ScreenTimeService : Service() {
     override fun onCreate() {
         super.onCreate()
         createForegroundNotificationChannel()
-        Log.d("ScreenTimeService", "サービス作成")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -75,7 +72,7 @@ class ScreenTimeService : Service() {
             setShowBadge(false)
         }
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
 
@@ -123,7 +120,6 @@ class ScreenTimeService : Service() {
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     private fun checkScreenTime() {
         if (!hasUsageStatsPermission()) {
-            Log.w("ScreenTimeService", "使用統計権限がありません")
             return
         }
 
@@ -149,14 +145,12 @@ class ScreenTimeService : Service() {
         }
 
         val totalMinutes = (totalTimeInForeground / (1000 * 60)).toInt()
-        Log.d("ScreenTimeService", "現在のスクリーンタイム: ${totalMinutes}分")
 
         if (totalMinutes >= dailyLimitMinutes) {
             val currentTime = System.currentTimeMillis()
             if (currentTime - lastNotificationTime > notificationCooldown) {
                 notificationHelper.sendScreenTimeLimitNotification(totalMinutes, dailyLimitMinutes)
                 lastNotificationTime = currentTime
-                Log.d("ScreenTimeService", "制限時間に到達 - 通知送信")
             }
         }
     }
@@ -165,6 +159,5 @@ class ScreenTimeService : Service() {
         super.onDestroy()
         timer?.cancel()
         serviceJob?.cancel()
-        Log.d("ScreenTimeService", "サービス停止")
     }
 }

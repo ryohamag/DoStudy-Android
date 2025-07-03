@@ -15,7 +15,6 @@ import com.websarva.wings.dostudy_android.model.Room.UserData.UserDataTable
 import com.websarva.wings.dostudy_android.model.repository.DataStoreRepository
 import com.websarva.wings.dostudy_android.model.repository.Repository
 import com.websarva.wings.dostudy_android.model.repository.ScreenTimeRepository
-import com.websarva.wings.dostudy_android.util.FontConstants.fonts
 import com.websarva.wings.dostudy_android.util.PlatformConstants.platforms
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

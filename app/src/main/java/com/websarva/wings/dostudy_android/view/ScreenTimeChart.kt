@@ -77,7 +77,6 @@ fun ScreenTimeChart(
 
 private fun DrawScope.drawScreenTimeChart(screenTimeData: List<Pair<String, Long>>) {
     val maxTimeMillis = screenTimeData.maxOfOrNull { it.second } ?: 0L
-    val minTimeMillis = 0L // スクリーンタイムは0から開始
 
     if (maxTimeMillis == 0L) return
 

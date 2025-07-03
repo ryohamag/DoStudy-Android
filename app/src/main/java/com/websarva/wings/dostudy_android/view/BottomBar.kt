@@ -18,7 +18,6 @@ import com.websarva.wings.dostudy_android.R
 fun BottomBar(
     navController: NavController,
     isStudyStarted: Boolean,
-    modifier: Modifier = Modifier
 ) {
     BottomAppBar(
         actions = {

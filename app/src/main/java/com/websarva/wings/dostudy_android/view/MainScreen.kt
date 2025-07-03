@@ -9,14 +9,12 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,7 +29,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -47,11 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -69,8 +62,6 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    navController: NavController,
-    innerPadding : PaddingValues,
     context: Context,
     vm: MainViewModel
 ) {
@@ -199,12 +190,6 @@ fun MainScreen(
         )
     }
 
-//    val gradientColors = if (isSystemInDarkTheme()) {
-//        listOf(Color(0xFF1a1a1a), Color(0xFF333333), Color(0xFF4d4d4d)) // ダークモード向け
-//    } else {
-//        listOf(Color(0xffcce6ff), Color(0xff66b3ff), Color(0xff0080ff)) // ライトモード向け
-//    }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -215,19 +200,15 @@ fun MainScreen(
                 )
             )
         }
-    ) { innerPadding1 ->
+    ) { innerPadding ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
-//                .padding(innerPadding)
-                .padding(innerPadding1)
+                .padding(innerPadding)
                 .fillMaxWidth()
                 .background(color = MaterialTheme.colorScheme.background)
         ) {
-//            //広告バナー
-//            AdBanner(modifier = Modifier.fillMaxWidth())
-
             val seconds by vm.seconds.collectAsState() //経過時間を監視
             val selectedTimer by vm.selectedTimer.collectAsState() //選択されたタイマーを監視
 
@@ -308,46 +289,6 @@ fun MainScreen(
                             fontSize = 48.sp,
                         )
                     }
-
-//                    Column(
-//                        modifier = Modifier
-//                            .weight(2f)
-//                            .padding(16.dp)
-//                    ) {
-//                        IconButton(
-//                            onClick = { navController.navigate("Settings") },
-//                            modifier = Modifier
-//                                .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
-//                                .scale(2.5f)
-//                        ) {
-//                            Icon(
-//                                painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_settings_24)),
-//                                contentDescription = "設定ボタン",
-//                                tint = MaterialTheme.colorScheme.onPrimaryContainer
-//                            )
-//                        }
-//
-//                        IconButton(
-//                            onClick = {
-//                                if(!vm.isStudyStarted) {
-//                                    if(vm.resultDataList.value.isNotEmpty()) {
-//                                        navController.navigate("Result")
-//                                    } else {
-//                                        Toast.makeText(context, "まだデータがありません", Toast.LENGTH_SHORT).show()
-//                                    }
-//                                }
-//                            },
-//                            modifier = Modifier
-//                                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
-//                                .scale(2.5f)
-//                        ) {
-//                            Icon(
-//                                painter = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.baseline_history_24)),
-//                                contentDescription = "履歴ボタン",
-//                                tint = MaterialTheme.colorScheme.onPrimaryContainer
-//                            )
-//                        }
-//                    }
                 }
             }
 

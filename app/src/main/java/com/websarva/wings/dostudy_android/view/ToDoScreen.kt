@@ -65,8 +65,6 @@ fun ToDoScreen(
     val selectedToDos = vm.selectedToDos.collectAsState()
 
     Scaffold(
-//        modifier = Modifier
-//            .padding(bottom = 90.dp),
         topBar = {
             CenterAlignedTopAppBar(
                 colors = topAppBarColors(

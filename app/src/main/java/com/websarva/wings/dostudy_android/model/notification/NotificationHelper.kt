@@ -22,7 +22,6 @@ class NotificationHelper @Inject constructor(
     private val context: Context
 ) {
     companion object {
-        const val CHANNEL_ID = "dostudy_notifications"
         const val SCREEN_TIME_CHANNEL_ID = "screen_time_notifications"
         const val NOTIFICATION_ID = 1001
     }

@@ -27,7 +27,6 @@ import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultDataTable
 @Composable
 fun ResultCard(
     resultDataTable: ResultDataTable,
-    modifier: Modifier = Modifier
 ) {
     //履歴のカード
     Card(

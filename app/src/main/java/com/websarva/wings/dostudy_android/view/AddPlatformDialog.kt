@@ -27,9 +27,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.websarva.wings.dostudy_android.util.PlatformConstants
 import com.websarva.wings.dostudy_android.util.PlatformConstants.platforms
-import com.websarva.wings.dostudy_android.viewmodel.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -232,24 +230,5 @@ fun AddPlatformDialog(
                 Text("キャンセル")
             }
         }
-    )
-}
-
-@Preview
-@Composable
-fun AddPlatformDialogPreview() {
-    var selectedPlatform by remember { mutableStateOf(0) }
-    var channelName by remember { mutableStateOf("") }
-    var key by remember { mutableStateOf("") }
-
-    AddPlatformDialog(
-        onDismiss = {},
-        addPlatform = {},
-        selectedPlatform = selectedPlatform,
-        selectedPlatformChange = { selectedPlatform = it },
-        channelName = channelName,
-        channelNameChange = { channelName = it },
-        key = key,
-        keyChange = { key = it }
     )
 }
