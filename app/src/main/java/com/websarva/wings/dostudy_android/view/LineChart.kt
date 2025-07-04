@@ -60,7 +60,7 @@ fun LineChart(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = "勉強時間の推移",
+                text = "作業時間の推移",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,

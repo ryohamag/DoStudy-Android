@@ -100,10 +100,16 @@ fun SettingScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = {
-                        if (vm.isFirstStartup) vm.createUserData() else vm.updateUserData()
-                        navController.navigate("Home")
-                    }) {
+                    val dailyLimit = vm.dailyLimit.collectAsState().value
+                    IconButton(
+                        onClick = {
+                            if (vm.dailyLimit.value > 0) { // 保存時のバリデーション
+                                if (vm.isFirstStartup) vm.createUserData() else vm.updateUserData()
+                                navController.navigate("Home")
+                            }
+                        },
+                        enabled = dailyLimit > 0 // 無効な値の場合はボタンを無効化
+                    ) {
                         Icon(
                             painter = painterResource(id = R.drawable.baseline_save_alt_24),
                             contentDescription = "保存",
@@ -196,12 +202,20 @@ fun SettingScreen(
             val dailyLimit = vm.dailyLimit.collectAsState().value
 
             TextField(
-                value = dailyLimit.toString(),
+                value = if (dailyLimit == 0) "" else dailyLimit.toString(),
                 onValueChange = { value ->
-                    value.toIntOrNull()?.let { vm.updateDailyLimitTemporary(it) }
+                    if (value.isEmpty()) {
+                        vm.updateDailyLimitTemporary(0) // 空文字の場合は0を設定
+                    } else {
+                        value.toIntOrNull()?.let { vm.updateDailyLimitTemporary(it) }
+                    }
                 },
                 label = { Text("一日の制限時間（分）") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                isError = dailyLimit == 0, // 0の場合はエラー表示
+                supportingText = if (dailyLimit == 0) {
+                    { Text("制限時間を入力してください", color = MaterialTheme.colorScheme.error) }
+                } else null
             )
 
             Spacer(Modifier.height(20.dp))

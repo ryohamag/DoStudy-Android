@@ -102,7 +102,7 @@ fun MonitorScreen(
                             .height(300.dp)
                     ) {
                         Text(
-                            text = "直近5回の勉強履歴",
+                            text = "直近5回の作業履歴",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
