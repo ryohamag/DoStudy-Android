@@ -16,8 +16,8 @@ android {
         applicationId = "com.websarva.wings.dostudy_android"
         minSdk = 26
         targetSdk = 35
-        versionCode = 3
-        versionName = "1.0"
+        versionCode = 4
+        versionName = "2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -52,7 +52,6 @@ android {
             }
         }
 
-//        resValue("string", "ADMOB_APP_ID", project.hasProperty("ADMOB_APP_ID").toString())
         val properties = Properties()
         val localPropertiesFile = project.rootProject.file("local.properties")
         if (localPropertiesFile.exists()) {
