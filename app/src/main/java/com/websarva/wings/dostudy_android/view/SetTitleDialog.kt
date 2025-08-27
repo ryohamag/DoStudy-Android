@@ -31,7 +31,6 @@ fun SetTitleDialog(
         onDismissRequest = onDismissRequest,
         title = { Text("タイトルの入力") },
         text = {
-
             Column(
                 modifier = Modifier
                     .height(400.dp)
@@ -40,7 +39,7 @@ fun SetTitleDialog(
                 TextField(
                     value = studyTitle,
                     onValueChange = onStudyTitleChange,
-                    label = { Text("勉強タイトル") }
+                    label = { Text("作業タイトル") }
                 )
 
                 LazyColumn(
@@ -105,7 +104,7 @@ fun SetTitleDialog(
             TextButton(
                 onClick = onConfirmButtonClick
             ) {
-                Text("勉強開始")
+                Text("作業開始")
             }
         },
         dismissButton = {
