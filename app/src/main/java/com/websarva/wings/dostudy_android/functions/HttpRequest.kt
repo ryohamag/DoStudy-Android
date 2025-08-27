@@ -3,7 +3,8 @@ package com.websarva.wings.dostudy_android.functions
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
-import com.websarva.wings.dostudy_android.viewmodels.MainScreenViewModel
+import com.websarva.wings.dostudy_android.model.Room.PlatformData.PlatformDataTable
+import com.websarva.wings.dostudy_android.viewmodel.MainViewModel
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -13,16 +14,16 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.IOException
 
-data class UserData(
-    val channelid: String,
-    val name: String,
-    val close: Boolean,
+data class CloseData(
     val realtimer_seconds: Int,
-    val title: String = ""
+    val title: String,
+    val close: Boolean = false,
+    val channelid: List<Map<String, String>>,
+    val name: String,
 )
 
-data class TitleData(
-    val channelid: String,
+data class StartData(
+    val channelid: List<Map<String, String>>,
     val name: String,
     val title: String
 )
@@ -33,20 +34,29 @@ data class ApiResponse(
 )
 
 fun httpRequest(
-    channelId: String,
+    platformDataList: List<PlatformDataTable>,
     username: String,
     status: Boolean,
     seconds: Int,
-    vm: MainScreenViewModel,
+    vm: MainViewModel,
     mode: String = "close"
 ) {
+    val channelDataList = platformDataList.map { platformData ->
+        mapOf(platformData.platformName.lowercase() to platformData.platformKey)
+    }
+
     val userData: Any = when (mode) {
-        "close" -> UserData(channelId, username, status, seconds, vm.studyTitle)
-        "start" -> TitleData(channelId, username, vm.studyTitle)
-        else -> UserData(channelId, username, status, seconds)
+        "close" -> CloseData(seconds, vm.studyTitle, status, channelDataList, username)
+        "start" -> StartData(channelDataList, username, vm.studyTitle)
+        else -> {
+            Log.e("HttpRequest", "Invalid mode: $mode")
+            return
+        }
     }
 
     val jsonString = Gson().toJson(userData) //JSONに変換
+
+    Log.d("HttpRequest", "JSON String: $jsonString")
 
     val requestBody = jsonString.toRequestBody("application/json".toMediaTypeOrNull())
 
@@ -63,6 +73,7 @@ fun httpRequest(
 
         override fun onResponse(call: Call, response: Response) {
             val responseBody = response.body?.string()
+            Log.d("HttpRequest", "Response: $responseBody")
             val message = extractMessageFromJson(responseBody ?: "")
             vm.responseMessage = message ?: "勉強してください！"
         }
@@ -72,6 +83,7 @@ fun httpRequest(
 //JSONからメッセージを取り出す
 fun extractMessageFromJson(jsonString: String): String? {
     return try {
+        Log.d("JSON Parsing", "Parsing JSON: $jsonString")
         val apiResponse = Gson().fromJson(jsonString, ApiResponse::class.java)
         apiResponse.message
     } catch (e: Exception) {

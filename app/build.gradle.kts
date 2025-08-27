@@ -16,8 +16,8 @@ android {
         applicationId = "com.websarva.wings.dostudy_android"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
-        versionName = "1.0"
+        versionCode = 5
+        versionName = "2.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -52,7 +52,6 @@ android {
             }
         }
 
-//        resValue("string", "ADMOB_APP_ID", project.hasProperty("ADMOB_APP_ID").toString())
         val properties = Properties()
         val localPropertiesFile = project.rootProject.file("local.properties")
         if (localPropertiesFile.exists()) {
@@ -110,6 +109,11 @@ android {
         //hilt
         implementation(libs.hilt.android)
         ksp(libs.hilt.android.compiler)
+
+        //DataStore
+        implementation ("androidx.datastore:datastore-preferences:1.1.7")
+
+
     }
 }
 dependencies {
