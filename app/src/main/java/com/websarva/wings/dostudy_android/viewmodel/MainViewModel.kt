@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.websarva.wings.dostudy_android.OrientationSensor
+import com.websarva.wings.dostudy_android.functions.orientSensor
 import com.websarva.wings.dostudy_android.model.Room.PlatformData.PlatformDataTable
 import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultDataTable
 import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoDataTable
@@ -117,20 +118,37 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private var timerJob: Job? = null
+    private var orientationJob: Job? = null
+
     fun startStudy() {
         isStudyStarted = true
         startTimer()
-        startSensor()
+        startOrientationMonitoring()
     }
 
     fun stopStudy() {
         isStudyStarted = false
         stopTimer()
         reset()
-        stopSensor()
+        stopOrientationMonitoring()
     }
 
-    private var timerJob: Job? = null
+    private fun startOrientationMonitoring() {
+        orientationSensor.start()
+        orientationJob = viewModelScope.launch {
+            while (isStudyStarted) {
+                delay(5000) // 5秒ごとに角度を計測
+                orientSensor(orientation.value, this@MainViewModel)
+            }
+        }
+    }
+
+    private fun stopOrientationMonitoring() {
+        orientationSensor.stop()
+        orientationJob?.cancel()
+        orientationJob = null
+    }
 
     private fun startTimer() {
         timerJob = viewModelScope.launch {
@@ -438,13 +456,5 @@ class MainViewModel @Inject constructor(
         isStudyStarted = false
         _selectedTimer.value = null
         _setTimer.value = null
-    }
-
-    fun startSensor() {
-        orientationSensor.start()
-    }
-
-    fun stopSensor() {
-        orientationSensor.stop()
     }
 }

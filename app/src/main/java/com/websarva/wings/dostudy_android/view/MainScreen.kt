@@ -12,7 +12,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -50,7 +49,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.navigation.NavController
 import com.websarva.wings.dostudy_android.R
 import com.websarva.wings.dostudy_android.functions.httpRequest
 import com.websarva.wings.dostudy_android.functions.orientSensor
@@ -66,7 +64,6 @@ fun MainScreen(
     vm: MainViewModel
 ) {
     //スマホの角度を監視
-    val orientation by vm.orientation.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
 
     // メディアプレイヤーを用意
@@ -82,13 +79,6 @@ fun MainScreen(
     LaunchedEffect(Unit) {
         vm.getToDoList()
         vm.getPlatformData()
-    }
-
-    LaunchedEffect(key1 = vm.isStudyStarted) {
-        while (vm.isStudyStarted) {
-            delay(5000) //5秒ごとに角度を計測
-            orientSensor(orientation, vm)
-        }
     }
 
     //失敗時のダイアログを表示
@@ -140,7 +130,6 @@ fun MainScreen(
                     return@SetTitleDialog
                 }
                 if(!vm.isStudyStarted) {
-//                    vm.isStudyStarted = true
                     vm.startStudy()
                     httpRequest(
                         platformDataList = vm.platformData.value, username = vm.username,
@@ -365,6 +354,4 @@ fun MainScreen(
             }
         }
     }
-
-
 }
