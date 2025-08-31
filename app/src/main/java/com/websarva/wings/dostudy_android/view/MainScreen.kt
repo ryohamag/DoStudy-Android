@@ -51,7 +51,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.websarva.wings.dostudy_android.R
 import com.websarva.wings.dostudy_android.functions.httpRequest
-import com.websarva.wings.dostudy_android.functions.orientSensor
 import com.websarva.wings.dostudy_android.util.DefaultTimerConstants
 import com.websarva.wings.dostudy_android.viewmodel.MainViewModel
 import kotlinx.coroutines.delay
@@ -63,7 +62,6 @@ fun MainScreen(
     context: Context,
     vm: MainViewModel
 ) {
-    //スマホの角度を監視
     val lifecycleOwner = LocalLifecycleOwner.current
 
     // メディアプレイヤーを用意
