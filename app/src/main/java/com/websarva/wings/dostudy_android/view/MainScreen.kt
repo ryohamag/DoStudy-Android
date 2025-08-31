@@ -84,31 +84,6 @@ fun MainScreen(
         vm.getPlatformData()
     }
 
-    //isStudyStarted が true になったら実行
-    LaunchedEffect(key1 = vm.isStudyStarted) {
-        if (vm.isStudyStarted) {
-            vm.startSensor()
-            while (vm.isStudyStarted) {
-                delay(1000) //1秒ごとにカウント
-                if(!vm.isTimerMode || vm.selectedTimer.value == null) {
-                    vm.incrementSeconds()
-                } else {
-                    //カウントダウン(タイマー)モード
-                    vm.decrementSeconds()
-                    vm.incrementSeconds()
-                    if(vm.selectedTimer.value == 0) { //カウントが0になったら成功ダイアログを表示
-                        vm.isShowSuccessDialog = true
-                        break
-                    }
-                }
-            }
-        } else {
-            delay(500)
-            vm.reset()
-            vm.stopSensor()
-        }
-    }
-
     LaunchedEffect(key1 = vm.isStudyStarted) {
         while (vm.isStudyStarted) {
             delay(5000) //5秒ごとに角度を計測
@@ -165,7 +140,8 @@ fun MainScreen(
                     return@SetTitleDialog
                 }
                 if(!vm.isStudyStarted) {
-                    vm.isStudyStarted = true
+//                    vm.isStudyStarted = true
+                    vm.startStudy()
                     httpRequest(
                         platformDataList = vm.platformData.value, username = vm.username,
                         status = true, seconds = vm.seconds.value, vm = vm, mode = "start"
