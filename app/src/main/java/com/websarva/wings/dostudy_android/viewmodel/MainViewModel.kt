@@ -18,6 +18,8 @@ import com.websarva.wings.dostudy_android.model.repository.ScreenTimeRepository
 import com.websarva.wings.dostudy_android.util.PlatformConstants.platforms
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -115,9 +117,50 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun startStudy() {
+        isStudyStarted = true
+        startTimer()
+        startSensor()
+    }
+
+    fun stopStudy() {
+        isStudyStarted = false
+        stopTimer()
+        reset()
+        stopSensor()
+    }
+
+    private var timerJob: Job? = null
+
+    private fun startTimer() {
+        timerJob = viewModelScope.launch {
+            while (isStudyStarted) {
+                delay(1000)
+                if (!isTimerMode || selectedTimer.value == null) {
+                    incrementSeconds()
+                } else {
+                    // カウントダウン(タイマー)モード
+                    decrementSeconds()
+                    incrementSeconds()
+                    if (selectedTimer.value == 0) {
+                        // カウントが0になったら成功ダイアログを表示
+                        isShowSuccessDialog = true
+                        stopStudy() // 自動停止
+                        break
+                    }
+                }
+            }
+        }
+    }
+
+    private fun stopTimer() {
+        timerJob?.cancel()
+        timerJob = null
+    }
+
     //1秒ずつ増やす
     fun incrementSeconds() {
-        _seconds.value++
+        if(isStudyStarted) _seconds.value++
     }
 
     fun decrementSeconds() {
