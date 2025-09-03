@@ -36,16 +36,18 @@ class ToDoScreenViewModel @Inject constructor(
         }
     }
 
-    suspend fun getToDoList() {
+    fun getToDoList() {
         _uiState.update { it.copy(isLoading = true) }
-        try {
-            val todoList = withContext(Dispatchers.IO) {
-                repository.getAllToDoData().sortedBy { it.position }
+        viewModelScope.launch {
+            try {
+                val todoList = withContext(Dispatchers.IO) {
+                    repository.getAllToDoData().sortedBy { it.position }
+                }
+                _uiState.update { it.copy(todoList = todoList, isLoading = false) }
+            } catch (e: Exception) {
+                Log.e("ToDoScreenViewModel", "Error getting todo list", e)
+                _uiState.update { it.copy(isLoading = false) }
             }
-            _uiState.update { it.copy(todoList = todoList, isLoading = false) }
-        } catch (e: Exception) {
-            Log.e("ToDoScreenViewModel", "Error getting todo list", e)
-            _uiState.update { it.copy(isLoading = false) }
         }
     }
 
