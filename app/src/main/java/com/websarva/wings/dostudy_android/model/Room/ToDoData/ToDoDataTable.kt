@@ -7,4 +7,5 @@ import androidx.room.PrimaryKey
 data class ToDoDataTable (
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val title: String,
+    val position: Double
 )

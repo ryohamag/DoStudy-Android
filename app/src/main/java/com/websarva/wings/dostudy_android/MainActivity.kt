@@ -35,12 +35,14 @@ import com.websarva.wings.dostudy_android.model.notification.service.ScreenTimeS
 import com.websarva.wings.dostudy_android.view.BottomBar
 import com.websarva.wings.dostudy_android.view.MonitorScreen
 import com.websarva.wings.dostudy_android.view.ToDoScreen
+import com.websarva.wings.dostudy_android.viewmodel.ToDoScreenViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.getValue
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val mainVM: MainViewModel by viewModels()
+    private val todoVM: ToDoScreenViewModel by viewModels()
 
     companion object {
         private const val NOTIFICATION_PERMISSION_REQUEST_CODE = 1001
@@ -89,10 +91,12 @@ class MainActivity : ComponentActivity() {
                         composable("ToDoList") {
                             ToDoScreen(
                                 navController = navController,
-                                vm = mainVM,
-                                showAddToDoDialog = { mainVM.isShowAddToDoDialog = true },
+                                vm = todoVM,
+                                onShowAddToDoDialog = { todoVM.onShowAddToDoDialog() },
+                                onDismissAddToDoDialog = { todoVM.onDismissAddToDoDialog() },
+                                onSwapModeChange = { todoVM.onSwapModeChange() },
                                 deleteToDo = { title ->
-                                    mainVM.deleteToDo(title)
+                                    todoVM.deleteToDo(title)
                                 },
                                 innerPadding = innerPadding
                             )

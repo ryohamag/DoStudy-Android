@@ -292,20 +292,20 @@ class MainViewModel @Inject constructor(
     }
 
     //タスクを追加
-    fun addToDo(todo: String) {
-        val todoData = ToDoDataTable(title = todo)
-        _todoList.value = _todoList.value + todoData
-        viewModelScope.launch {
-            try {
-                withContext(Dispatchers.IO) {
-                    repository.addToDoData(todoData)
-                }
-                getToDoList()
-            } catch (e: Exception) {
-                Log.e("MainViewModel", "Error adding ToDo", e)
-            }
-        }
-    }
+//    fun addToDo(todo: String) {
+//        val todoData = ToDoDataTable(title = todo)
+//        _todoList.value = _todoList.value + todoData
+//        viewModelScope.launch {
+//            try {
+//                withContext(Dispatchers.IO) {
+//                    repository.addToDoData(todoData)
+//                }
+//                getToDoList()
+//            } catch (e: Exception) {
+//                Log.e("MainViewModel", "Error adding ToDo", e)
+//            }
+//        }
+//    }
 
     fun deleteToDo(todo: ToDoDataTable) {
         _todoList.value = _todoList.value - todo

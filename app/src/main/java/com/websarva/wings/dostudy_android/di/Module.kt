@@ -16,6 +16,7 @@ import com.websarva.wings.dostudy_android.model.repository.DataStoreRepository
 import com.websarva.wings.dostudy_android.model.repository.Repository
 import com.websarva.wings.dostudy_android.model.repository.ScreenTimeRepository
 import com.websarva.wings.dostudy_android.viewmodel.MainViewModel
+import com.websarva.wings.dostudy_android.viewmodel.ToDoScreenViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,6 +42,13 @@ object Module {
         screenTimeRepository: ScreenTimeRepository
     ): MainViewModel {
         return MainViewModel(repository, orientationSensor, dataStoreRepository, screenTimeRepository)
+    }
+
+    @Provides
+    fun provideToDoScreenViewModel(
+        repository: Repository
+    ): ToDoScreenViewModel {
+        return ToDoScreenViewModel(repository)
     }
 
     @Provides
