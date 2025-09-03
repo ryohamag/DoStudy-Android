@@ -38,21 +38,27 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.style.TextAlign
 import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoDataTable
+import com.websarva.wings.dostudy_android.viewmodel.ToDoScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ToDoScreen(
     navController: NavController,
-    vm: MainViewModel,
-    showAddToDoDialog: () -> Unit,
+    vm: ToDoScreenViewModel,
+    onShowAddToDoDialog: () -> Unit,
+    onDismissAddToDoDialog: () -> Unit,
+    onSwapModeChange: () -> Unit,
     deleteToDo: (ToDoDataTable) -> Unit,
     innerPadding: PaddingValues
 ) {
-    if (vm.isShowAddToDoDialog) {
+    val uiState by vm.uiState.collectAsState()
+
+    if (uiState.isShowAddToDoDialog) {
         AddToDoDialog(
-            onDismiss = { vm.isShowAddToDoDialog = false },
+            onDismiss = onDismissAddToDoDialog,
             addToDo = { title -> vm.addToDo(title) }
         )
     }
@@ -60,9 +66,6 @@ fun ToDoScreen(
     LaunchedEffect(Unit) {
         vm.getToDoList()
     }
-
-    var todoList = vm.todoList.collectAsState()
-    val selectedToDos = vm.selectedToDos.collectAsState()
 
     Scaffold(
         topBar = {
@@ -73,7 +76,7 @@ fun ToDoScreen(
                 ),
                 title = {
                     Text(
-                        if (vm.isSwapMode) {
+                        if (uiState.isSwapMode) {
                             "並び替えモード"
                         } else {
                             "ToDo"
@@ -89,13 +92,11 @@ fun ToDoScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = {
-                        vm.isSwapMode = !vm.isSwapMode
-                    }) {
+                    IconButton(onClick = onSwapModeChange) {
                         Icon(
                             painter = painterResource(id = R.drawable.baseline_swap_vert_24),
                             contentDescription = "並び替え",
-                            tint = if (vm.isSwapMode) {
+                            tint = if (uiState.isSwapMode) {
                                 MaterialTheme.colorScheme.primary
                             } else {
                                 MaterialTheme.colorScheme.onPrimaryContainer
@@ -106,9 +107,9 @@ fun ToDoScreen(
             )
         },
         floatingActionButton = {
-            if (!vm.isSwapMode) {
+            if (!uiState.isSwapMode) {
                 FloatingActionButton(
-                    onClick = { showAddToDoDialog() },
+                    onClick = { onShowAddToDoDialog() },
                     modifier = Modifier.padding(bottom = 90.dp),
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary
@@ -129,7 +130,7 @@ fun ToDoScreen(
                 .padding(16.dp)
                 .fillMaxSize()
         ) {
-            if (todoList.value.isEmpty()) {
+            if (uiState.todoList.isEmpty()) {
                 // ToDoがない場合のメッセージを表示
                 item {
                     Text(
@@ -144,8 +145,8 @@ fun ToDoScreen(
                 }
             } else {
                 // ToDoリストがある場合は通常通り表示
-                items(todoList.value, key = { it.id }) { toDo ->
-                    val isSelected = selectedToDos.value.contains(toDo)
+                items(uiState.todoList, key = { it.id }) { toDo ->
+                    val isSelected = uiState.selectedToDos.contains(toDo)
 
                     Card(
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
@@ -163,16 +164,16 @@ fun ToDoScreen(
                         colors = CardDefaults.cardColors(
                             containerColor = when {
                                 isSelected -> MaterialTheme.colorScheme.secondary
-                                vm.isSwapMode -> MaterialTheme.colorScheme.surfaceVariant
+                                uiState.isSwapMode -> MaterialTheme.colorScheme.surfaceVariant
                                 else -> MaterialTheme.colorScheme.primaryContainer
                             },
                             contentColor = when {
                                 isSelected -> MaterialTheme.colorScheme.onSecondary
-                                vm.isSwapMode -> MaterialTheme.colorScheme.onSurfaceVariant
+                                uiState.isSwapMode -> MaterialTheme.colorScheme.onSurfaceVariant
                                 else -> MaterialTheme.colorScheme.onPrimaryContainer
                             }
                         ),
-                        onClick = { if (vm.isSwapMode) vm.selectToDo(toDo) }
+                        onClick = { if (uiState.isSwapMode) vm.selectToDo(toDo) }
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -188,7 +189,7 @@ fun ToDoScreen(
                                 textAlign = TextAlign.Center
                             )
 
-                            if (!vm.isSwapMode) {
+                            if (!uiState.isSwapMode) {
                                 IconButton(
                                     onClick = { deleteToDo(toDo) },
                                     modifier = Modifier.weight(1f)
