@@ -75,6 +75,7 @@ fun MainScreen(
     }
 
     LaunchedEffect(Unit) {
+        vm.getUserData()
         vm.getToDoList()
         vm.getPlatformData()
     }
@@ -174,6 +175,7 @@ fun MainScreen(
         ) {
             val seconds by vm.seconds.collectAsState() //経過時間を監視
             val selectedTimer by vm.selectedTimer.collectAsState() //選択されたタイマーを監視
+            val selectedFont by vm.selectedFont.collectAsState() //選択されたフォントを監視
 
             //表示用のタイマー
             val hour = if (!vm.isTimerMode) seconds / 3600 else (selectedTimer ?: 0) / 3600
@@ -189,7 +191,7 @@ fun MainScreen(
                     modifier = Modifier
                         .padding(start = 32.dp, end = 32.dp, top = 64.dp, bottom = 8.dp),
                     fontSize = 52.sp,
-                    fontFamily = when (vm.selectedFont) {
+                    fontFamily = when (selectedFont) {
                         0 -> FontFamily.Default
                         1 -> FontFamily(Font(R.font.noto_sans_jp))
                         2 -> FontFamily(Font(R.font.montserrat))
@@ -210,7 +212,7 @@ fun MainScreen(
                     minute = minute,
                     second = second,
                     setTimer = setTimer!!,
-                    selectedFont = vm.selectedFont,
+                    selectedFont = selectedFont,
                 )
             }
 

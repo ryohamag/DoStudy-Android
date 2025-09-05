@@ -53,31 +53,34 @@ import com.websarva.wings.dostudy_android.R
 import com.websarva.wings.dostudy_android.viewmodel.MainViewModel
 import com.websarva.wings.dostudy_android.util.FontConstants.fonts
 import androidx.compose.foundation.lazy.items
+import com.websarva.wings.dostudy_android.viewmodel.SettingScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingScreen(
     navController: NavController,
-    vm: MainViewModel,
+    vm: SettingScreenViewModel,
 ) {
-    LaunchedEffect(Unit) {
-        vm.getPlatformData()
+    val uiState by vm.uiState.collectAsState()
+
+    if (uiState.isShowPlatformDialog) {
+        AddPlatformDialog(
+            onDismiss = { vm.onPlatformDialogDismiss() },
+            addPlatform = { vm.addPlatformData() },
+            selectedPlatform = uiState.selectedPlatform,
+            selectedPlatformChange = { vm.onSelectedPlatformChange(it) },
+            channelName = uiState.channelName,
+            channelNameChange = { vm.onChannelNameChange(it) },
+            key = uiState.platformKey,
+            keyChange = { vm.onKeyChange(it) },
+            platformExpanded = uiState.platformExpanded,
+            onPlatformExpandedChange = { vm.onPlatformExpandChange() },
+            onDismissPlatformExpanded = { vm.onDismissPlatformMenu() }
+        )
     }
 
-    if (vm.isShowPlatformDialog) {
-        AddPlatformDialog(
-            onDismiss = { vm.isShowPlatformDialog = false },
-            addPlatform = {
-                vm.addPlatformData()
-                vm.isShowPlatformDialog = false
-            },
-            selectedPlatform = vm.selectedPlatform,
-            selectedPlatformChange = { vm.selectedPlatform = it },
-            channelName = vm.channelName,
-            channelNameChange = { vm.channelName = it },
-            key = vm.platformKey,
-            keyChange = { vm.platformKey = it },
-        )
+    LaunchedEffect(Unit) {
+        vm.getPlatformData()
     }
 
     Scaffold(
@@ -100,15 +103,14 @@ fun SettingScreen(
                     }
                 },
                 actions = {
-                    val dailyLimit = vm.dailyLimit.collectAsState().value
                     IconButton(
                         onClick = {
-                            if (vm.dailyLimit.value > 0) { // 保存時のバリデーション
-                                if (vm.isFirstStartup) vm.createUserData() else vm.updateUserData()
+                            if (uiState.dailyLimit > 0) { // 保存時のバリデーション
+                                if (uiState.isFirstStartup) vm.createUserData() else vm.updateUserData()
                                 navController.navigate("Home")
                             }
                         },
-                        enabled = dailyLimit > 0 // 無効な値の場合はボタンを無効化
+                        enabled = uiState.dailyLimit > 0 // 無効な値の場合はボタンを無効化
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.baseline_save_alt_24),
@@ -135,8 +137,8 @@ fun SettingScreen(
             Spacer(Modifier.height(10.dp))
 
             TextField(
-                value = vm.username,
-                onValueChange = { vm.username = it },
+                value = uiState.username,
+                onValueChange = { vm.onUsernameChange(it) },
                 label = { Text("ユーザー名") },
             )
 
@@ -150,39 +152,30 @@ fun SettingScreen(
 
             Spacer(Modifier.height(10.dp))
 
-            var expanded by remember { mutableStateOf(false) }
-
             ExposedDropdownMenuBox(
-                expanded = expanded,
-                onExpandedChange = {
-                    expanded = !expanded
-                }
+                expanded = uiState.fontsExpanded,
+                onExpandedChange = { vm.onFontsExpandChange() }
             ) {
                 TextField(
                     readOnly = true,
-                    value = fonts[vm.selectedFont],
+                    value = fonts[uiState.selectedFont],
                     onValueChange = { },
                     modifier = Modifier.menuAnchor(),
                     label = { Text("フォント") },
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(
-                            expanded = expanded
+                            expanded = uiState.fontsExpanded
                         )
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors()
                 )
                 ExposedDropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = {
-                        expanded = false
-                    }
+                    expanded = uiState.fontsExpanded,
+                    onDismissRequest = { vm.onDismissFontsMenu() }
                 ) {
                     fonts.forEachIndexed { index, font ->
                         DropdownMenuItem(
-                            onClick = {
-                                vm.selectedFont = index
-                                expanded = false
-                            },
+                            onClick = { vm.onSelectedFontChange(index) },
                             text = { Text(font) }
                         )
                     }
@@ -199,21 +192,19 @@ fun SettingScreen(
 
             Spacer(Modifier.height(10.dp))
 
-            val dailyLimit = vm.dailyLimit.collectAsState().value
-
             TextField(
-                value = if (dailyLimit == 0) "" else dailyLimit.toString(),
+                value = if (uiState.dailyLimit == 0) "" else uiState.dailyLimit.toString(),
                 onValueChange = { value ->
                     if (value.isEmpty()) {
-                        vm.updateDailyLimitTemporary(0) // 空文字の場合は0を設定
+                        vm.updateDailyLimit(0) // 空文字の場合は0を設定
                     } else {
-                        value.toIntOrNull()?.let { vm.updateDailyLimitTemporary(it) }
+                        value.toIntOrNull()?.let { vm.updateDailyLimit(it) }
                     }
                 },
                 label = { Text("一日の制限時間（分）") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                isError = dailyLimit == 0, // 0の場合はエラー表示
-                supportingText = if (dailyLimit == 0) {
+                isError = uiState.dailyLimit == 0, // 0の場合はエラー表示
+                supportingText = if (uiState.dailyLimit == 0) {
                     { Text("制限時間を入力してください", color = MaterialTheme.colorScheme.error) }
                 } else null
             )
@@ -230,22 +221,14 @@ fun SettingScreen(
                     fontWeight = FontWeight.Bold,
                 )
 
-                TextButton(
-                    onClick = {
-                        vm.isShowPlatformDialog = true
-                    },
-                ) {
-                    Text(
-                        text = "追加",
-                    )
+                TextButton(onClick = { vm.onShowPlatformDialog() }) {
+                    Text(text = "追加")
                 }
             }
 
             Spacer(Modifier.height(20.dp))
 
-            val platformData = vm.platformData.collectAsState().value
-
-            if (platformData.isEmpty()) {
+            if (uiState.platformData.isEmpty()) {
                 Text(
                     text = "プラットフォームがありません",
                     modifier = Modifier.fillMaxWidth(),
@@ -262,7 +245,7 @@ fun SettingScreen(
                             shape = RoundedCornerShape(8.dp)
                         )
                 ) {
-                    items(platformData, key = { it.id }) { platform ->
+                    items(uiState.platformData, key = { it.id }) { platform ->
                         PlatformCard(
                             platform = platform,
                             deletePlatformData = { platform -> vm.deletePlatformData(platform) },

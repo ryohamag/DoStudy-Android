@@ -58,14 +58,14 @@ class MainViewModel @Inject constructor(
     private val _todoList = MutableStateFlow<List<ToDoDataTable>>(listOf())
     val todoList: StateFlow<List<ToDoDataTable>> = _todoList.asStateFlow()
 
-    private val _dailyLimit = MutableStateFlow(120)
-    val dailyLimit: StateFlow<Int> = _dailyLimit.asStateFlow()
-
     private val _screenTimeData = MutableStateFlow<List<Pair<String, Long>>>(emptyList())
     val screenTimeData: StateFlow<List<Pair<String, Long>>> = _screenTimeData.asStateFlow()
 
     private val _platformData = MutableStateFlow<List<PlatformDataTable>>(emptyList())
     val platformData: StateFlow<List<PlatformDataTable>> = _platformData.asStateFlow()
+
+    private val _selectedFont = MutableStateFlow(0)
+    val selectedFont: StateFlow<Int> = _selectedFont.asStateFlow()
 
     var isTimerMode by mutableStateOf(false) // タイマーモードかどうか
     var studyTitle by mutableStateOf("") // 勉強タイトル
@@ -79,13 +79,8 @@ class MainViewModel @Inject constructor(
     var isShowAdScreen by mutableStateOf(false)
     var isShowStudyTitleDialog by mutableStateOf(false)
     var responseMessage by mutableStateOf("")
-    var selectedFont by mutableIntStateOf(0)
     var username by mutableStateOf("")
     var channelId by mutableStateOf("")
-    var channelName by mutableStateOf("")
-    var platformKey by mutableStateOf("")
-    var isShowPlatformDialog by mutableStateOf(false) // プラットフォーム追加ダイアログの表示フラグ
-    var selectedPlatform by mutableIntStateOf(0) // 選択されたプラットフォームのインデックス
 
     //初期化
     init {
@@ -107,8 +102,10 @@ class MainViewModel @Inject constructor(
                 _addedTimerList.value = userData.addedTimerList
             }
 
-            dataStoreRepository.getDailyLimit().collect { limit ->
-                _dailyLimit.value = limit
+            launch {
+                dataStoreRepository.getSelectedFont().collect { font ->
+                    _selectedFont.value = font
+                }
             }
         }
     }
@@ -190,21 +187,6 @@ class MainViewModel @Inject constructor(
         _setTimer.value = null
     }
 
-    //ユーザーデータを作成
-    fun createUserData() {
-        viewModelScope.launch {
-            val newUserData = UserDataTable(
-                username = username, channelId = channelId, addedTimerList = addedTimerList.value
-            )
-            try {
-                repository.insertUserData(newUserData)
-                dataStoreRepository.saveDailyLimit(_dailyLimit.value)
-            } catch (e: Exception) {
-                Log.e("MainScreenViewModel", "Error inserting data", e)
-            }
-        }
-    }
-
     //ユーザーデータを更新
     fun updateUserData() {
         viewModelScope.launch {
@@ -213,9 +195,21 @@ class MainViewModel @Inject constructor(
             )
             try {
                 repository.updateUserData(updatedUserData)
-                dataStoreRepository.saveDailyLimit(_dailyLimit.value)
             } catch (e: Exception) {
                 Log.e("MainScreenViewModel", "Error updating data", e)
+            }
+        }
+    }
+
+    fun getUserData() {
+        viewModelScope.launch {
+            val userData = withContext(Dispatchers.IO) {
+                repository.getCurrentUser()
+            }
+            if (userData != null) {
+                username = userData.username
+                channelId = userData.channelId
+                _addedTimerList.value = userData.addedTimerList
             }
         }
     }
@@ -255,11 +249,6 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    // 制限時間を一時的に更新する関数を追加
-    fun updateDailyLimitTemporary(limit: Int) {
-        _dailyLimit.value = limit
-    }
-
     //タイマーを追加
     fun addTimer(time: String) {
         val seconds = time.chunked(2).map { it.toInt() }.let { (hours, minutes, seconds) ->
@@ -283,12 +272,6 @@ class MainViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e("MainViewModel", "Error fetching ToDo list", e)
             }
-        }
-    }
-
-    fun saveDailyLimit(limit: Int) {
-        viewModelScope.launch {
-            dataStoreRepository.saveDailyLimit(limit)
         }
     }
 
@@ -316,50 +299,6 @@ class MainViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e("MainViewModel", "Error getting platform data", e)
                 _platformData.value = emptyList()
-            }
-        }
-    }
-
-    //プラットフォームデータを追加
-    fun addPlatformData() {
-        val platformData = PlatformDataTable(platformName = platforms[selectedPlatform], channelName = channelName, platformKey = platformKey)
-        viewModelScope.launch {
-            try {
-                withContext(Dispatchers.IO) {
-                    repository.insertPlatformData(platformData)
-                }
-                getPlatformData()
-                isShowPlatformDialog = false
-            } catch (e: Exception) {
-                Log.e("MainViewModel", "Error adding platform data", e)
-            }
-        }
-    }
-
-    //プラットフォームデータを更新
-    fun updatePlatformData(platformData: PlatformDataTable) {
-        viewModelScope.launch {
-            try {
-                withContext(Dispatchers.IO) {
-                    repository.updatePlatformData(platformData)
-                }
-                getPlatformData()
-            } catch (e: Exception) {
-                Log.e("MainViewModel", "Error updating platform data", e)
-            }
-        }
-    }
-
-    //プラットフォームデータを削除
-    fun deletePlatformData(platformData: PlatformDataTable) {
-        viewModelScope.launch {
-            try {
-                withContext(Dispatchers.IO) {
-                    repository.deletePlatformData(platformData)
-                }
-                getPlatformData()
-            } catch (e: Exception) {
-                Log.e("MainViewModel", "Error deleting platform data", e)
             }
         }
     }
