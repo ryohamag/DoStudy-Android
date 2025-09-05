@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoDataTable
-import com.websarva.wings.dostudy_android.model.repository.Repository
+import com.websarva.wings.dostudy_android.model.repository.ToDoDataRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +25,7 @@ data class ToDoScreenUiState(
 
 @HiltViewModel
 class ToDoScreenViewModel @Inject constructor(
-    private val repository: Repository
+    private val toDoDataRepository: ToDoDataRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ToDoScreenUiState())
     val uiState = _uiState.asStateFlow()
@@ -41,7 +41,7 @@ class ToDoScreenViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val todoList = withContext(Dispatchers.IO) {
-                    repository.getAllToDoData().sortedBy { it.position }
+                    toDoDataRepository.getAllToDoData().sortedBy { it.position }
                 }
                 _uiState.update { it.copy(todoList = todoList, isLoading = false) }
             } catch (e: Exception) {
@@ -62,7 +62,7 @@ class ToDoScreenViewModel @Inject constructor(
             _uiState.update { it.copy(todoList = it.todoList + newToDo) }
 
             try {
-                withContext(Dispatchers.IO) { repository.addToDoData(newToDo) }
+                withContext(Dispatchers.IO) { toDoDataRepository.addToDoData(newToDo) }
                 getToDoList()
             } catch (e: Exception) {
                 Log.e("ToDoScreenViewModel", "Error adding todo", e)
@@ -76,7 +76,7 @@ class ToDoScreenViewModel @Inject constructor(
             _uiState.update { it.copy(todoList = it.todoList - todo) }
             try {
                 withContext(Dispatchers.IO) {
-                    repository.deleteToDoData(todo)
+                    toDoDataRepository.deleteToDoData(todo)
                 }
             } catch (e: Exception) {
                 Log.e("ToDoScreenViewModel", "Error deleting todo", e)
@@ -111,8 +111,8 @@ class ToDoScreenViewModel @Inject constructor(
                 val updatedToDo2 = toDo2.copy(position = position1)
 
                 withContext(Dispatchers.IO) {
-                    repository.updateToDoData(updatedToDo1)
-                    repository.updateToDoData(updatedToDo2)
+                    toDoDataRepository.updateToDoData(updatedToDo1)
+                    toDoDataRepository.updateToDoData(updatedToDo2)
                 }
 
                 getToDoList()
