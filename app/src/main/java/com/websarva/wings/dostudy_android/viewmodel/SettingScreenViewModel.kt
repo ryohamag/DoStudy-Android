@@ -6,7 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.websarva.wings.dostudy_android.model.Room.PlatformData.PlatformDataTable
 import com.websarva.wings.dostudy_android.model.Room.UserData.UserDataTable
 import com.websarva.wings.dostudy_android.model.repository.DataStoreRepository
-import com.websarva.wings.dostudy_android.model.repository.Repository
+import com.websarva.wings.dostudy_android.model.repository.PlatformDataRepository
+import com.websarva.wings.dostudy_android.model.repository.UserDataRepository
 import com.websarva.wings.dostudy_android.util.PlatformConstants.platforms
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -35,7 +36,8 @@ data class SettingScreenUiState(
 
 @HiltViewModel
 class SettingScreenViewModel @Inject constructor(
-    private val repository: Repository,
+    private val userDataRepository: UserDataRepository,
+    private val platformDataRepository: PlatformDataRepository,
     private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(SettingScreenUiState())
@@ -44,7 +46,7 @@ class SettingScreenViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val userData = withContext(Dispatchers.IO) {
-                repository.getCurrentUser()
+                userDataRepository.getCurrentUser()
             }
             if (userData == null) {
                 _uiState.update { it.copy(isFirstStartup = true) }
@@ -66,7 +68,7 @@ class SettingScreenViewModel @Inject constructor(
                 _uiState.update { it.copy(selectedFont = font) }
             }
             val platformData = withContext(Dispatchers.IO) {
-                repository.getAllPlatformData()
+                platformDataRepository.getAllPlatformData()
             }
             _uiState.update { it.copy(platformData = platformData) }
         }
@@ -75,7 +77,7 @@ class SettingScreenViewModel @Inject constructor(
     fun getPlatformData() {
         viewModelScope.launch {
             try {
-                val platformData = repository.getAllPlatformData()
+                val platformData = platformDataRepository.getAllPlatformData()
                 _uiState.update { it.copy(platformData = platformData) }
             } catch (e: Exception) {
                 Log.e("SettingScreenViewModel", "Error getting platform data", e)
@@ -91,7 +93,7 @@ class SettingScreenViewModel @Inject constructor(
                 addedTimerList = listOf()
             )
             try {
-                repository.insertUserData(newUserData)
+                userDataRepository.insertUserData(newUserData)
                 dataStoreRepository.saveDailyLimit(_uiState.value.dailyLimit)
             } catch (e: Exception) {
                 Log.e("MainScreenViewModel", "Error inserting data", e)
@@ -102,12 +104,12 @@ class SettingScreenViewModel @Inject constructor(
     fun updateUserData() {
         viewModelScope.launch {
             try {
-                val currentUserData = repository.getCurrentUser() ?: return@launch
+                val currentUserData = userDataRepository.getCurrentUser() ?: return@launch
                 val updatedUserData = currentUserData.copy(
                     username = _uiState.value.username,
                     channelId = _uiState.value.channelId
                 )
-                repository.updateUserData(updatedUserData)
+                userDataRepository.updateUserData(updatedUserData)
                 dataStoreRepository.saveDailyLimit(_uiState.value.dailyLimit)
             } catch (e: Exception) {
                 Log.e("MainScreenViewModel", "Error updating data", e)
@@ -135,8 +137,8 @@ class SettingScreenViewModel @Inject constructor(
         )
         viewModelScope.launch {
             try {
-                repository.insertPlatformData(platformData)
-                val updatedList = repository.getAllPlatformData()
+                platformDataRepository.insertPlatformData(platformData)
+                val updatedList = platformDataRepository.getAllPlatformData()
                 _uiState.update { it.copy(platformData = updatedList, isShowPlatformDialog = false) }
             } catch (e: Exception) {
                 Log.e("SettingScreenViewModel", "Error adding platform data", e)
@@ -147,8 +149,8 @@ class SettingScreenViewModel @Inject constructor(
     fun deletePlatformData(platformData: PlatformDataTable) {
         viewModelScope.launch {
             try {
-                repository.deletePlatformData(platformData)
-                val updatedList = repository.getAllPlatformData()
+                platformDataRepository.deletePlatformData(platformData)
+                val updatedList = platformDataRepository.getAllPlatformData()
                 _uiState.update { it.copy(platformData = updatedList) }
             } catch (e: Exception) {
                 Log.e("SettingScreenViewModel", "Error deleting platform data", e)

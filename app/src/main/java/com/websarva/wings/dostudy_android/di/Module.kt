@@ -3,18 +3,18 @@ package com.websarva.wings.dostudy_android.di
 import android.content.Context
 import androidx.room.Room
 import com.websarva.wings.dostudy_android.OrientationSensor
-import com.websarva.wings.dostudy_android.model.Room.PlatformData.PlatformDataDao
 import com.websarva.wings.dostudy_android.model.Room.PlatformData.PlatformRoomDataBase
 import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultDataDao
 import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultRoomDataBase
-import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoDataDao
 import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoRoomDataBase
-import com.websarva.wings.dostudy_android.model.Room.UserData.UserDataDao
 import com.websarva.wings.dostudy_android.model.Room.UserData.UserRoomDataBase
 import com.websarva.wings.dostudy_android.model.notification.NotificationHelper
 import com.websarva.wings.dostudy_android.model.repository.DataStoreRepository
-import com.websarva.wings.dostudy_android.model.repository.Repository
+import com.websarva.wings.dostudy_android.model.repository.PlatformDataRepository
+import com.websarva.wings.dostudy_android.model.repository.ResultDataRepository
 import com.websarva.wings.dostudy_android.model.repository.ScreenTimeRepository
+import com.websarva.wings.dostudy_android.model.repository.ToDoDataRepository
+import com.websarva.wings.dostudy_android.model.repository.UserDataRepository
 import com.websarva.wings.dostudy_android.viewmodel.MainViewModel
 import com.websarva.wings.dostudy_android.viewmodel.SettingScreenViewModel
 import com.websarva.wings.dostudy_android.viewmodel.ToDoScreenViewModel
@@ -28,7 +28,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object Module {
-
     @Provides
     @Singleton
     fun provideNotificationHelper(@ApplicationContext context: Context): NotificationHelper {
@@ -37,27 +36,34 @@ object Module {
 
     @Provides
     fun provideMainViewModel(
-        repository: Repository,
         orientationSensor: OrientationSensor,
+        resultDataRepository: ResultDataRepository,
+        userDataRepository: UserDataRepository,
+        toDoDataRepository: ToDoDataRepository,
+        platformDataRepository: PlatformDataRepository,
         dataStoreRepository: DataStoreRepository,
         screenTimeRepository: ScreenTimeRepository
     ): MainViewModel {
-        return MainViewModel(repository, orientationSensor, dataStoreRepository, screenTimeRepository)
+        return MainViewModel(
+            orientationSensor, resultDataRepository, userDataRepository, toDoDataRepository,
+            platformDataRepository, dataStoreRepository, screenTimeRepository
+        )
     }
 
     @Provides
     fun provideToDoScreenViewModel(
-        repository: Repository
+        toDoDataRepository: ToDoDataRepository
     ): ToDoScreenViewModel {
-        return ToDoScreenViewModel(repository)
+        return ToDoScreenViewModel(toDoDataRepository)
     }
 
     @Provides
     fun provideSettingScreenViewModel(
-        repository: Repository,
+        userDataRepository: UserDataRepository,
+        platformDataRepository: PlatformDataRepository,
         dataStoreRepository: DataStoreRepository
     ): SettingScreenViewModel {
-        return SettingScreenViewModel(repository, dataStoreRepository)
+        return SettingScreenViewModel(userDataRepository, platformDataRepository, dataStoreRepository)
     }
 
     @Provides
@@ -80,6 +86,12 @@ object Module {
 
     @Provides
     @Singleton
+    fun provideResultDataRepository(resultDataDao: ResultDataDao): ResultDataRepository {
+        return ResultDataRepository(resultDataDao)
+    }
+
+    @Provides
+    @Singleton
     fun provideResultDataDao(db: ResultRoomDataBase) = db.resultDataDao()
 
     @Provides
@@ -93,17 +105,6 @@ object Module {
     @Provides
     @Singleton
     fun providePlatformDataDao(db: PlatformRoomDataBase) = db.platformDataDao()
-
-    @Provides
-    @Singleton
-    fun provideRepository(
-        resultDataDao: ResultDataDao,
-        userDataDao: UserDataDao,
-        toDoDataDao: ToDoDataDao,
-        platformDataDao: PlatformDataDao
-    ): Repository {
-        return Repository(resultDataDao, userDataDao, toDoDataDao, platformDataDao)
-    }
 
     @Provides
     @Singleton

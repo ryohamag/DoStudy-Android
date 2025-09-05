@@ -3,7 +3,6 @@ package com.websarva.wings.dostudy_android.model.repository
 import android.app.AppOpsManager
 import android.app.usage.UsageStatsManager
 import android.content.Context
-import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.SimpleDateFormat
 import java.util.*

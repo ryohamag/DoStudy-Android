@@ -2,7 +2,6 @@ package com.websarva.wings.dostudy_android.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -14,9 +13,11 @@ import com.websarva.wings.dostudy_android.model.Room.ResultData.ResultDataTable
 import com.websarva.wings.dostudy_android.model.Room.ToDoData.ToDoDataTable
 import com.websarva.wings.dostudy_android.model.Room.UserData.UserDataTable
 import com.websarva.wings.dostudy_android.model.repository.DataStoreRepository
-import com.websarva.wings.dostudy_android.model.repository.Repository
+import com.websarva.wings.dostudy_android.model.repository.PlatformDataRepository
+import com.websarva.wings.dostudy_android.model.repository.ResultDataRepository
 import com.websarva.wings.dostudy_android.model.repository.ScreenTimeRepository
-import com.websarva.wings.dostudy_android.util.PlatformConstants.platforms
+import com.websarva.wings.dostudy_android.model.repository.ToDoDataRepository
+import com.websarva.wings.dostudy_android.model.repository.UserDataRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -32,8 +33,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val repository: Repository,
     private val orientationSensor: OrientationSensor,
+    private val resultDataRepository: ResultDataRepository,
+    private val userDataRepository: UserDataRepository,
+    private val toDoDataRepository: ToDoDataRepository,
+    private val platformDataRepository: PlatformDataRepository,
     private val dataStoreRepository: DataStoreRepository,
     private val screenTimeRepository: ScreenTimeRepository
 ) : ViewModel() {
@@ -87,12 +91,12 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             // 結果データを全件取得
             _resultDataList.value = withContext(Dispatchers.IO) {
-                repository.getAllResultData()
+                resultDataRepository.getAllResultData()
             }
 
             // ユーザーデータを取得
             val userData = withContext(Dispatchers.IO) {
-                repository.getCurrentUser()
+                userDataRepository.getCurrentUser()
             }
             if (userData == null) {
                 isFirstStartup = true
@@ -194,7 +198,7 @@ class MainViewModel @Inject constructor(
                 username = username, channelId = channelId, addedTimerList = addedTimerList.value
             )
             try {
-                repository.updateUserData(updatedUserData)
+                userDataRepository.updateUserData(updatedUserData)
             } catch (e: Exception) {
                 Log.e("MainScreenViewModel", "Error updating data", e)
             }
@@ -204,7 +208,7 @@ class MainViewModel @Inject constructor(
     fun getUserData() {
         viewModelScope.launch {
             val userData = withContext(Dispatchers.IO) {
-                repository.getCurrentUser()
+                userDataRepository.getCurrentUser()
             }
             if (userData != null) {
                 username = userData.username
@@ -241,7 +245,7 @@ class MainViewModel @Inject constructor(
                 status = status, studyTitle = studyTitle
             )
             try {
-                repository.insertResultData(resultData)
+                resultDataRepository.insertResultData(resultData)
                 _resultDataList.value += resultData
             } catch (e: Exception) {
                 Log.e("MainScreenViewModel", "Error inserting data", e)
@@ -267,7 +271,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _todoList.value = withContext(Dispatchers.IO) {
-                    repository.getAllToDoData()
+                    toDoDataRepository.getAllToDoData()
                 }
             } catch (e: Exception) {
                 Log.e("MainViewModel", "Error fetching ToDo list", e)
@@ -293,7 +297,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val data = withContext(Dispatchers.IO) {
-                    repository.getAllPlatformData()
+                    platformDataRepository.getAllPlatformData()
                 }
                 _platformData.value = data
             } catch (e: Exception) {
