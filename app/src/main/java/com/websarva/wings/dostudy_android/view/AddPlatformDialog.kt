@@ -36,10 +36,13 @@ fun AddPlatformDialog(
     addPlatform: () -> Unit,
     selectedPlatform: Int,
     selectedPlatformChange: (Int) -> Unit,
+    onPlatformExpandedChange: () -> Unit,
+    onDismissPlatformExpanded: () -> Unit,
     channelName: String,
     channelNameChange: (String) -> Unit,
     key: String,
     keyChange: (String) -> Unit,
+    platformExpanded: Boolean,
 ) {
     val context = LocalContext.current
 
@@ -47,14 +50,10 @@ fun AddPlatformDialog(
         onDismissRequest = { onDismiss() },
         title = { Text("プラットフォームの追加") },
         text = {
-            var platformExpanded by remember { mutableStateOf(false) }
-
             Column {
                 ExposedDropdownMenuBox(
                     expanded = platformExpanded,
-                    onExpandedChange = {
-                        platformExpanded = !platformExpanded
-                    }
+                    onExpandedChange = { onPlatformExpandedChange() }
                 ) {
                     TextField(
                         readOnly = true,
@@ -72,16 +71,11 @@ fun AddPlatformDialog(
 
                     ExposedDropdownMenu(
                         expanded = platformExpanded,
-                        onDismissRequest = {
-                            platformExpanded = false
-                        }
+                        onDismissRequest = { onDismissPlatformExpanded() }
                     ) {
                         platforms.forEachIndexed { index, platform ->
                             DropdownMenuItem(
-                                onClick = {
-                                    selectedPlatformChange(index)
-                                    platformExpanded = false
-                                },
+                                onClick = { selectedPlatformChange(index) },
                                 text = { Text(platform) }
                             )
                         }

@@ -35,6 +35,7 @@ import com.websarva.wings.dostudy_android.model.notification.service.ScreenTimeS
 import com.websarva.wings.dostudy_android.view.BottomBar
 import com.websarva.wings.dostudy_android.view.MonitorScreen
 import com.websarva.wings.dostudy_android.view.ToDoScreen
+import com.websarva.wings.dostudy_android.viewmodel.SettingScreenViewModel
 import com.websarva.wings.dostudy_android.viewmodel.ToDoScreenViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.getValue
@@ -43,6 +44,7 @@ import kotlin.getValue
 class MainActivity : ComponentActivity() {
     private val mainVM: MainViewModel by viewModels()
     private val todoVM: ToDoScreenViewModel by viewModels()
+    private val settingVM: SettingScreenViewModel by viewModels()
 
     companion object {
         private const val NOTIFICATION_PERMISSION_REQUEST_CODE = 1001
@@ -85,7 +87,7 @@ class MainActivity : ComponentActivity() {
                         composable("Settings") {
                             SettingScreen(
                                 navController = navController,
-                                vm = mainVM,
+                                vm = settingVM,
                             )
                         }
                         composable("ToDoList") {
