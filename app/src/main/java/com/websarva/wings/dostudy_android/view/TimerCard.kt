@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.websarva.wings.dostudy_android.viewmodel.MainViewModel
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 
 //タイマー一覧用のカード
 @Composable
@@ -75,6 +77,7 @@ fun TimerCard(
                 modifier = Modifier
                     .weight(1f)
                     .align(Alignment.CenterVertically)
+                    .semantics { contentDescription = "ToggleSwitch" }
             )
 
             //デフォルトのタイマーはゴミ箱ボタンを表示しない

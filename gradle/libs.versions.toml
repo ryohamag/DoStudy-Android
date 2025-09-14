@@ -15,7 +15,7 @@ kotlin = "1.9.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
-espressoCore = "3.6.1"
+espressoCore = "3.5.0"
 kotlinGradlePlugin = "2.0.21"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
@@ -32,6 +32,8 @@ runtimeLivedata = "1.7.6"
 wheelpickerCompose = "1.0.0"
 wheelpickercomposeVersion = "1.1.11"
 playServicesAdsLite = "23.6.0"
+junitKtx = "1.3.0"
+uiTestJunit4 = "1.9.1"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
@@ -77,6 +79,8 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 wheelpicker-compose = { module = "com.github.guilhe:wheelpicker-compose", version.ref = "wheelpickerCompose" }
 wheelpickercompose = { module = "com.github.commandiron:WheelPickerCompose", version.ref = "wheelpickercomposeVersion" }
 play-services-ads-lite = { group = "com.google.android.gms", name = "play-services-ads-lite", version.ref = "playServicesAdsLite" }
+androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitKtx" }
+ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "uiTestJunit4" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
