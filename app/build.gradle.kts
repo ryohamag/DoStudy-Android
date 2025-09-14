@@ -34,11 +34,11 @@ android {
             }
         }
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_1_8
-            targetCompatibility = JavaVersion.VERSION_1_8
+            sourceCompatibility = JavaVersion.VERSION_11
+            targetCompatibility = JavaVersion.VERSION_11
         }
         kotlinOptions {
-            jvmTarget = "1.8"
+            jvmTarget = "11"
         }
         buildFeatures {
             compose = true
@@ -49,6 +49,8 @@ android {
         packaging {
             resources {
                 excludes += "/META-INF/{AL2.0,LGPL2.1}"
+                excludes += "META-INF/LICENSE.md"
+                excludes += "META-INF/LICENSE-notice.md"
             }
         }
 
@@ -110,13 +112,13 @@ android {
         implementation(libs.hilt.android)
         ksp(libs.hilt.android.compiler)
 
+        //ADMOB
+        implementation(libs.play.services.ads.lite)
+
         //DataStore
         implementation ("androidx.datastore:datastore-preferences:1.1.7")
 
-
+        //mockk
+        androidTestImplementation("io.mockk:mockk-android:1.13.8")
     }
-}
-dependencies {
-    implementation(libs.androidx.runtime.livedata)
-    implementation(libs.play.services.ads.lite)
 }
