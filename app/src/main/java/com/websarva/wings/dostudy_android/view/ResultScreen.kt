@@ -1,6 +1,5 @@
 package com.websarva.wings.dostudy_android.view
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -65,23 +64,25 @@ fun ResultScreen(
                 .padding(innerPadding)
                 .padding(bottom = 0.dp)
         ) {
-            item { Row {
-                Text(
-                    text = "グラフ",
-                    modifier = Modifier.padding(16.dp),
-                    fontSize = 24.sp,
-                )
-
-                OutlinedButton(
-                    onClick = { vm.isShowChart = !vm.isShowChart },
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                ) {
+            item {
+                Row {
                     Text(
-                        text = if (vm.isShowChart) "非表示" else "表示",
-                        color = MaterialTheme.colorScheme.onSurface
+                        text = "グラフ",
+                        modifier = Modifier.padding(16.dp),
+                        fontSize = 24.sp,
                     )
+
+                    OutlinedButton(
+                        onClick = { vm.isShowChart = !vm.isShowChart },
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                    ) {
+                        Text(
+                            text = if (vm.isShowChart) "非表示" else "表示",
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 }
-            } }
+            }
 
             if (vm.isShowChart) {
                 item {

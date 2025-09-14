@@ -27,15 +27,19 @@ data class ToDoScreenUiState(
 class ToDoScreenViewModel @Inject constructor(
     private val toDoDataRepository: ToDoDataRepository
 ) : ViewModel() {
+
+    // ===== UI状態管理 =====
     private val _uiState = MutableStateFlow(ToDoScreenUiState())
     val uiState = _uiState.asStateFlow()
 
+    // ===== 初期化 =====
     init {
         viewModelScope.launch {
             getToDoList()
         }
     }
 
+    // ===== ToDoデータ操作 =====
     fun getToDoList() {
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
@@ -85,6 +89,7 @@ class ToDoScreenViewModel @Inject constructor(
         }
     }
 
+    // ===== ToDo並び替え機能 =====
     fun selectToDo(toDo: ToDoDataTable) {
         val currentSelected = _uiState.value.selectedToDos
         val newSelectedList: List<ToDoDataTable>
@@ -123,6 +128,11 @@ class ToDoScreenViewModel @Inject constructor(
         }
     }
 
+    fun onSwapModeChange() {
+        _uiState.update { it.copy(isSwapMode = !it.isSwapMode) }
+    }
+
+    // ===== UI状態制御 =====
     fun onShowAddToDoDialog() {
         // ViewModelの持つStateを、新しいStateで更新する
         _uiState.value = uiState.value.copy(isShowAddToDoDialog = true)
@@ -130,9 +140,5 @@ class ToDoScreenViewModel @Inject constructor(
 
     fun onDismissAddToDoDialog() {
         _uiState.value = uiState.value.copy(isShowAddToDoDialog = false)
-    }
-
-    fun onSwapModeChange() {
-        _uiState.update { it.copy(isSwapMode = !it.isSwapMode) }
     }
 }

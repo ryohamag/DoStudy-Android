@@ -86,5 +86,4 @@ class NotificationHelper @Inject constructor(
             true // Android 13未満では権限不要
         }
     }
-
 }

@@ -40,9 +40,12 @@ class SettingScreenViewModel @Inject constructor(
     private val platformDataRepository: PlatformDataRepository,
     private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
+
+    // ===== UI状態管理 =====
     private val _uiState = MutableStateFlow(SettingScreenUiState())
     val uiState = _uiState.asStateFlow()
 
+    // ===== 初期化 =====
     init {
         viewModelScope.launch {
             val userData = withContext(Dispatchers.IO) {
@@ -74,17 +77,7 @@ class SettingScreenViewModel @Inject constructor(
         }
     }
 
-    fun getPlatformData() {
-        viewModelScope.launch {
-            try {
-                val platformData = platformDataRepository.getAllPlatformData()
-                _uiState.update { it.copy(platformData = platformData) }
-            } catch (e: Exception) {
-                Log.e("SettingScreenViewModel", "Error getting platform data", e)
-            }
-        }
-    }
-
+    // ===== ユーザーデータ操作 =====
     fun createUserData() {
         viewModelScope.launch {
             val newUserData = UserDataTable(
@@ -117,16 +110,20 @@ class SettingScreenViewModel @Inject constructor(
         }
     }
 
-    fun onFontsExpandChange() {
-        _uiState.update { it.copy(fontsExpanded = !it.fontsExpanded) }
+    fun onUsernameChange(name: String) {
+        _uiState.update { it.copy(username = name) }
     }
 
-    fun onPlatformExpandChange() {
-        _uiState.update { it.copy(platformExpanded = !it.platformExpanded) }
-    }
-
-    fun updateDailyLimit(limit: Int) {
-        _uiState.update { it.copy(dailyLimit = limit) }
+    // ===== プラットフォームデータ操作 =====
+    fun getPlatformData() {
+        viewModelScope.launch {
+            try {
+                val platformData = platformDataRepository.getAllPlatformData()
+                _uiState.update { it.copy(platformData = platformData) }
+            } catch (e: Exception) {
+                Log.e("SettingScreenViewModel", "Error getting platform data", e)
+            }
+        }
     }
 
     fun addPlatformData() {
@@ -158,10 +155,6 @@ class SettingScreenViewModel @Inject constructor(
         }
     }
 
-    fun onPlatformDialogDismiss() {
-        _uiState.update { it.copy(isShowPlatformDialog = false) }
-    }
-
     fun onSelectedPlatformChange(index: Int) {
         _uiState.update { it.copy(selectedPlatform = index, platformExpanded = false) }
     }
@@ -174,8 +167,9 @@ class SettingScreenViewModel @Inject constructor(
         _uiState.update { it.copy(platformKey = key) }
     }
 
-    fun onUsernameChange(name: String) {
-        _uiState.update { it.copy(username = name) }
+    // ===== 設定データ操作 =====
+    fun updateDailyLimit(limit: Int) {
+        _uiState.update { it.copy(dailyLimit = limit) }
     }
 
     fun onSelectedFontChange(index: Int) {
@@ -187,6 +181,19 @@ class SettingScreenViewModel @Inject constructor(
                 Log.e("SettingScreenViewModel", "Error saving selected font", e)
             }
         }
+    }
+
+    // ===== UI状態制御 =====
+    fun onFontsExpandChange() {
+        _uiState.update { it.copy(fontsExpanded = !it.fontsExpanded) }
+    }
+
+    fun onPlatformExpandChange() {
+        _uiState.update { it.copy(platformExpanded = !it.platformExpanded) }
+    }
+
+    fun onPlatformDialogDismiss() {
+        _uiState.update { it.copy(isShowPlatformDialog = false) }
     }
 
     fun onDismissFontsMenu() {
