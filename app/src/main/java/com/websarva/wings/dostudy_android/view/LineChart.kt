@@ -206,5 +206,3 @@ private fun calculateOptimalYAxisValues(minValue: Int, maxValue: Int): List<Int>
 
     return values
 }
-
-

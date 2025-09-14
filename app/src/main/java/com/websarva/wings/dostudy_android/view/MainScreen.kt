@@ -53,7 +53,6 @@ import com.websarva.wings.dostudy_android.R
 import com.websarva.wings.dostudy_android.functions.httpRequest
 import com.websarva.wings.dostudy_android.util.DefaultTimerConstants
 import com.websarva.wings.dostudy_android.viewmodel.MainViewModel
-import kotlinx.coroutines.delay
 
 //メイン画面
 @OptIn(ExperimentalMaterial3Api::class)

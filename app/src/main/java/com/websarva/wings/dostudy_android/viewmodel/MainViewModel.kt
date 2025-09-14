@@ -41,9 +41,12 @@ class MainViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository,
     private val screenTimeRepository: ScreenTimeRepository
 ) : ViewModel() {
+
+    // ===== センサー関連 StateFlow =====
     private var _orientation: MutableStateFlow<FloatArray> = orientationSensor.orientation as MutableStateFlow<FloatArray>
     var orientation: StateFlow<FloatArray> = _orientation.asStateFlow()
 
+    // ===== タイマー関連 StateFlow =====
     private val _seconds = MutableStateFlow(0)
     val seconds: StateFlow<Int> = _seconds.asStateFlow()
 
@@ -56,6 +59,7 @@ class MainViewModel @Inject constructor(
     private val _setTimer = MutableStateFlow<Int?>(null)
     var setTimer: StateFlow<Int?> = _setTimer.asStateFlow()
 
+    // ===== データ関連 StateFlow =====
     private val _resultDataList = MutableStateFlow<List<ResultDataTable>>(listOf())
     val resultDataList: StateFlow<List<ResultDataTable>> = _resultDataList.asStateFlow()
 
@@ -71,9 +75,12 @@ class MainViewModel @Inject constructor(
     private val _selectedFont = MutableStateFlow(0)
     val selectedFont: StateFlow<Int> = _selectedFont.asStateFlow()
 
+    // ===== 勉強・タイマー関連 状態変数 =====
     var isTimerMode by mutableStateOf(false) // タイマーモードかどうか
     var studyTitle by mutableStateOf("") // 勉強タイトル
     var isStudyStarted by mutableStateOf(false) // 勉強が始まっているかどうか
+
+    // ===== UI関連 状態変数 =====
     var isFirstStartup by mutableStateOf(false) // 起動時だけの一時的なフラグ
     var isShowTimerAddingDialog by mutableStateOf(false)
     var isShowFailedDialog by mutableStateOf(false)
@@ -83,10 +90,16 @@ class MainViewModel @Inject constructor(
     var isShowAdScreen by mutableStateOf(false)
     var isShowStudyTitleDialog by mutableStateOf(false)
     var responseMessage by mutableStateOf("")
+
+    // ===== ユーザー関連 状態変数 =====
     var username by mutableStateOf("")
     var channelId by mutableStateOf("")
 
-    //初期化
+    // ===== Job管理 =====
+    private var timerJob: Job? = null
+    private var orientationJob: Job? = null
+
+    // ===== 初期化 =====
     init {
         viewModelScope.launch {
             // 結果データを全件取得
@@ -114,9 +127,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private var timerJob: Job? = null
-    private var orientationJob: Job? = null
-
+    // ===== 勉強セッション制御 =====
     fun startStudy() {
         isStudyStarted = true
         startTimer()
@@ -130,22 +141,16 @@ class MainViewModel @Inject constructor(
         stopOrientationMonitoring()
     }
 
-    private fun startOrientationMonitoring() {
-        orientationSensor.start()
-        orientationJob = viewModelScope.launch {
-            while (isStudyStarted) {
-                delay(5000) // 5秒ごとに角度を計測
-                orientSensor(orientation.value, this@MainViewModel)
-            }
-        }
+    //変数をリセット
+    fun reset() {
+        isTimerMode = false
+        _seconds.value = 0
+        isStudyStarted = false
+        _selectedTimer.value = null
+        _setTimer.value = null
     }
 
-    private fun stopOrientationMonitoring() {
-        orientationSensor.stop()
-        orientationJob?.cancel()
-        orientationJob = null
-    }
-
+    // ===== タイマー制御 =====
     private fun startTimer() {
         timerJob = viewModelScope.launch {
             while (isStudyStarted) {
@@ -191,33 +196,38 @@ class MainViewModel @Inject constructor(
         _setTimer.value = null
     }
 
-    //ユーザーデータを更新
-    fun updateUserData() {
-        viewModelScope.launch {
-            val updatedUserData = UserDataTable(
-                username = username, channelId = channelId, addedTimerList = addedTimerList.value
-            )
-            try {
-                userDataRepository.updateUserData(updatedUserData)
-            } catch (e: Exception) {
-                Log.e("MainScreenViewModel", "Error updating data", e)
+    //タイマーを追加
+    fun addTimer(time: String) {
+        val seconds = time.chunked(2).map { it.toInt() }.let { (hours, minutes, seconds) ->
+            hours * 3600 + minutes * 60 + seconds
+        }
+        _addedTimerList.value += seconds // 新しい時間を追加
+    }
+
+    //タイマーを削除
+    fun deleteTimer(timerToDelete: Int) {
+        _addedTimerList.value = _addedTimerList.value.filter { it != timerToDelete }
+        updateUserData()
+    }
+
+    // ===== センサー制御 =====
+    private fun startOrientationMonitoring() {
+        orientationSensor.start()
+        orientationJob = viewModelScope.launch {
+            while (isStudyStarted) {
+                delay(5000) // 5秒ごとに角度を計測
+                orientSensor(orientation.value, this@MainViewModel)
             }
         }
     }
 
-    fun getUserData() {
-        viewModelScope.launch {
-            val userData = withContext(Dispatchers.IO) {
-                userDataRepository.getCurrentUser()
-            }
-            if (userData != null) {
-                username = userData.username
-                channelId = userData.channelId
-                _addedTimerList.value = userData.addedTimerList
-            }
-        }
+    private fun stopOrientationMonitoring() {
+        orientationSensor.stop()
+        orientationJob?.cancel()
+        orientationJob = null
     }
 
+    // ===== データ操作（結果データ） =====
     //結果データを追加
     fun addResultData(status: Boolean) {
         val currentDate: LocalDate = LocalDate.now()
@@ -253,20 +263,35 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    //タイマーを追加
-    fun addTimer(time: String) {
-        val seconds = time.chunked(2).map { it.toInt() }.let { (hours, minutes, seconds) ->
-            hours * 3600 + minutes * 60 + seconds
+    // ===== データ操作（ユーザーデータ） =====
+    //ユーザーデータを更新
+    fun updateUserData() {
+        viewModelScope.launch {
+            val updatedUserData = UserDataTable(
+                username = username, channelId = channelId, addedTimerList = addedTimerList.value
+            )
+            try {
+                userDataRepository.updateUserData(updatedUserData)
+            } catch (e: Exception) {
+                Log.e("MainScreenViewModel", "Error updating data", e)
+            }
         }
-        _addedTimerList.value += seconds // 新しい時間を追加
     }
 
-    //タイマーを削除
-    fun deleteTimer(timerToDelete: Int) {
-        _addedTimerList.value = _addedTimerList.value.filter { it != timerToDelete }
-        updateUserData()
+    fun getUserData() {
+        viewModelScope.launch {
+            val userData = withContext(Dispatchers.IO) {
+                userDataRepository.getCurrentUser()
+            }
+            if (userData != null) {
+                username = userData.username
+                channelId = userData.channelId
+                _addedTimerList.value = userData.addedTimerList
+            }
+        }
     }
 
+    // ===== データ取得 =====
     fun getToDoList() {
         viewModelScope.launch {
             try {
@@ -305,14 +330,5 @@ class MainViewModel @Inject constructor(
                 _platformData.value = emptyList()
             }
         }
-    }
-
-    //変数をリセット
-    fun reset() {
-        isTimerMode = false
-        _seconds.value = 0
-        isStudyStarted = false
-        _selectedTimer.value = null
-        _setTimer.value = null
     }
 }

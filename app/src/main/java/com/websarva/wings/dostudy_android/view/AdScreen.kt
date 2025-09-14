@@ -63,4 +63,3 @@ fun AdScreen(vm: MainViewModel) {
         Log.e("AdScreen", "Interstitial ad not loaded yet")
     }
 }
-

@@ -74,7 +74,6 @@ fun MonitorScreen(
                 }
             )
         },
-
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier

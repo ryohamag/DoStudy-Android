@@ -37,9 +37,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -50,7 +47,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.websarva.wings.dostudy_android.R
-import com.websarva.wings.dostudy_android.viewmodel.MainViewModel
 import com.websarva.wings.dostudy_android.util.FontConstants.fonts
 import androidx.compose.foundation.lazy.items
 import com.websarva.wings.dostudy_android.viewmodel.SettingScreenViewModel
